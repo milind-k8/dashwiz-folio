@@ -59,21 +59,29 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                 <span className="text-xl font-bold text-foreground">PisaWise</span>
               )}
             </div>
-            {!isMobile && (
+            {!isMobile && (open || isMobile) && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setOpen(!open)}
                 className="h-6 w-6 p-0"
               >
-                {open ? (
-                  <ChevronLeft className="w-3 h-3" />
-                ) : (
-                  <ChevronRight className="w-3 h-3" />
-                )}
+                <ChevronLeft className="w-3 h-3" />
               </Button>
             )}
           </div>
+          {!isMobile && !open && (
+            <div className="mt-2 flex justify-center">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setOpen(!open)}
+                className="h-6 w-6 p-0"
+              >
+                <ChevronRight className="w-3 h-3" />
+              </Button>
+            </div>
+          )}
         </div>
         
         <SidebarGroup>
