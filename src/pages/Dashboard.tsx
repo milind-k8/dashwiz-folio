@@ -51,10 +51,10 @@ export function Dashboard() {
       <div className="space-y-2">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-1">
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">
               Financial Overview
             </h1>
-            <p className="text-muted-foreground text-sm md:text-base">
+            <p className="text-muted-foreground text-xs md:text-sm">
               Track your income, expenses, and savings across all your accounts
             </p>
           </div>
