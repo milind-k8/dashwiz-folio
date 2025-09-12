@@ -120,9 +120,9 @@ export function BankDataModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[95vw] sm:max-w-md md:max-w-lg lg:max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-md md:max-w-lg lg:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl font-semibold">
+          <DialogTitle className="text-lg sm:text-xl font-semibold pr-8">
             {title} Breakdown by Bank
           </DialogTitle>
         </DialogHeader>
