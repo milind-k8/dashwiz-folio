@@ -20,7 +20,7 @@ export function MetricCard({
 }: MetricCardProps) {
   return (
     <Card 
-      className={`p-4 sm:p-6 transition-all duration-300 hover:shadow-elevated ${
+      className={`p-3 sm:p-4 transition-all duration-300 hover:shadow-elevated ${
         isHighlighted 
           ? 'bg-gradient-card text-white border-0 shadow-card' 
           : 'bg-card border-border shadow-card hover:shadow-elevated'
