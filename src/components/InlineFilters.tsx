@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { 
   Select,
@@ -26,8 +26,6 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
   // Get filter values from URL params
   const selectedBanks = searchParams.get('banks')?.split(',').filter(Boolean) || [];
   const selectedDuration = searchParams.get('duration') || 'current-month';
-  
-  console.log('InlineFilters render:', { selectedBanks, selectedDuration, searchParams: searchParams.toString() });
 
   const getBankLabel = (bankCode: string) => {
     const labels: Record<string, string> = {
@@ -53,12 +51,7 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
     { value: 'previous-6-months', label: 'Previous 6 Months' }
   ];
 
-  useEffect(() => {
-    if (onFiltersChange && availableBanks.length > 0) {
-      const banksToSend = selectedBanks.length > 0 ? selectedBanks : [];
-      onFiltersChange(banksToSend, selectedDuration);
-    }
-  }, [selectedBanks, selectedDuration, onFiltersChange, availableBanks]);
+  // Remove the problematic useEffect that was causing infinite loops
 
   const allChecked = selectedBanks.length === 0 || (availableBanks.length > 0 && availableBanks.every(b => selectedBanks.includes(b)));
 
@@ -83,7 +76,6 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
   };
 
   const handleDurationChange = (value: string) => {
-    console.log('handleDurationChange called:', { value, selectedBanks });
     if (onFiltersChange) {
       onFiltersChange(selectedBanks, value);
     }
