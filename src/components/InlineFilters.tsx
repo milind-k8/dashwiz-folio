@@ -54,7 +54,7 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
     }
   }, [selectedBanks, selectedDuration, onFiltersChange, availableBanks]);
 
-  const allChecked = availableBanks.length > 0 && availableBanks.every(b => selectedBanks.includes(b));
+  const allChecked = selectedBanks.length === 0 || (availableBanks.length > 0 && availableBanks.every(b => selectedBanks.includes(b)));
 
   const toggleAllBanks = () => {
     if (allChecked) {
