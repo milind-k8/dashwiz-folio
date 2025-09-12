@@ -97,8 +97,8 @@ export function Loader({
 }
 
 // Specialized loaders for common use cases
-export function PageLoader({ text = "Loading page...", className }: { text?: string; className?: string }) {
-  return <Loader variant="page" size="lg" text={text} className={className} />;
+export function PageLoader({ text, className }: { text?: string; className?: string }) {
+  return <Loader variant="page" size="lg" text={text} className={cn("min-h-screen", className)} />;
 }
 
 export function TableLoader({ text = "Loading data..." }: { text?: string }) {

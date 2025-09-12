@@ -28,13 +28,13 @@ const App = () => (
           <Routes>
             {/* No redirects needed here */}
             <Route element={<RootLayout />}>
-              <Route index element={<Suspense fallback={<PageLoader text="Loading Dashboard..." />}><DashboardPage /></Suspense>} />
-              <Route path="analytics" element={<Suspense fallback={<PageLoader text="Loading Analytics..." />}><AnalyticsPage /></Suspense>} />
-              <Route path="wallet" element={<Suspense fallback={<PageLoader text="Loading Wallet..." />}><WalletPage /></Suspense>} />
-              <Route path="investments" element={<Suspense fallback={<PageLoader text="Loading Investments..." />}><InvestmentsPage /></Suspense>} />
-              <Route path="cards" element={<Suspense fallback={<PageLoader text="Loading Cards..." />}><CardsPage /></Suspense>} />
-              <Route path="goals" element={<Suspense fallback={<PageLoader text="Loading Goals..." />}><GoalsPage /></Suspense>} />
-              <Route path="settings" element={<Suspense fallback={<PageLoader text="Loading Settings..." />}><SettingsPage /></Suspense>} />
+              <Route index element={<Suspense fallback={<PageLoader />}><DashboardPage /></Suspense>} />
+              <Route path="analytics" element={<Suspense fallback={<PageLoader />}><AnalyticsPage /></Suspense>} />
+              <Route path="wallet" element={<Suspense fallback={<PageLoader />}><WalletPage /></Suspense>} />
+              <Route path="investments" element={<Suspense fallback={<PageLoader />}><InvestmentsPage /></Suspense>} />
+              <Route path="cards" element={<Suspense fallback={<PageLoader />}><CardsPage /></Suspense>} />
+              <Route path="goals" element={<Suspense fallback={<PageLoader />}><GoalsPage /></Suspense>} />
+              <Route path="settings" element={<Suspense fallback={<PageLoader />}><SettingsPage /></Suspense>} />
             </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
