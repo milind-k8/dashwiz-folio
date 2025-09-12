@@ -45,6 +45,45 @@ export function Dashboard() {
     return getFilteredData(selectedBanks, selectedDuration);
   }, [getFilteredData, selectedBanks, selectedDuration]);
 
+  // Calculate trends by comparing current period with previous period
+  const trendsData = useMemo(() => {
+    const currentData = getFilteredData(selectedBanks, selectedDuration);
+    
+    // Get previous period data for comparison
+    let previousDuration = '';
+    switch (selectedDuration) {
+      case 'current-month':
+        previousDuration = 'previous-month';
+        break;
+      case 'previous-month':
+        previousDuration = 'previous-3-months';
+        break;
+      case 'previous-3-months':
+        previousDuration = 'previous-6-months';
+        break;
+      case 'previous-6-months':
+        // For 6 months, compare with current month to show overall trend
+        previousDuration = 'current-month';
+        break;
+      default:
+        previousDuration = 'previous-month';
+    }
+    
+    const previousData = getFilteredData(selectedBanks, previousDuration);
+    
+    const calculateTrend = (current: number, previous: number) => {
+      if (previous === 0) return null;
+      const change = ((current - previous) / previous) * 100;
+      return change > 0 ? `+${change.toFixed(1)}%` : `${change.toFixed(1)}%`;
+    };
+
+    return {
+      income: calculateTrend(currentData.income, previousData.income),
+      expenses: calculateTrend(currentData.expenses, previousData.expenses),
+      savings: calculateTrend(currentData.savings, previousData.savings),
+    };
+  }, [getFilteredData, selectedBanks, selectedDuration]);
+
   return (
     <PageContent>
       {/* Header Section */}
@@ -63,7 +102,7 @@ export function Dashboard() {
       </div>
       
       {/* Metrics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mt-8">
         <MetricCard
           title="Balance"
           value={`₹${data.balance.toLocaleString()}`}
@@ -75,21 +114,21 @@ export function Dashboard() {
           title="Income"
           value={`₹${data.income.toLocaleString()}`}
           icon={TrendingUp}
-          trend="+8.2%"
+          trend={trendsData.income}
           onClick={() => handleMetricClick('Income', data.income, 'income')}
         />
         <MetricCard
           title="Savings"
           value={`₹${data.savings.toLocaleString()}`}
           icon={PiggyBank}
-          trend="+5.8%"
+          trend={trendsData.savings}
           onClick={() => handleMetricClick('Savings', data.savings, 'savings')}
         />
         <MetricCard
           title="Expenses"
           value={`₹${data.expenses.toLocaleString()}`}
           icon={CreditCardIcon}
-          trend="-2.1%"
+          trend={trendsData.expenses}
           onClick={() => handleMetricClick('Expenses', data.expenses, 'expenses')}
         />
       </div>
