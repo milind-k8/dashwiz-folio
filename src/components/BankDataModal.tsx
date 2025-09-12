@@ -8,7 +8,7 @@ import {
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { bankDataService } from '@/services/bankDataService';
+import { getTransactionsForBanksSync, isDbReady } from '@/lib/lokiDb';
 
 interface BankDataModalProps {
   isOpen: boolean;
@@ -64,11 +64,32 @@ export function BankDataModal({
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
     }
 
-    const banksToAnalyze = selectedBanks.length > 0 ? selectedBanks : bankDataService.getAvailableBanks();
+    // Get all transactions first, then filter by bank
+    const banksToQuery = selectedBanks.length === 0 ? ['all-banks'] : selectedBanks;
+    let allTransactions = getTransactionsForBanksSync(banksToQuery);
     
-    return banksToAnalyze.map(bank => {
-      const transactions = bankDataService.getFilteredTransactions([bank], startDate, endDate);
-      
+    if (!isDbReady() || allTransactions.length === 0) {
+      return [];
+    }
+
+    // Filter transactions by date range
+    if (startDate && endDate) {
+      allTransactions = allTransactions.filter(transaction => {
+        const transactionDate = new Date(transaction.date);
+        return transactionDate >= startDate && transactionDate <= endDate;
+      });
+    }
+
+    // Group by bank and calculate metrics
+    const bankGroups = allTransactions.reduce((acc, transaction) => {
+      if (!acc[transaction.bank]) {
+        acc[transaction.bank] = [];
+      }
+      acc[transaction.bank].push(transaction);
+      return acc;
+    }, {} as Record<string, typeof allTransactions>);
+
+    return Object.entries(bankGroups).map(([bank, transactions]) => {
       const income = transactions
         .filter(t => t.type === 'deposit')
         .reduce((sum, t) => sum + t.amount, 0);
