@@ -14,7 +14,7 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
 
   return (
     <>
-      <header className="sticky top-0 z-40 flex items-center gap-3 px-3 sm:px-4 py-2 bg-card/95 backdrop-blur-sm border-b border-border">
+      <header className="sticky top-0 z-50 flex items-center gap-3 px-3 sm:px-4 py-2 bg-card/95 backdrop-blur-lg border-b border-border shadow-sm">
         <SidebarTrigger className="lg:hidden" />
         
         <div className="flex-1">
