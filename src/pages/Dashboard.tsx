@@ -25,14 +25,17 @@ export function Dashboard() {
   const selectedDuration = searchParams.get('duration') || 'current-month';
 
   const handleFiltersChange = (banks: string[], duration: string) => {
+    console.log('Dashboard handleFiltersChange called:', { banks, duration });
     setSearchParams(prev => {
       const newParams = new URLSearchParams(prev);
+      console.log('Previous params:', prev.toString());
       if (banks.length > 0 && banks[0] !== 'all-banks') {
         newParams.set('banks', banks.join(','));
       } else {
         newParams.delete('banks');
       }
       newParams.set('duration', duration);
+      console.log('New params:', newParams.toString());
       return newParams;
     }, { replace: true });
   };

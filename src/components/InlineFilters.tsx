@@ -26,6 +26,8 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
   // Get filter values from URL params
   const selectedBanks = searchParams.get('banks')?.split(',').filter(Boolean) || [];
   const selectedDuration = searchParams.get('duration') || 'current-month';
+  
+  console.log('InlineFilters render:', { selectedBanks, selectedDuration, searchParams: searchParams.toString() });
 
   const getBankLabel = (bankCode: string) => {
     const labels: Record<string, string> = {
@@ -81,6 +83,7 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
   };
 
   const handleDurationChange = (value: string) => {
+    console.log('handleDurationChange called:', { value, selectedBanks });
     if (onFiltersChange) {
       onFiltersChange(selectedBanks, value);
     }
