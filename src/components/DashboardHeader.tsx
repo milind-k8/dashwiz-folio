@@ -22,7 +22,7 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
           <span className="text-sm">Add Transaction</span>
         </Button>
         
-        <div className="border border-border rounded-md">
+        <div className="border border-border rounded-md h-8">
           <ThemeToggle />
         </div>
       </div>
