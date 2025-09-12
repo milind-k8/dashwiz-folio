@@ -6,26 +6,26 @@ export function FinanceChart() {
   const { data } = useFinancialStore();
 
   return (
-    <Card className="p-6 shadow-card">
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-foreground mb-2">Finances</h3>
-        <div className="flex gap-4 text-sm">
+    <Card className="p-4 sm:p-6 shadow-card">
+      <div className="mb-4 sm:mb-6">
+        <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">Finances</h3>
+        <div className="flex flex-wrap gap-3 sm:gap-4 text-xs sm:text-sm">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-primary"></div>
+            <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-primary"></div>
             <span className="text-muted-foreground">Income</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-destructive"></div>
+            <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-destructive"></div>
             <span className="text-muted-foreground">Expenses</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-success"></div>
+            <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-success"></div>
             <span className="text-muted-foreground">Savings</span>
           </div>
         </div>
       </div>
       
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={250}>
         <LineChart data={data.monthlyData}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
           <XAxis 

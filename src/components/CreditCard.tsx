@@ -4,26 +4,26 @@ export function CreditCard() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-foreground">My Cards</h3>
+        <h3 className="text-base sm:text-lg font-semibold text-foreground">My Cards</h3>
         <button className="text-primary text-sm font-medium hover:underline">
           View All
         </button>
       </div>
       
       <Card className="relative bg-gradient-card text-white border-0 shadow-elevated overflow-hidden">
-        <div className="p-6">
-          <div className="flex items-start justify-between mb-8">
+        <div className="p-4 sm:p-6">
+          <div className="flex items-start justify-between mb-6 sm:mb-8">
             <div>
-              <p className="text-white/80 text-sm mb-1">Balance</p>
-              <p className="text-2xl font-bold">$2,190.19</p>
+              <p className="text-white/80 text-xs sm:text-sm mb-1">Balance</p>
+              <p className="text-xl sm:text-2xl font-bold">$2,190.19</p>
             </div>
             <div className="text-right">
-              <p className="text-white/80 text-sm">VISA</p>
+              <p className="text-white/80 text-xs sm:text-sm">VISA</p>
             </div>
           </div>
           
-          <div className="space-y-4">
-            <div className="grid grid-cols-4 gap-1 text-center tracking-widest">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="grid grid-cols-4 gap-1 text-center tracking-widest text-sm sm:text-base">
               <span>0316</span>
               <span>7893</span>
               <span>0715</span>
@@ -33,11 +33,11 @@ export function CreditCard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white/80 text-xs mb-1">Card Holder</p>
-                <p className="font-medium">John Smith</p>
+                <p className="font-medium text-sm">John Smith</p>
               </div>
               <div className="text-right">
                 <p className="text-white/80 text-xs mb-1">Valid Thru</p>
-                <p className="font-medium">12/24</p>
+                <p className="font-medium text-sm">12/24</p>
               </div>
             </div>
           </div>
@@ -55,7 +55,7 @@ export function CreditCard() {
         </div>
         <div className="text-right">
           <span className="text-success">+5.8%</span>
-          <p className="text-muted-foreground">1250 / US Dollar</p>
+          <p className="text-muted-foreground text-xs sm:text-sm">1250 / US Dollar</p>
         </div>
       </div>
       
