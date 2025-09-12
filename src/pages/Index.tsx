@@ -46,6 +46,12 @@ const Index = () => {
           <DashboardHeader />
           
           <main className="p-4 sm:p-6 space-y-4 sm:space-y-6 animate-fade-in">
+            {/* Filters */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <CardFilter />
+              <DurationFilter />
+            </div>
+            
             {/* Metrics Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               <MetricCard
@@ -82,12 +88,6 @@ const Index = () => {
               </div>
               
               <div className="space-y-4 sm:space-y-6">
-                {/* Filters */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <CardFilter />
-                  <DurationFilter />
-                </div>
-                
                 <CreditCard />
                 <ExpenseChart />
               </div>
