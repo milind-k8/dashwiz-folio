@@ -17,10 +17,8 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
       </div>
       
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" className="gap-2 flex h-8 border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-          <Plus className="w-3 h-3" />
-          <span className="text-sm hidden sm:inline">Add Transaction</span>
-          <span className="text-sm sm:hidden">Add</span>
+        <Button variant="outline" size="sm" className="flex h-8 w-8 p-0 border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+          <Plus className="w-4 h-4" />
         </Button>
         
         <div className="border border-border rounded-md h-8">
