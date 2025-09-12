@@ -1,6 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useFinancialStore } from '@/store/financialStore';
+import { IndianRupee } from 'lucide-react';
 
 export function TransactionList() {
   const { data } = useFinancialStore();
@@ -34,11 +35,12 @@ export function TransactionList() {
                   </p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className={`font-semibold text-sm sm:text-base ${
-                    transaction.amount < 0 ? 'text-destructive' : 'text-success'
-                  }`}>
-                    ${Math.abs(transaction.amount).toFixed(2)}
-                  </p>
+                   <p className={`font-semibold text-sm sm:text-base flex items-center gap-1 ${
+                     transaction.amount < 0 ? 'text-destructive' : 'text-success'
+                   }`}>
+                     <IndianRupee className="h-3 w-3 sm:h-4 sm:w-4" />
+                     {Math.abs(transaction.amount).toFixed(2)}
+                   </p>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium inline-block mt-1 ${
                     transaction.status === 'completed'
                       ? 'bg-success/10 text-success'

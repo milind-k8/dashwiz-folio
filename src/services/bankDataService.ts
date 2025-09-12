@@ -28,46 +28,34 @@ export class BankDataService {
   }
 
   async loadBankData(): Promise<void> {
-    const bankFiles = [
-      'hdfcTransaction.json',
-      'citiBankTransaction.json',
-      'chaseBankTransaction.json',
-      'bofaTransaction.json',
-      'wellsTransaction.json',
-      'capitalOneTransaction.json'
-    ];
-
-    const bankNames = [
-      'hdfc',
-      'citi', 
-      'chase',
-      'bofa',
-      'wells',
-      'capital'
-    ];
-
-    for (let i = 0; i < bankFiles.length; i++) {
-      try {
-        const response = await fetch(`/src/data/${bankFiles[i]}`);
-        if (response.ok) {
-          const transactions = await response.json() as Transaction[];
-          this.bankData.set(bankNames[i], transactions);
-          this.availableBanks.push(bankNames[i]);
-        }
-      } catch (error) {
-        // File doesn't exist, skip
-        console.log(`Bank file ${bankFiles[i]} not found`);
-      }
+    // Load HDFC data directly since we know it exists
+    try {
+      const hdfcModule = await import('../data/hdfcTransaction.json');
+      this.bankData.set('hdfc', hdfcModule.default as Transaction[]);
+      this.availableBanks.push('hdfc');
+    } catch (error) {
+      console.error('Error loading HDFC data:', error);
     }
 
-    // Fallback: Load HDFC data directly if available
-    if (this.availableBanks.length === 0) {
+    // Try to load other bank files from public folder
+    const bankFiles = [
+      { file: 'citiBankTransaction.json', name: 'citi' },
+      { file: 'chaseBankTransaction.json', name: 'chase' },
+      { file: 'bofaTransaction.json', name: 'bofa' },
+      { file: 'wellsTransaction.json', name: 'wells' },
+      { file: 'capitalOneTransaction.json', name: 'capital' }
+    ];
+
+    for (const bank of bankFiles) {
       try {
-        const hdfcModule = await import('../data/hdfcTransaction.json');
-        this.bankData.set('hdfc', hdfcModule.default as Transaction[]);
-        this.availableBanks.push('hdfc');
+        const response = await fetch(`/${bank.file}`);
+        if (response.ok) {
+          const transactions = await response.json() as Transaction[];
+          this.bankData.set(bank.name, transactions);
+          this.availableBanks.push(bank.name);
+        }
       } catch (error) {
-        console.error('No bank data available');
+        // File doesn't exist, skip silently
       }
     }
   }

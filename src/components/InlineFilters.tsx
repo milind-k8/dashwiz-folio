@@ -31,7 +31,7 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
 
   const bankOptions = [
     { value: 'all-banks', label: 'All Banks' },
-    ...availableBanks.map(bank => ({
+    ...availableBanks.filter(bank => bank !== 'all-banks').map(bank => ({
       value: bank,
       label: getBankLabel(bank)
     }))

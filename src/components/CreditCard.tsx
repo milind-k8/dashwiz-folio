@@ -1,4 +1,5 @@
 import { Card } from '@/components/ui/card';
+import { IndianRupee } from 'lucide-react';
 
 export function CreditCard() {
   return (
@@ -15,7 +16,10 @@ export function CreditCard() {
           <div className="flex items-start justify-between mb-6 sm:mb-8">
             <div>
               <p className="text-white/80 text-xs sm:text-sm mb-1">Balance</p>
-              <p className="text-xl sm:text-2xl font-bold">$2,190.19</p>
+              <div className="flex items-center gap-1">
+                <IndianRupee className="h-4 w-4 sm:h-5 sm:w-5" />
+                <p className="text-xl sm:text-2xl font-bold">2,190.19</p>
+              </div>
             </div>
             <div className="text-right">
               <p className="text-white/80 text-xs sm:text-sm">VISA</p>
@@ -51,7 +55,10 @@ export function CreditCard() {
       <div className="flex items-center justify-between text-sm">
         <div>
           <span className="text-muted-foreground">Your Balance</span>
-          <p className="font-semibold text-foreground">$2190.19</p>
+          <div className="flex items-center gap-1">
+            <IndianRupee className="h-4 w-4" />
+            <p className="font-semibold text-foreground">2190.19</p>
+          </div>
         </div>
         <div className="text-right">
           <span className="text-success">+5.8%</span>

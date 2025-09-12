@@ -7,7 +7,7 @@ import { TransactionList } from '@/components/TransactionList';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
 import { useBankData } from '@/hooks/useBankData';
-import { Wallet, TrendingUp, PiggyBank, CreditCard as CreditCardIcon } from 'lucide-react';
+import { Wallet, TrendingUp, PiggyBank, CreditCard as CreditCardIcon, IndianRupee } from 'lucide-react';
 
 export function Dashboard() {
   const { getFilteredData } = useBankData();
@@ -32,25 +32,45 @@ export function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <MetricCard
           title="Balance"
-          value={`$${data.balance.toLocaleString()}`}
+          value={
+            <div className="flex items-center gap-1">
+              <IndianRupee className="h-4 w-4" />
+              {data.balance.toLocaleString()}
+            </div>
+          }
           icon={Wallet}
           isHighlighted={true}
         />
         <MetricCard
           title="Income"
-          value={`$${data.income.toLocaleString()}`}
+          value={
+            <div className="flex items-center gap-1">
+              <IndianRupee className="h-4 w-4" />
+              {data.income.toLocaleString()}
+            </div>
+          }
           icon={TrendingUp}
           trend="+8.2%"
         />
         <MetricCard
           title="Savings"
-          value={`$${data.savings.toLocaleString()}`}
+          value={
+            <div className="flex items-center gap-1">
+              <IndianRupee className="h-4 w-4" />
+              {data.savings.toLocaleString()}
+            </div>
+          }
           icon={PiggyBank}
           trend="+5.8%"
         />
         <MetricCard
           title="Expenses"
-          value={`$${data.expenses.toLocaleString()}`}
+          value={
+            <div className="flex items-center gap-1">
+              <IndianRupee className="h-4 w-4" />
+              {data.expenses.toLocaleString()}
+            </div>
+          }
           icon={CreditCardIcon}
           trend="-2.1%"
         />
