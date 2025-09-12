@@ -34,54 +34,26 @@ export function ExpenseChart({ data: series }: ExpenseChartProps) {
     const percent = typeof p.percentage === 'number' ? `${p.percentage}%` : '';
     const tags = p.tags && p.tags.length > 0 ? p.tags.join(', ') : '';
     return (
-      <div
-        className="rounded-md"
-        style={{
-          backgroundColor: 'hsl(var(--card))',
-          border: '1px solid hsl(var(--border))',
-          borderRadius: 8,
-          boxShadow: 'var(--shadow-card)',
-          color: 'hsl(var(--foreground))',
-          padding: '8px 10px',
-          maxWidth: 240,
-          whiteSpace: 'normal',
-          wordWrap: 'break-word',
-          lineHeight: 1.25,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+      <div className="bg-card/95 backdrop-blur-sm border border-border rounded-lg shadow-lg p-3 animate-scale-in max-w-[240px]">
+        <div className="flex items-center gap-2 mb-2">
           <span
-            style={{
-              display: 'inline-block',
-              width: 10,
-              height: 10,
-              borderRadius: 9999,
-              backgroundColor: (payload[0] && payload[0].payload && (payload[0].payload as any).color) || 'hsl(var(--primary))',
-              flexShrink: 0,
-            }}
+            className="w-3 h-3 rounded-full flex-shrink-0"
+            style={{ backgroundColor: (payload[0] && payload[0].payload && (payload[0].payload as any).color) || 'hsl(var(--primary))' }}
           />
-          <span style={{ fontWeight: 600 }}>{p.category}</span>
+          <span className="font-semibold text-foreground text-sm">{p.category}</span>
           {percent && (
-            <span style={{ marginLeft: 'auto', fontSize: 12, color: 'hsl(var(--muted-foreground))' }}>{percent}</span>
+            <span className="ml-auto text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">{percent}</span>
           )}
         </div>
-        <div style={{ fontWeight: 600, marginBottom: tags ? 4 : 0 }}>{amount}</div>
+        <div className="font-bold text-foreground mb-2">{amount}</div>
         {p.tags && p.tags.length > 0 && (
-          <div style={{ marginTop: 4 }}>
-            <div style={{ fontSize: 11, color: 'hsl(var(--muted-foreground))', marginBottom: 4 }}>Tags</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          <div className="mt-3 pt-2 border-t border-border">
+            <div className="text-xs text-muted-foreground mb-2">Tags</div>
+            <div className="flex flex-wrap gap-1.5">
               {p.tags.map((t, i) => (
                 <span
                   key={`${t}-${i}`}
-                  style={{
-                    fontSize: 11,
-                    color: 'hsl(var(--foreground))',
-                    backgroundColor: 'hsl(var(--muted))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: 9999,
-                    padding: '2px 8px',
-                    lineHeight: 1.2,
-                  }}
+                  className="text-xs text-foreground bg-muted/70 border border-border rounded-full px-2.5 py-1 hover:bg-muted transition-colors"
                 >
                   {t}
                 </span>

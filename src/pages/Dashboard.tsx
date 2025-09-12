@@ -49,9 +49,12 @@ export function Dashboard() {
     <PageContent>
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h1 className="text-xl md:text-2xl font-bold text-foreground">
-          Financial Overview
-        </h1>
+        <div className="space-y-1">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+            Financial Overview
+          </h1>
+          <div className="w-12 h-1 bg-gradient-to-r from-primary to-primary/60 rounded-full"></div>
+        </div>
         
         {/* Filters */}
         <div className="flex justify-end overflow-x-auto">
