@@ -52,8 +52,8 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
   ];
 
   useEffect(() => {
-    if (onFiltersChange) {
-      const banksToSend = selectedBanks.length > 0 ? selectedBanks : availableBanks;
+    if (onFiltersChange && availableBanks.length > 0) {
+      const banksToSend = selectedBanks.length > 0 ? selectedBanks : [];
       onFiltersChange(banksToSend, selectedDuration);
     }
   }, [selectedBanks, selectedDuration, onFiltersChange, availableBanks]);

@@ -27,14 +27,14 @@ export function Dashboard() {
   const handleFiltersChange = (banks: string[], duration: string) => {
     setSearchParams(prev => {
       const newParams = new URLSearchParams(prev);
-      if (banks.length > 0) {
+      if (banks.length > 0 && banks[0] !== 'all-banks') {
         newParams.set('banks', banks.join(','));
       } else {
         newParams.delete('banks');
       }
       newParams.set('duration', duration);
       return newParams;
-    });
+    }, { replace: true });
   };
 
   const handleMetricClick = (title: string, value: number, type: 'balance' | 'income' | 'expenses' | 'savings') => {
