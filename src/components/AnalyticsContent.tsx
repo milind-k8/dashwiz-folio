@@ -207,9 +207,9 @@ export const AnalyticsContent = () => {
           <Table>
             <TableHeader className="bg-muted/30">
               <TableRow>
-                <TableHead className="font-semibold">Bank Name</TableHead>
-                <TableHead className="font-semibold">Transactions</TableHead>
-                <TableHead className="font-semibold w-24">Actions</TableHead>
+                <TableHead className="font-semibold w-1/3 min-w-[120px]">Bank Name</TableHead>
+                <TableHead className="font-semibold w-32">Transactions</TableHead>
+                <TableHead className="font-semibold w-20">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -217,16 +217,16 @@ export const AnalyticsContent = () => {
                 const count = transactions.filter((t) => t.bank === b).length;
                 return (
                   <TableRow key={b} className="hover:bg-muted/20 transition-colors">
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="p-1.5 bg-primary/10 rounded-md">
+                    <TableCell className="min-w-0">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="p-1.5 bg-primary/10 rounded-md flex-shrink-0">
                           <CreditCard className="h-4 w-4 text-primary" />
                         </div>
-                        <span className="font-medium uppercase">{b}</span>
+                        <span className="font-medium uppercase truncate">{b}</span>
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary" className="font-mono">
+                    <TableCell className="w-32">
+                      <Badge variant="secondary" className="font-mono text-xs">
                         {count} transactions
                       </Badge>
                     </TableCell>
@@ -337,57 +337,61 @@ export const AnalyticsContent = () => {
             <Table>
               <TableHeader className="bg-muted/30">
                 <TableRow>
-                  <TableHead className="font-semibold">Bank</TableHead>
-                  <TableHead className="font-semibold">Reference ID</TableHead>
-                  <TableHead className="font-semibold">Date</TableHead>
-                  <TableHead className="font-semibold">Type</TableHead>
-                  <TableHead className="font-semibold text-right">Amount</TableHead>
-                  <TableHead className="font-semibold">Category</TableHead>
-                  <TableHead className="font-semibold">Tags</TableHead>
+                  <TableHead className="font-semibold w-20 min-w-[60px]">Bank</TableHead>
+                  <TableHead className="font-semibold w-32 min-w-[100px]">Reference ID</TableHead>
+                  <TableHead className="font-semibold w-28 min-w-[90px]">Date</TableHead>
+                  <TableHead className="font-semibold w-24 min-w-[80px]">Type</TableHead>
+                  <TableHead className="font-semibold w-28 min-w-[90px] text-right">Amount</TableHead>
+                  <TableHead className="font-semibold w-24 min-w-[80px]">Category</TableHead>
+                  <TableHead className="font-semibold w-32 min-w-[100px]">Tags</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredTransactions.map((t) => (
                   <TableRow key={`${t.bank}-${t.refId}`} className="hover:bg-muted/20 transition-colors">
-                    <TableCell>
-                      <Badge variant="outline" className="uppercase font-mono text-xs">
+                    <TableCell className="w-20">
+                      <Badge variant="outline" className="uppercase font-mono text-xs truncate max-w-full">
                         {t.bank}
                       </Badge>
                     </TableCell>
-                    <TableCell className="font-mono text-xs text-muted-foreground">{t.refId}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-sm">{t.date}</span>
+                    <TableCell className="w-32 font-mono text-xs text-muted-foreground">
+                      <div className="truncate">{t.refId}</div>
+                    </TableCell>
+                    <TableCell className="w-28">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Calendar className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                        <span className="text-sm truncate">{t.date}</span>
                       </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="w-24">
                       <Badge 
                         variant={t.type === 'deposit' ? 'default' : 'secondary'}
-                        className={
+                        className={`text-xs ${
                           t.type === 'deposit' 
                             ? 'bg-green-100 text-green-700 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-400'
                             : 'bg-red-100 text-red-700 hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400'
-                        }
+                        }`}
                       >
-                        {t.type === 'deposit' ? (
-                          <ArrowUpRight className="h-3 w-3 mr-1" />
-                        ) : (
-                          <ArrowDownRight className="h-3 w-3 mr-1" />
-                        )}
-                        {t.type}
+                        <div className="flex items-center gap-1">
+                          {t.type === 'deposit' ? (
+                            <ArrowUpRight className="h-3 w-3 flex-shrink-0" />
+                          ) : (
+                            <ArrowDownRight className="h-3 w-3 flex-shrink-0" />
+                          )}
+                          <span className="truncate">{t.type}</span>
+                        </div>
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right font-mono font-medium">
-                      ₹{t.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    <TableCell className="w-28 text-right font-mono font-medium">
+                      <div className="truncate">₹{t.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                     </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className="text-xs">
+                    <TableCell className="w-24">
+                      <Badge variant="outline" className="text-xs truncate max-w-full">
                         {t.category}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground max-w-32 truncate">
-                      {t.tags || '-'}
+                    <TableCell className="w-32 text-sm text-muted-foreground">
+                      <div className="truncate">{t.tags || '-'}</div>
                     </TableCell>
                   </TableRow>
                 ))}
