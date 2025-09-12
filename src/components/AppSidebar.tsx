@@ -6,7 +6,9 @@ import {
   Settings, 
   CreditCard,
   Target,
-  IndianRupee
+  IndianRupee,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import {
   Sidebar,
@@ -19,6 +21,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
 
 const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -36,24 +39,38 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
-  const { open } = useSidebar();
+  const { open, setOpen } = useSidebar();
 
   return (
     <Sidebar className="border-r border-border">
       <SidebarContent>
         <div className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <IndianRupee className="w-5 h-5 text-white" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <IndianRupee className="w-5 h-5 text-white" />
+              </div>
+              {open && (
+                <span className="text-xl font-bold text-foreground">PisaWise</span>
+              )}
             </div>
-            {open && (
-              <span className="text-xl font-bold text-foreground">PisaWise</span>
-            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setOpen(!open)}
+              className="h-8 w-8 p-0"
+            >
+              {open ? (
+                <ChevronLeft className="w-4 h-4" />
+              ) : (
+                <ChevronRight className="w-4 h-4" />
+              )}
+            </Button>
           </div>
         </div>
         
         <SidebarGroup>
-          <SidebarGroupLabel>Menu</SidebarGroupLabel>
+          {open && <SidebarGroupLabel>Menu</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => {
@@ -68,7 +85,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                       className="w-full justify-start"
                     >
                       <Icon className="w-5 h-5" />
-                      <span>{item.label}</span>
+                      {open && <span>{item.label}</span>}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
