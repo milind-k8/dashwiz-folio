@@ -63,7 +63,9 @@ export const useBankData = () => {
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
     }
 
-    let transactions = getTransactionsForBanksSync(selectedBanks);
+    // Handle "All Banks" selection - when no banks are selected, get data for all banks
+    const banksToQuery = selectedBanks.length === 0 ? ['all-banks'] : selectedBanks;
+    let transactions = getTransactionsForBanksSync(banksToQuery);
     if (!isDbReady()) {
       transactions = [];
     }
