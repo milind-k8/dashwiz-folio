@@ -17,7 +17,7 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
       </div>
       
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" className="flex h-8 w-8 p-0 border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+        <Button size="sm" className="flex h-8 w-8 p-0 bg-primary text-primary-foreground hover:bg-primary/90">
           <Plus className="w-4 h-4" />
         </Button>
         
