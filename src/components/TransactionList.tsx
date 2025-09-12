@@ -1,62 +1,159 @@
+import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useFinancialStore } from '@/store/financialStore';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CategoryRow } from '@/components/CategoryRow';
 
-export function TransactionList() {
-  const { data } = useFinancialStore();
+interface ExpenseCategory {
+  category: string;
+  amount: number;
+  percentage: number;
+  color: string;
+  tags: string[];
+}
+
+interface TransactionListProps {
+  expenseCategories: ExpenseCategory[];
+}
+
+export function TransactionList({ expenseCategories = [] }: TransactionListProps) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Mock tag spending data - in real app this would come from actual transaction data
+  const getTagSpending = (category: string, tags: string[], totalAmount: number) => {
+    const tagSpending: Record<string, number> = {};
+    const baseAmount = totalAmount / tags.length;
+    
+    tags.forEach((tag, index) => {
+      // Add some variation to make it more realistic
+      const variation = (Math.random() - 0.5) * 0.3;
+      tagSpending[tag] = Math.round(baseAmount * (1 + variation));
+    });
+    
+    return tagSpending;
+  };
+
+  // Filter categories based on search term
+  const filteredCategories = useMemo(() => {
+    if (!searchTerm.trim()) return expenseCategories;
+    
+    return expenseCategories.filter(category =>
+      category.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      category.tags.some(tag => 
+        tag.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [expenseCategories, searchTerm]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedCategories = filteredCategories.slice(startIndex, startIndex + itemsPerPage);
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
+  const goToPage = (page: number) => {
+    setCurrentPage(Math.max(1, Math.min(page, totalPages)));
+  };
+
+  if (expenseCategories.length === 0) {
+    return (
+      <Card className="p-4 sm:p-6 shadow-card">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <h3 className="text-base sm:text-lg font-semibold text-foreground">
+            Category Spending
+          </h3>
+        </div>
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">No expense data available</p>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="p-4 sm:p-6 shadow-card">
       <div className="flex items-center justify-between mb-4 sm:mb-6">
-        <h3 className="text-base sm:text-lg font-semibold text-foreground">Transactions</h3>
-        <button className="text-primary text-sm font-medium hover:underline">
-          Recent
-        </button>
+        <h3 className="text-base sm:text-lg font-semibold text-foreground">
+          Category Spending
+        </h3>
+        <span className="text-sm text-muted-foreground">
+          {filteredCategories.length} {filteredCategories.length === 1 ? 'category' : 'categories'}
+        </span>
       </div>
-      
-      <div className="space-y-3 sm:space-y-4">
-        {data.transactions.map((transaction) => (
-          <div key={transaction.id} className="flex items-center gap-3 sm:gap-4 p-2 sm:p-3 rounded-lg hover:bg-muted/50 transition-colors">
-            <Avatar className="w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0">
-              <AvatarFallback className="bg-primary/10 text-primary font-medium text-xs sm:text-sm">
-                {transaction.name.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0 flex-1">
-                  <p className="font-medium text-foreground truncate text-sm sm:text-base">
-                    {transaction.name}
-                  </p>
-                  <p className="text-xs sm:text-sm text-muted-foreground truncate">
-                    {transaction.company}
-                  </p>
-                </div>
-                <div className="text-right flex-shrink-0">
-                   <p className={`font-semibold text-sm sm:text-base ${
-                     transaction.amount < 0 ? 'text-destructive' : 'text-success'
-                   }`}>
-                     ₹{Math.abs(transaction.amount).toFixed(2)}
-                   </p>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium inline-block mt-1 ${
-                    transaction.status === 'completed'
-                      ? 'bg-success/10 text-success'
-                      : 'bg-warning/10 text-warning'
-                  }`}>
-                    {transaction.status}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-                <span>{transaction.date}</span>
-                <span className="hidden sm:inline">{transaction.time}</span>
-              </div>
-            </div>
+
+      {/* Search Bar */}
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          placeholder="Search categories or tags..."
+          value={searchTerm}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          className="pl-9"
+        />
+      </div>
+
+      {/* Categories List */}
+      <div className="space-y-2">
+        {paginatedCategories.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">
+              No categories found matching "{searchTerm}"
+            </p>
           </div>
-        ))}
+        ) : (
+          paginatedCategories.map((category) => (
+            <CategoryRow
+              key={category.category}
+              category={category.category}
+              amount={category.amount}
+              percentage={category.percentage}
+              color={category.color}
+              tags={category.tags}
+              tagSpending={getTagSpending(category.category, category.tags, category.amount)}
+            />
+          ))
+        )}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+          <p className="text-sm text-muted-foreground">
+            Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredCategories.length)} of {filteredCategories.length}
+          </p>
+          
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            
+            <span className="text-sm font-medium px-2">
+              {currentPage} of {totalPages}
+            </span>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      )}
     </Card>
   );
 }

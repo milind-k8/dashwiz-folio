@@ -76,7 +76,7 @@ export function Dashboard() {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
         <div className="xl:col-span-2 space-y-4 sm:space-y-6">
           <FinanceChart data={data.monthlyData} />
-          <TransactionList />
+          <TransactionList expenseCategories={data.expenseCategoriesList} />
         </div>
         
         <div className="space-y-4 sm:space-y-6">
