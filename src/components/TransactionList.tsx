@@ -21,7 +21,7 @@ interface TransactionListProps {
 export function TransactionList({ expenseCategories = [] }: TransactionListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 8;
 
   // Mock tag spending data - in real app this would come from actual transaction data
   const getTagSpending = (category: string, tags: string[], totalAmount: number) => {
@@ -65,13 +65,11 @@ export function TransactionList({ expenseCategories = [] }: TransactionListProps
 
   if (expenseCategories.length === 0) {
     return (
-      <Card className="p-4 sm:p-6 shadow-card">
-        <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <h3 className="text-base sm:text-lg font-semibold text-foreground">
-            Category Spending
-          </h3>
+      <Card className="p-6 shadow-card">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-foreground">Spending</h3>
         </div>
-        <div className="text-center py-8">
+        <div className="text-center py-12">
           <p className="text-muted-foreground">No expense data available</p>
         </div>
       </Card>
@@ -79,13 +77,11 @@ export function TransactionList({ expenseCategories = [] }: TransactionListProps
   }
 
   return (
-    <Card className="p-4 sm:p-6 shadow-card">
-      <div className="flex items-center justify-between mb-4 sm:mb-6">
-        <h3 className="text-base sm:text-lg font-semibold text-foreground">
-          Category Spending
-        </h3>
+    <Card className="p-6 shadow-card">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-lg font-semibold text-foreground">Spending</h3>
         <span className="text-sm text-muted-foreground">
-          {filteredCategories.length} {filteredCategories.length === 1 ? 'category' : 'categories'}
+          {filteredCategories.length} categories
         </span>
       </div>
 
@@ -93,30 +89,29 @@ export function TransactionList({ expenseCategories = [] }: TransactionListProps
       <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
-          placeholder="Search categories or tags..."
+          placeholder="Search categories..."
           value={searchTerm}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="pl-9"
+          className="pl-9 h-9"
         />
       </div>
 
       {/* Categories Table */}
-      <div className="border rounded-lg">
+      <div className="border rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="w-[40%]">Category</TableHead>
-              <TableHead className="w-[35%]">Tags</TableHead>
-              <TableHead className="w-[15%] text-center">Share</TableHead>
-              <TableHead className="w-[10%] text-right">Amount</TableHead>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="h-10 text-xs font-medium">Category</TableHead>
+              <TableHead className="h-10 text-xs font-medium text-center">Share</TableHead>
+              <TableHead className="h-10 text-xs font-medium text-right">Amount</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginatedCategories.length === 0 ? (
               <TableRow>
-                <td colSpan={4} className="text-center py-8">
-                  <p className="text-muted-foreground">
-                    No categories found matching "{searchTerm}"
+                <td colSpan={3} className="text-center py-12">
+                  <p className="text-muted-foreground text-sm">
+                    No categories found
                   </p>
                 </td>
               </TableRow>
@@ -139,32 +134,34 @@ export function TransactionList({ expenseCategories = [] }: TransactionListProps
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-          <p className="text-sm text-muted-foreground">
-            Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredCategories.length)} of {filteredCategories.length}
+        <div className="flex items-center justify-between mt-4">
+          <p className="text-xs text-muted-foreground">
+            {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredCategories.length)} of {filteredCategories.length}
           </p>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => goToPage(currentPage - 1)}
               disabled={currentPage === 1}
+              className="h-8 w-8 p-0"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-3 h-3" />
             </Button>
             
-            <span className="text-sm font-medium px-2">
-              {currentPage} of {totalPages}
+            <span className="text-xs font-medium px-3 py-1">
+              {currentPage}
             </span>
             
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => goToPage(currentPage + 1)}
               disabled={currentPage === totalPages}
+              className="h-8 w-8 p-0"
             >
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-3 h-3" />
             </Button>
           </div>
         </div>
