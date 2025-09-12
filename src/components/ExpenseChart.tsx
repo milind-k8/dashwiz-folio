@@ -1,3 +1,4 @@
+import { useMemo, useCallback } from 'react';
 import { Tooltip as UiTooltip, TooltipContent as UiTooltipContent, TooltipProvider as UiTooltipProvider, TooltipTrigger as UiTooltipTrigger } from '@/components/ui/tooltip';
 import { Card } from '@/components/ui/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
@@ -17,12 +18,15 @@ interface ExpenseChartProps {
 
 export function ExpenseChart({ data: series }: ExpenseChartProps) {
   const { data } = useFinancialStore();
-  const chartData = series ?? data.expenseCategories;
-  const totalAmount = Array.isArray(chartData)
-    ? (chartData as any[]).reduce((sum, item) => sum + Number(item.amount || 0), 0)
-    : 0;
+  const chartData = useMemo(() => series ?? data.expenseCategories, [series, data.expenseCategories]);
+  
+  const totalAmount = useMemo(() => {
+    return Array.isArray(chartData)
+      ? (chartData as any[]).reduce((sum, item) => sum + Number(item.amount || 0), 0)
+      : 0;
+  }, [chartData]);
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = useCallback(({ active, payload }: any) => {
     if (!active || !payload || payload.length === 0) return null;
     const p = payload[0] && (payload[0].payload as ExpenseCategoryPoint);
     if (!p) return null;
@@ -87,7 +91,7 @@ export function ExpenseChart({ data: series }: ExpenseChartProps) {
         )}
       </div>
     );
-  };
+  }, []);
 
   return (
     <Card className="p-4 sm:p-6 shadow-card">

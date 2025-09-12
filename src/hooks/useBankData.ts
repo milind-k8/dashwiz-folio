@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { bankDataService } from '@/services/bankDataService';
 import { getTransactionsForBanksSync, isDbReady } from '@/lib/lokiDb';
 
@@ -33,7 +33,7 @@ export const useBankData = () => {
     return () => bankDataService.offChange(handleChange);
   }, []);
 
-  const getFilteredData = (selectedBanks: string[], monthFilter: string) => {
+  const getFilteredData = useCallback((selectedBanks: string[], monthFilter: string) => {
     const toTitleCase = (value: string) => {
       if (!value) return value;
       return value
@@ -176,7 +176,7 @@ export const useBankData = () => {
       expenseCategoriesList,
       monthlyData,
     };
-  };
+  }, []);
 
   return {
     availableBanks,

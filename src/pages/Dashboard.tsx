@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { MetricCard } from '@/components/MetricCard';
 import { FinanceChart } from '@/components/FinanceChart';
@@ -24,7 +24,7 @@ export function Dashboard() {
   const selectedBanks = searchParams.get('banks')?.split(',').filter(Boolean) || [];
   const selectedDuration = searchParams.get('duration') || 'current-month';
 
-  const handleFiltersChange = (banks: string[], duration: string) => {
+  const handleFiltersChange = useCallback((banks: string[], duration: string) => {
     setSearchParams(prev => {
       const newParams = new URLSearchParams();
       if (banks.length > 0) {
@@ -33,14 +33,17 @@ export function Dashboard() {
       newParams.set('duration', duration);
       return newParams;
     }, { replace: true });
-  };
+  }, [setSearchParams]);
 
-  const handleMetricClick = (title: string, value: number, type: 'balance' | 'income' | 'expenses' | 'savings') => {
+  const handleMetricClick = useCallback((title: string, value: number, type: 'balance' | 'income' | 'expenses' | 'savings') => {
     setModalData({ title, value, type });
     setModalOpen(true);
-  };
+  }, []);
 
-  const data = getFilteredData(selectedBanks, selectedDuration);
+  // Memoize the expensive data calculation
+  const data = useMemo(() => {
+    return getFilteredData(selectedBanks, selectedDuration);
+  }, [getFilteredData, selectedBanks, selectedDuration]);
 
   return (
     <PageContent>
