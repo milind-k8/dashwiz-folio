@@ -120,18 +120,18 @@ export function BankDataModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-[95vw] sm:max-w-md md:max-w-lg lg:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">
+          <DialogTitle className="text-lg sm:text-xl font-semibold">
             {title} Breakdown by Bank
           </DialogTitle>
         </DialogHeader>
 
         {/* Total Section */}
-        <Card className="p-6 bg-gradient-card text-white border-0">
+        <Card className="p-4 sm:p-6 bg-gradient-card text-white border-0">
           <div className="text-center">
-            <p className="text-white/80 text-sm font-medium mb-2">Total {title}</p>
-            <p className="text-3xl font-bold">
+            <p className="text-white/80 text-xs sm:text-sm font-medium mb-2">Total {title}</p>
+            <p className="text-2xl sm:text-3xl font-bold">
               {formatCurrency(totalValue)}
             </p>
           </div>
@@ -140,34 +140,34 @@ export function BankDataModal({
         <Separator />
 
         {/* Bank-wise Breakdown */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-foreground">Bank-wise Breakdown</h3>
+        <div className="space-y-3 sm:space-y-4">
+          <h3 className="text-base sm:text-lg font-semibold text-foreground">Bank-wise Breakdown</h3>
           
           {bankData.length === 0 ? (
-            <Card className="p-6 text-center">
-              <p className="text-muted-foreground">No data available for the selected period</p>
+            <Card className="p-4 sm:p-6 text-center">
+              <p className="text-muted-foreground text-sm">No data available for the selected period</p>
             </Card>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {bankData.map((item) => (
-                <Card key={item.bank} className="p-4 hover:shadow-elevated transition-shadow">
+                <Card key={item.bank} className="p-3 sm:p-4 hover:shadow-elevated transition-shadow">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                         <span className="text-xs font-bold text-primary">
                           {item.label.charAt(0)}
                         </span>
                       </div>
-                      <div>
-                        <p className="font-medium text-foreground">{item.label}</p>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-foreground text-sm sm:text-base truncate">{item.label}</p>
                         <p className="text-xs text-muted-foreground">
                           {item.percentage}% of total
                         </p>
                       </div>
                     </div>
                     
-                    <div className="text-right">
-                      <p className={`text-lg font-semibold ${getValueColor(item.value)}`}>
+                    <div className="text-right flex-shrink-0 ml-2">
+                      <p className={`text-sm sm:text-lg font-semibold ${getValueColor(item.value)}`}>
                         {formatCurrency(item.value)}
                       </p>
                       <Badge variant={item.percentage > 50 ? 'default' : 'secondary'} className="text-xs">
@@ -177,7 +177,7 @@ export function BankDataModal({
                   </div>
                   
                   {/* Progress bar */}
-                  <div className="mt-3">
+                  <div className="mt-2 sm:mt-3">
                     <div className="w-full bg-muted rounded-full h-1.5">
                       <div 
                         className="bg-primary rounded-full h-1.5 transition-all duration-300" 
