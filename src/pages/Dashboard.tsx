@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { MetricCard } from '@/components/MetricCard';
 import { FinanceChart } from '@/components/FinanceChart';
 import { ExpenseChart } from '@/components/ExpenseChart';
@@ -5,17 +6,26 @@ import { CreditCard } from '@/components/CreditCard';
 import { TransactionList } from '@/components/TransactionList';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
-import { useFinancialStore } from '@/store/financialStore';
+import { useBankData } from '@/hooks/useBankData';
 import { Wallet, TrendingUp, PiggyBank, CreditCard as CreditCardIcon } from 'lucide-react';
 
 export function Dashboard() {
-  const { data } = useFinancialStore();
+  const { getFilteredData } = useBankData();
+  const [selectedBanks, setSelectedBanks] = useState<string[]>(['all-banks']);
+  const [selectedDuration, setSelectedDuration] = useState('current-month');
+
+  const handleFiltersChange = (banks: string[], duration: string) => {
+    setSelectedBanks(banks);
+    setSelectedDuration(duration);
+  };
+
+  const data = getFilteredData(selectedBanks, selectedDuration);
 
   return (
     <PageContent>
       {/* Filters */}
       <div className="flex justify-end">
-        <InlineFilters />
+        <InlineFilters onFiltersChange={handleFiltersChange} />
       </div>
       
       {/* Metrics Grid */}
