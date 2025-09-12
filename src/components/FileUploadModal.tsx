@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Upload, FileText, X, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { bankDataService } from '@/services/bankDataService';
 
 interface FileUploadModalProps {
   isOpen: boolean;
@@ -196,13 +197,12 @@ export function FileUploadModal({ isOpen, onClose }: FileUploadModalProps) {
       
       // Simulate file processing
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Here you would typically save the data to your store or send to API
-      console.log('Uploading bank data:', {
-        bankName: validation.bankName,
-        fileName: selectedFile.name,
-        data: JSON.parse(content)
-      });
+
+      // Persist into service (which saves to localStorage)
+      const parsed = JSON.parse(content);
+      if (validation.bankName) {
+        bankDataService.addOrReplaceBank(validation.bankName, parsed);
+      }
 
       toast({
         title: "Upload Successful",
@@ -217,7 +217,7 @@ export function FileUploadModal({ isOpen, onClose }: FileUploadModalProps) {
     } catch (error) {
       toast({
         title: "Upload Failed",
-        description: "An error occurred while uploading the file",
+        description: error instanceof Error ? error.message : "An error occurred while uploading the file",
         variant: "destructive",
       });
       setIsUploading(false);

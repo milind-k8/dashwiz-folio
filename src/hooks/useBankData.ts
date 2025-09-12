@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { bankDataService } from '@/services/bankDataService';
+import { getTransactionsForBanksSync, isDbReady } from '@/lib/lokiDb';
 
 interface Transaction {
   date: string;
@@ -24,6 +25,12 @@ export const useBankData = () => {
     };
 
     loadData();
+
+    const handleChange = () => {
+      setAvailableBanks(bankDataService.getAvailableBanks());
+    };
+    bankDataService.onChange(handleChange);
+    return () => bankDataService.offChange(handleChange);
   }, []);
 
   const getFilteredData = (selectedBanks: string[], monthFilter: string) => {
@@ -56,7 +63,16 @@ export const useBankData = () => {
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
     }
 
-    const transactions = bankDataService.getFilteredTransactions(selectedBanks, startDate, endDate);
+    let transactions = getTransactionsForBanksSync(selectedBanks);
+    if (!isDbReady()) {
+      transactions = [];
+    }
+    if (startDate && endDate) {
+      transactions = transactions.filter(transaction => {
+        const transactionDate = new Date(transaction.date);
+        return transactionDate >= startDate && transactionDate <= endDate;
+      });
+    }
     
     // Calculate metrics
     const income = transactions

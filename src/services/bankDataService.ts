@@ -1,3 +1,4 @@
+import { initDb, upsertTransactions, getBanks, getTransactionsForBanks, deleteBank as dbDeleteBank } from '@/lib/lokiDb';
 interface Transaction {
   date: string;
   refId: string;
@@ -15,9 +16,10 @@ interface BankData {
 
 export class BankDataService {
   private static instance: BankDataService;
-  private bankData: Map<string, Transaction[]> = new Map();
   private availableBanks: string[] = [];
   private isLoaded = false;
+  private readonly LOCAL_STORAGE_KEY = 'bankData';
+  private changeListeners: Set<() => void> = new Set();
 
   private constructor() {}
 
@@ -32,6 +34,7 @@ export class BankDataService {
     if (this.isLoaded) {
       return;
     }
+    await initDb();
     // Dynamically load any files matching *Transaction.json under src/data
     // Vite will statically include matching files in the build.
     const modules = import.meta.glob('../data/*Transaction.json', { eager: true });
@@ -43,14 +46,25 @@ export class BankDataService {
       const mod = modules[path] as { default: Transaction[] } | unknown;
       const transactions = (mod as any).default as Transaction[] | undefined;
       if (!transactions) return;
-
-      this.bankData.set(bankCode, transactions);
-      if (!this.availableBanks.includes(bankCode)) {
-        this.availableBanks.push(bankCode);
-      }
+      // Seed static bundled data into Loki (idempotent due to upsert)
+      void upsertTransactions(bankCode, transactions.map(t => ({
+        refId: t.refId,
+        date: t.date,
+        amount: t.amount,
+        type: t.type,
+        closingBy: t.closingBy,
+        category: t.category,
+        tags: t.tags,
+      })));
     });
 
+    // One-time migration from legacy localStorage format to Loki
+    this.migrateFromLocalStorage();
+
+    // Refresh available banks from DB
+    this.availableBanks = await getBanks();
     this.isLoaded = true;
+    this.notifyChange();
   }
 
   getAvailableBanks(): string[] {
@@ -58,36 +72,94 @@ export class BankDataService {
   }
 
   getBankData(bankName: string): Transaction[] {
-    return this.bankData.get(bankName) || [];
+    // Synchronous wrapper calling async is not ideal, but existing API is sync.
+    // Consumers should use the hook which awaits loadBankData first.
+    // Here we return empty immediately; hook will refresh on change.
+    console.warn('getBankData should be used after loadBankData resolves. Returning empty until DB ready.');
+    // This method is kept for backward compatibility; use getFilteredTransactions via hook.
+    return [];
   }
 
   getAllTransactions(): Transaction[] {
-    const allTransactions: Transaction[] = [];
-    this.bankData.forEach(transactions => {
-      allTransactions.push(...transactions);
-    });
-    return allTransactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    console.warn('getAllTransactions should be used after loadBankData resolves. Returning empty until DB ready.');
+    return [];
   }
 
   getFilteredTransactions(banks: string[], startDate?: Date, endDate?: Date): Transaction[] {
-    let transactions: Transaction[] = [];
-    
-    if (banks.includes('all-banks')) {
-      transactions = this.getAllTransactions();
-    } else {
-      banks.forEach(bank => {
-        transactions.push(...this.getBankData(bank));
-      });
-    }
+    // This method is expected to be called within render from the hook, so we cannot await.
+    // The hook calls this right after ensuring loadBankData has run; we can store last fetched cache
+    // but simplest is to rely on the hook to compute from async data. Here, return [] to avoid blocking.
+    console.warn('getFilteredTransactions should be derived from async DB results in the hook. Returning empty.');
+    return [];
+  }
 
-    if (startDate && endDate) {
-      transactions = transactions.filter(transaction => {
-        const transactionDate = new Date(transaction.date);
-        return transactionDate >= startDate && transactionDate <= endDate;
-      });
-    }
+  addOrReplaceBank(bankName: string, transactions: Transaction[]): void {
+    const bankCode = bankName.toLowerCase();
+    void (async () => {
+      await upsertTransactions(bankCode, transactions.map(t => ({
+        refId: t.refId,
+        date: t.date,
+        amount: t.amount,
+        type: t.type,
+        closingBy: t.closingBy,
+        category: t.category,
+        tags: t.tags,
+      })));
+      this.availableBanks = await getBanks();
+      this.notifyChange();
+    })();
+  }
 
-    return transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  removeBank(bankName: string): void {
+    const bankCode = bankName.toLowerCase();
+    void (async () => {
+      await dbDeleteBank(bankCode);
+      this.availableBanks = await getBanks();
+      this.notifyChange();
+    })();
+  }
+
+  onChange(listener: () => void): void {
+    this.changeListeners.add(listener);
+  }
+
+  offChange(listener: () => void): void {
+    this.changeListeners.delete(listener);
+  }
+
+  private notifyChange(): void {
+    this.changeListeners.forEach((l) => {
+      try { l(); } catch {}
+    });
+  }
+
+  private migrateFromLocalStorage(): void {
+    try {
+      const raw = localStorage.getItem(this.LOCAL_STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as Record<string, Transaction[] | Record<string, Transaction>>;
+      const tasks: Promise<any>[] = [];
+      Object.entries(parsed).forEach(([bank, value]) => {
+        const list: Transaction[] = Array.isArray(value)
+          ? value as Transaction[]
+          : Object.values(value || {}) as Transaction[];
+        if (list.length === 0) return;
+        tasks.push(upsertTransactions(bank, list.map(t => ({
+          refId: t.refId,
+          date: t.date,
+          amount: t.amount,
+          type: t.type,
+          closingBy: t.closingBy,
+          category: t.category,
+          tags: t.tags,
+        }))));
+      });
+      Promise.all(tasks).finally(() => {
+        try { localStorage.removeItem(this.LOCAL_STORAGE_KEY); } catch {}
+      });
+    } catch {
+      // Ignore
+    }
   }
 }
 

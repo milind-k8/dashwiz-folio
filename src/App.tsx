@@ -2,9 +2,17 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import Index from "./pages/Index";
+import { lazy, Suspense } from 'react';
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
+const WalletPage = lazy(() => import('./pages/WalletPage'));
+const InvestmentsPage = lazy(() => import('./pages/InvestmentsPage'));
+const CardsPage = lazy(() => import('./pages/CardsPage'));
+const GoalsPage = lazy(() => import('./pages/GoalsPage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
+import { RootLayout } from '@/components/RootLayout';
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -17,7 +25,16 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            {/* No redirects needed here */}
+            <Route element={<RootLayout />}>
+              <Route index element={<Suspense fallback={<div className="p-6">Loading...</div>}><DashboardPage /></Suspense>} />
+              <Route path="analytics" element={<Suspense fallback={<div className="p-6">Loading...</div>}><AnalyticsPage /></Suspense>} />
+              <Route path="wallet" element={<Suspense fallback={<div className="p-6">Loading...</div>}><WalletPage /></Suspense>} />
+              <Route path="investments" element={<Suspense fallback={<div className="p-6">Loading...</div>}><InvestmentsPage /></Suspense>} />
+              <Route path="cards" element={<Suspense fallback={<div className="p-6">Loading...</div>}><CardsPage /></Suspense>} />
+              <Route path="goals" element={<Suspense fallback={<div className="p-6">Loading...</div>}><GoalsPage /></Suspense>} />
+              <Route path="settings" element={<Suspense fallback={<div className="p-6">Loading...</div>}><SettingsPage /></Suspense>} />
+            </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

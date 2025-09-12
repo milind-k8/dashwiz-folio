@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useNavigate } from 'react-router-dom';
 
 const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -42,6 +43,26 @@ interface AppSidebarProps {
 export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
   const { open, setOpen } = useSidebar();
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+
+  const tabToPath = (tab: string): string => {
+    switch (tab) {
+      case 'analytics':
+        return '/analytics';
+      case 'wallet':
+        return '/wallet';
+      case 'investments':
+        return '/investments';
+      case 'cards':
+        return '/cards';
+      case 'goals':
+        return '/goals';
+      case 'settings':
+        return '/settings';
+      default:
+        return '/';
+    }
+  };
 
   return (
     <Sidebar 
@@ -95,7 +116,10 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                 return (
                   <SidebarMenuItem key={item.id}>
                     <SidebarMenuButton
-                      onClick={() => onTabChange(item.id)}
+                      onClick={() => {
+                        onTabChange(item.id);
+                        navigate(tabToPath(item.id));
+                      }}
                       isActive={isActive}
                       className={`w-full h-10 ${(open || isMobile) ? 'justify-start px-3' : 'justify-center px-0'}`}
                       tooltip={!(open || isMobile) ? item.label : undefined}
