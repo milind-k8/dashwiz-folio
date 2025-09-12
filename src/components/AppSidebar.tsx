@@ -48,7 +48,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
     >
       <SidebarContent>
         <div className="p-4">
-          <div className="flex items-center gap-3">
+          <div className={`flex items-center ${open ? 'gap-3' : 'justify-center'}`}>
             <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
               <IndianRupee className="w-5 h-5 text-white" />
             </div>
