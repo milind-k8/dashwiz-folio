@@ -48,25 +48,25 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
     >
       <SidebarContent>
         <div className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                <IndianRupee className="w-5 h-5 text-white" />
-              </div>
-              {open && (
-                <span className="text-xl font-bold text-foreground">PisaWise</span>
-              )}
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+              <IndianRupee className="w-5 h-5 text-white" />
             </div>
+            {open && (
+              <span className="text-xl font-bold text-foreground">PisaWise</span>
+            )}
+          </div>
+          <div className="mt-3 flex justify-center">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setOpen(!open)}
-              className="h-8 w-8 p-0"
+              className="h-6 w-6 p-0"
             >
               {open ? (
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-3 h-3" />
               ) : (
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-3 h-3" />
               )}
             </Button>
           </div>
@@ -85,11 +85,11 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                     <SidebarMenuButton
                       onClick={() => onTabChange(item.id)}
                       isActive={isActive}
-                      className={`w-full ${open ? 'justify-start' : 'justify-center'}`}
+                      className={`w-full h-10 ${open ? 'justify-start px-3' : 'justify-center px-0'}`}
                       tooltip={!open ? item.label : undefined}
                     >
-                      <Icon className="w-5 h-5" />
-                      {open && <span>{item.label}</span>}
+                      <Icon className={`w-5 h-5 ${!open ? 'mx-auto' : ''}`} />
+                      {open && <span className="ml-3">{item.label}</span>}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
