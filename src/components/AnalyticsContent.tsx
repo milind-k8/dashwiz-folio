@@ -135,58 +135,58 @@ export const AnalyticsContent = () => {
       {/* Analytics Overview Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <Card className="p-4 md:p-6 bg-gradient-to-br from-blue-50/50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-900/10 border-blue-200/50 dark:border-blue-800/30 hover-scale">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              <p className="text-xs md:text-sm font-medium text-blue-600 dark:text-blue-400 truncate">Total Transactions</p>
-              <p className="text-lg md:text-xl lg:text-2xl font-bold text-blue-700 dark:text-blue-300 truncate">
-                {analytics.totalTransactions.toLocaleString()}
-              </p>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-xs md:text-sm font-medium text-blue-600 dark:text-blue-400">Total Transactions</p>
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-full flex-shrink-0">
+                <BarChart3 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              </div>
             </div>
-            <div className="p-2 md:p-3 bg-blue-100 dark:bg-blue-900/50 rounded-full flex-shrink-0">
-              <BarChart3 className="h-4 w-4 md:h-5 md:w-5 text-blue-600 dark:text-blue-400" />
-            </div>
+            <p className="text-xl md:text-2xl lg:text-3xl font-bold text-blue-700 dark:text-blue-300">
+              {analytics.totalTransactions.toLocaleString()}
+            </p>
           </div>
         </Card>
 
         <Card className="p-4 md:p-6 bg-gradient-to-br from-green-50/50 to-green-100/50 dark:from-green-950/20 dark:to-green-900/10 border-green-200/50 dark:border-green-800/30 hover-scale">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              <p className="text-xs md:text-sm font-medium text-green-600 dark:text-green-400 truncate">Total Deposits</p>
-              <p className="text-lg md:text-xl lg:text-2xl font-bold text-green-700 dark:text-green-300 truncate">
-                ₹{analytics.totalDeposits.toLocaleString()}
-              </p>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-xs md:text-sm font-medium text-green-600 dark:text-green-400">Total Deposits</p>
+              <div className="p-2 bg-green-100 dark:bg-green-900/50 rounded-full flex-shrink-0">
+                <ArrowUpRight className="h-4 w-4 text-green-600 dark:text-green-400" />
+              </div>
             </div>
-            <div className="p-2 md:p-3 bg-green-100 dark:bg-green-900/50 rounded-full flex-shrink-0">
-              <ArrowUpRight className="h-4 w-4 md:h-5 md:w-5 text-green-600 dark:text-green-400" />
-            </div>
+            <p className="text-xl md:text-2xl lg:text-3xl font-bold text-green-700 dark:text-green-300">
+              ₹{analytics.totalDeposits.toLocaleString()}
+            </p>
           </div>
         </Card>
 
         <Card className="p-4 md:p-6 bg-gradient-to-br from-red-50/50 to-red-100/50 dark:from-red-950/20 dark:to-red-900/10 border-red-200/50 dark:border-red-800/30 hover-scale">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              <p className="text-xs md:text-sm font-medium text-red-600 dark:text-red-400 truncate">Total Withdrawals</p>
-              <p className="text-lg md:text-xl lg:text-2xl font-bold text-red-700 dark:text-red-300 truncate">
-                ₹{analytics.totalWithdrawals.toLocaleString()}
-              </p>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-xs md:text-sm font-medium text-red-600 dark:text-red-400">Total Withdrawals</p>
+              <div className="p-2 bg-red-100 dark:bg-red-900/50 rounded-full flex-shrink-0">
+                <ArrowDownRight className="h-4 w-4 text-red-600 dark:text-red-400" />
+              </div>
             </div>
-            <div className="p-2 md:p-3 bg-red-100 dark:bg-red-900/50 rounded-full flex-shrink-0">
-              <ArrowDownRight className="h-4 w-4 md:h-5 md:w-5 text-red-600 dark:text-red-400" />
-            </div>
+            <p className="text-xl md:text-2xl lg:text-3xl font-bold text-red-700 dark:text-red-300">
+              ₹{analytics.totalWithdrawals.toLocaleString()}
+            </p>
           </div>
         </Card>
 
         <Card className="p-4 md:p-6 bg-gradient-to-br from-purple-50/50 to-purple-100/50 dark:from-purple-950/20 dark:to-purple-900/10 border-purple-200/50 dark:border-purple-800/30 hover-scale">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              <p className="text-xs md:text-sm font-medium text-purple-600 dark:text-purple-400 truncate">Connected Banks</p>
-              <p className="text-lg md:text-xl lg:text-2xl font-bold text-purple-700 dark:text-purple-300 truncate">
-                {analytics.totalBanks}
-              </p>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-xs md:text-sm font-medium text-purple-600 dark:text-purple-400">Connected Banks</p>
+              <div className="p-2 bg-purple-100 dark:bg-purple-900/50 rounded-full flex-shrink-0">
+                <Building className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+              </div>
             </div>
-            <div className="p-2 md:p-3 bg-purple-100 dark:bg-purple-900/50 rounded-full flex-shrink-0">
-              <Building className="h-4 w-4 md:h-5 md:w-5 text-purple-600 dark:text-purple-400" />
-            </div>
+            <p className="text-xl md:text-2xl lg:text-3xl font-bold text-purple-700 dark:text-purple-300">
+              {analytics.totalBanks}
+            </p>
           </div>
         </Card>
       </div>
