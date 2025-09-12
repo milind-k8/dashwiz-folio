@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { bankDataService } from '@/services/bankDataService';
 import { getBanksSync, getTransactionsForBanksSync, isDbReady } from '@/lib/lokiDb';
+import { TableLoader } from '@/components/ui/loader';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -262,10 +263,7 @@ export const AnalyticsContent = () => {
                 <TableRow>
                   <TableCell colSpan={3} className="text-center text-muted-foreground py-8">
                     {isLoading ? (
-                      <div className="flex items-center justify-center gap-2">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-                        Loading banks...
-                      </div>
+                      <TableLoader text="Loading banks..." />
                     ) : (
                       'No banks connected yet'
                     )}
@@ -397,10 +395,7 @@ export const AnalyticsContent = () => {
                   <TableRow>
                     <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                       {isLoading ? (
-                        <div className="flex items-center justify-center gap-2">
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-                          Loading transactions...
-                        </div>
+                        <TableLoader text="Loading transactions..." />
                       ) : searchTerm || filterType !== 'all' ? (
                         'No transactions match your current filters'
                       ) : (

@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Upload, FileText, X, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { ButtonLoader } from '@/components/ui/loader';
 import { bankDataService } from '@/services/bankDataService';
 
 interface FileUploadModalProps {
@@ -345,7 +346,7 @@ export function FileUploadModal({ isOpen, onClose }: FileUploadModalProps) {
             >
               {isUploading ? (
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <ButtonLoader size="sm" />
                   Uploading...
                 </div>
               ) : (

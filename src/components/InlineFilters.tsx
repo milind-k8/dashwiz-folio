@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useBankData } from '@/hooks/useBankData';
+import { Loader } from '@/components/ui/loader';
 
 interface InlineFiltersProps {
   onFiltersChange?: (banks: string[], duration: string) => void;
@@ -83,9 +84,7 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2 text-sm">
-        <span className="text-muted-foreground">Loading filters...</span>
-      </div>
+      <Loader variant="inline" size="sm" text="Loading filters..." />
     );
   }
 
