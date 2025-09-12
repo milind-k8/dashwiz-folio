@@ -1,23 +1,20 @@
-import { Search, Bell, Plus, Menu } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { Bell, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
-export function DashboardHeader() {
+interface DashboardHeaderProps {
+  pageTitle?: string;
+}
+
+export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProps) {
   return (
     <header className="flex items-center gap-4 p-4 lg:p-6 bg-card border-b border-border">
       <SidebarTrigger className="lg:hidden" />
       
-      <div className="flex-1 max-w-md">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input
-            placeholder="Search for transaction, user, etc"
-            className="pl-10 bg-muted/50 border-0 focus:bg-card"
-          />
-        </div>
+      <div className="flex-1">
+        <h1 className="text-xl font-semibold text-foreground">{pageTitle}</h1>
       </div>
       
       <div className="flex items-center gap-2 lg:gap-4">

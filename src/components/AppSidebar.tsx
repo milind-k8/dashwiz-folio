@@ -5,7 +5,8 @@ import {
   PieChart, 
   Settings, 
   CreditCard,
-  Target
+  Target,
+  IndianRupee
 } from 'lucide-react';
 import {
   Sidebar,
@@ -43,10 +44,10 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
         <div className="p-4 border-b border-border">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <Wallet className="w-5 h-5 text-white" />
+              <IndianRupee className="w-5 h-5 text-white" />
             </div>
             {open && (
-              <span className="text-xl font-bold text-foreground">Dashboard</span>
+              <span className="text-xl font-bold text-foreground">PisaWise</span>
             )}
           </div>
         </div>
