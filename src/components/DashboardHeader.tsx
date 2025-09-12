@@ -17,12 +17,14 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
       </div>
       
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" className="gap-2 hidden sm:flex h-8">
+        <Button variant="outline" size="sm" className="gap-2 hidden sm:flex h-8 border-primary text-primary hover:bg-primary hover:text-primary-foreground">
           <Plus className="w-3 h-3" />
           <span className="text-sm">Add Transaction</span>
         </Button>
         
-        <ThemeToggle />
+        <div className="border border-border rounded-md">
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );
