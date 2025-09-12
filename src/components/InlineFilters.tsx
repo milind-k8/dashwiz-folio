@@ -6,6 +6,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useBankData } from '@/hooks/useBankData';
 
 interface InlineFiltersProps {
@@ -13,7 +19,7 @@ interface InlineFiltersProps {
 }
 
 export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
-  const [selectedBank, setSelectedBank] = useState('all-banks');
+  const [selectedBanks, setSelectedBanks] = useState<string[]>([]);
   const [selectedDuration, setSelectedDuration] = useState('current-month');
   const { availableBanks, isLoading } = useBankData();
 
@@ -29,13 +35,10 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
     return labels[bankCode] || bankCode.toUpperCase();
   };
 
-  const bankOptions = [
-    { value: 'all-banks', label: 'All Banks' },
-    ...availableBanks.filter(bank => bank !== 'all-banks').map(bank => ({
-      value: bank,
-      label: getBankLabel(bank)
-    }))
-  ];
+  const bankOptions = availableBanks.map(bank => ({
+    value: bank,
+    label: getBankLabel(bank)
+  }));
 
   const durationOptions = [
     { value: 'current-month', label: 'Current Month' },
@@ -46,12 +49,31 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
 
   useEffect(() => {
     if (onFiltersChange) {
-      onFiltersChange([selectedBank], selectedDuration);
+      const banksToSend = selectedBanks.length > 0 ? selectedBanks : availableBanks;
+      onFiltersChange(banksToSend, selectedDuration);
     }
-  }, [selectedBank, selectedDuration, onFiltersChange]);
+  }, [selectedBanks, selectedDuration, onFiltersChange, availableBanks]);
 
-  const handleBankChange = (value: string) => {
-    setSelectedBank(value);
+  const allChecked = availableBanks.length > 0 && availableBanks.every(b => selectedBanks.includes(b));
+
+  const toggleAllBanks = () => {
+    if (allChecked) {
+      setSelectedBanks([]);
+    } else {
+      setSelectedBanks([...availableBanks]);
+    }
+  };
+
+  const toggleBank = (value: string) => {
+    setSelectedBanks(prev => {
+      const next = new Set(prev);
+      if (next.has(value)) {
+        next.delete(value);
+      } else {
+        next.add(value);
+      }
+      return Array.from(next);
+    });
   };
 
   const handleDurationChange = (value: string) => {
@@ -70,18 +92,29 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
     <div className="flex items-center gap-2 text-sm">
       <span className="text-muted-foreground">Filter:</span>
       
-      <Select value={selectedBank} onValueChange={handleBankChange}>
-        <SelectTrigger className="w-32 h-8 border-0 bg-transparent text-foreground font-medium">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="w-40 h-8 border-0 bg-transparent text-foreground font-medium text-left truncate px-2">
+            {allChecked || selectedBanks.length === 0
+              ? 'All Banks'
+              : `${selectedBanks.length} selected`}
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56">
+          <DropdownMenuCheckboxItem checked={allChecked} onCheckedChange={toggleAllBanks}>
+            All Banks
+          </DropdownMenuCheckboxItem>
           {bankOptions.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
+            <DropdownMenuCheckboxItem
+              key={option.value}
+              checked={selectedBanks.includes(option.value)}
+              onCheckedChange={() => toggleBank(option.value)}
+            >
               {option.label}
-            </SelectItem>
+            </DropdownMenuCheckboxItem>
           ))}
-        </SelectContent>
-      </Select>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <span className="text-muted-foreground">|</span>
 
@@ -89,7 +122,7 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
         <SelectTrigger className="w-36 h-8 border-0 bg-transparent text-foreground font-medium">
           <SelectValue />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="border-0">
           {durationOptions.map((option) => (
             <SelectItem key={option.value} value={option.value}>
               {option.label}

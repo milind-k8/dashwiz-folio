@@ -17,6 +17,7 @@ export class BankDataService {
   private static instance: BankDataService;
   private bankData: Map<string, Transaction[]> = new Map();
   private availableBanks: string[] = [];
+  private isLoaded = false;
 
   private constructor() {}
 
@@ -28,36 +29,28 @@ export class BankDataService {
   }
 
   async loadBankData(): Promise<void> {
-    // Load HDFC data directly since we know it exists
-    try {
-      const hdfcModule = await import('../data/hdfcTransaction.json');
-      this.bankData.set('hdfc', hdfcModule.default as Transaction[]);
-      this.availableBanks.push('hdfc');
-    } catch (error) {
-      console.error('Error loading HDFC data:', error);
+    if (this.isLoaded) {
+      return;
     }
+    // Dynamically load any files matching *Transaction.json under src/data
+    // Vite will statically include matching files in the build.
+    const modules = import.meta.glob('../data/*Transaction.json', { eager: true });
 
-    // Try to load other bank files from public folder
-    const bankFiles = [
-      { file: 'citiBankTransaction.json', name: 'citi' },
-      { file: 'chaseBankTransaction.json', name: 'chase' },
-      { file: 'bofaTransaction.json', name: 'bofa' },
-      { file: 'wellsTransaction.json', name: 'wells' },
-      { file: 'capitalOneTransaction.json', name: 'capital' }
-    ];
+    Object.keys(modules).forEach((path) => {
+      const match = /\/([A-Za-z0-9_-]+)Transaction\.json$/.exec(path);
+      if (!match) return;
+      const bankCode = match[1].toLowerCase();
+      const mod = modules[path] as { default: Transaction[] } | unknown;
+      const transactions = (mod as any).default as Transaction[] | undefined;
+      if (!transactions) return;
 
-    for (const bank of bankFiles) {
-      try {
-        const response = await fetch(`/${bank.file}`);
-        if (response.ok) {
-          const transactions = await response.json() as Transaction[];
-          this.bankData.set(bank.name, transactions);
-          this.availableBanks.push(bank.name);
-        }
-      } catch (error) {
-        // File doesn't exist, skip silently
+      this.bankData.set(bankCode, transactions);
+      if (!this.availableBanks.includes(bankCode)) {
+        this.availableBanks.push(bankCode);
       }
-    }
+    });
+
+    this.isLoaded = true;
   }
 
   getAvailableBanks(): string[] {

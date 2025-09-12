@@ -2,8 +2,20 @@ import { Card } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useFinancialStore } from '@/store/financialStore';
 
-export function FinanceChart() {
+interface MonthlyPoint {
+  month: string;
+  income: number;
+  expenses: number;
+  savings: number;
+}
+
+interface FinanceChartProps {
+  data?: MonthlyPoint[];
+}
+
+export function FinanceChart({ data: series }: FinanceChartProps) {
   const { data } = useFinancialStore();
+  const chartData = series ?? data.monthlyData;
 
   return (
     <Card className="p-4 sm:p-6 shadow-card">
@@ -26,7 +38,7 @@ export function FinanceChart() {
       </div>
       
       <ResponsiveContainer width="100%" height={250}>
-        <LineChart data={data.monthlyData}>
+        <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
           <XAxis 
             dataKey="month" 
