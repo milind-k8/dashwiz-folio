@@ -128,7 +128,7 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
       <div className="w-px h-3 sm:h-4 bg-border" />
 
       <Select value={selectedDuration} onValueChange={handleDurationChange}>
-        <SelectTrigger className="w-32 sm:w-44 h-7 sm:h-9 bg-card border border-border hover:bg-muted/50 transition-colors font-medium text-xs sm:text-sm">
+        <SelectTrigger className="w-32 sm:w-44 h-7 sm:h-9 bg-card border border-border hover:bg-muted/50 transition-colors font-medium text-xs sm:text-sm focus:ring-0 focus:ring-offset-0">
           <SelectValue />
         </SelectTrigger>
         <SelectContent className="bg-card border border-border shadow-lg z-50">
