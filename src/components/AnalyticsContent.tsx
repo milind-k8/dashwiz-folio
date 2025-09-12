@@ -7,6 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -55,6 +62,7 @@ export const AnalyticsContent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [tick, setTick] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedBank, setSelectedBank] = useState<string>('');
 
   useEffect(() => {
     const init = async () => {
@@ -69,6 +77,13 @@ export const AnalyticsContent = () => {
   }, []);
 
   const banks = useMemo(() => (isDbReady() ? getBanksSync() : []), [tick, isLoading]);
+  
+  // Set default bank when banks are loaded
+  useEffect(() => {
+    if (banks.length > 0 && !selectedBank) {
+      setSelectedBank(banks[0]);
+    }
+  }, [banks, selectedBank]);
   const transactions = useMemo<TxnRow[]>(() => {
     if (!isDbReady()) return [];
     return getTransactionsForBanksSync(['all-banks']).map((t) => ({
@@ -104,7 +119,7 @@ export const AnalyticsContent = () => {
     };
   }, [transactions, banks]);
 
-  // Filter transactions based on search term only
+  // Filter transactions based on search term and selected bank
   const filteredTransactions = useMemo(() => {
     return transactions.filter(transaction => {
       const matchesSearch = searchTerm === '' || 
@@ -114,9 +129,11 @@ export const AnalyticsContent = () => {
         (transaction.tags && transaction.tags.toLowerCase().includes(searchTerm.toLowerCase())) ||
         transaction.amount.toString().includes(searchTerm.toLowerCase());
       
-      return matchesSearch;
+      const matchesBank = selectedBank === '' || transaction.bank === selectedBank;
+      
+      return matchesSearch && matchesBank;
     });
-  }, [transactions, searchTerm]);
+  }, [transactions, searchTerm, selectedBank]);
 
   return (
     <div className="p-4 md:p-6 space-y-6 animate-fade-in">
@@ -288,6 +305,7 @@ export const AnalyticsContent = () => {
             </div>
           </div>
           
+        <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -297,6 +315,24 @@ export const AnalyticsContent = () => {
               className="pl-10 w-full sm:w-64"
             />
           </div>
+          
+          <Select value={selectedBank} onValueChange={setSelectedBank}>
+            <SelectTrigger className="w-full sm:w-48 bg-background border border-border hover:bg-muted/50 transition-colors">
+              <SelectValue placeholder="Select Bank" />
+            </SelectTrigger>
+            <SelectContent className="bg-background border border-border shadow-lg z-50 max-h-48">
+              {banks.map((bank) => (
+                <SelectItem 
+                  key={bank} 
+                  value={bank}
+                  className="hover:bg-muted/50 cursor-pointer uppercase font-medium"
+                >
+                  {bank.toUpperCase()}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         </div>
         
         <div className="rounded-lg border border-border/50 overflow-hidden">
@@ -315,9 +351,12 @@ export const AnalyticsContent = () => {
                 {filteredTransactions.map((t) => (
                   <TableRow key={`${t.bank}-${t.refId}`} className="hover:bg-muted/20 transition-colors">
                     <TableCell className="w-32">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <Calendar className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                        <span className="text-sm font-medium">{t.date}</span>
+                      <div className="text-sm font-medium whitespace-nowrap">
+                        {new Date(t.date).toLocaleDateString('en-US', { 
+                          year: 'numeric', 
+                          month: 'short', 
+                          day: '2-digit' 
+                        })}
                       </div>
                     </TableCell>
                     <TableCell className="w-40">
