@@ -42,7 +42,10 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
   const { open, setOpen } = useSidebar();
 
   return (
-    <Sidebar className="border-r border-border">
+    <Sidebar 
+      className="border-r border-border"
+      collapsible="icon"
+    >
       <SidebarContent>
         <div className="p-4">
           <div className="flex items-center justify-between">
@@ -82,7 +85,8 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                     <SidebarMenuButton
                       onClick={() => onTabChange(item.id)}
                       isActive={isActive}
-                      className="w-full justify-start"
+                      className={`w-full ${open ? 'justify-start' : 'justify-center'}`}
+                      tooltip={!open ? item.label : undefined}
                     >
                       <Icon className="w-5 h-5" />
                       {open && <span>{item.label}</span>}
