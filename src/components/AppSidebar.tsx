@@ -45,7 +45,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
 
   return (
     <Sidebar 
-      className="border-r border-border data-[state=collapsed]:w-20"
+      className="border-r border-border data-[state=collapsed]:w-24"
       collapsible="icon"
     >
       <SidebarContent>
