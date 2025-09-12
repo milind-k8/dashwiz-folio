@@ -47,15 +47,77 @@ export function FileUploadModal({ isOpen, onClose }: FileUploadModalProps) {
   const validateFileContent = (content: string): boolean => {
     try {
       const jsonData = JSON.parse(content);
+      
       // Basic validation - should be an array of objects
       if (!Array.isArray(jsonData)) {
         throw new Error('JSON file should contain an array of transactions');
       }
+
+      if (jsonData.length === 0) {
+        throw new Error('JSON file cannot be empty');
+      }
+
+      // Required keys and their expected types
+      const requiredKeys = ['date', 'refId', 'amount', 'type', 'closingBy', 'category', 'tags'];
+      const keyTypes = {
+        date: 'string',
+        refId: 'string', 
+        amount: 'number',
+        type: 'string',
+        closingBy: 'number',
+        category: 'string',
+        tags: 'string'
+      };
+
+      // Validate each transaction object
+      for (let i = 0; i < jsonData.length; i++) {
+        const transaction = jsonData[i];
+        
+        if (typeof transaction !== 'object' || transaction === null) {
+          throw new Error(`Transaction at index ${i} is not a valid object`);
+        }
+
+        // Check if all required keys are present
+        const transactionKeys = Object.keys(transaction);
+        const missingKeys = requiredKeys.filter(key => !transactionKeys.includes(key));
+        
+        if (missingKeys.length > 0) {
+          throw new Error(`Transaction at index ${i} is missing required keys: ${missingKeys.join(', ')}`);
+        }
+
+        // Check for extra keys
+        const extraKeys = transactionKeys.filter(key => !requiredKeys.includes(key));
+        if (extraKeys.length > 0) {
+          throw new Error(`Transaction at index ${i} has unexpected keys: ${extraKeys.join(', ')}`);
+        }
+
+        // Validate data types
+        for (const key of requiredKeys) {
+          const expectedType = keyTypes[key as keyof typeof keyTypes];
+          const actualType = typeof transaction[key];
+          
+          if (actualType !== expectedType) {
+            throw new Error(`Transaction at index ${i}: '${key}' should be ${expectedType}, but got ${actualType}`);
+          }
+        }
+
+        // Additional validations
+        if (transaction.type !== 'deposit' && transaction.type !== 'withdrawl') {
+          throw new Error(`Transaction at index ${i}: 'type' must be either 'deposit' or 'withdrawl'`);
+        }
+
+        // Validate date format (basic YYYY-MM-DD check)
+        const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+        if (!datePattern.test(transaction.date)) {
+          throw new Error(`Transaction at index ${i}: 'date' must be in YYYY-MM-DD format`);
+        }
+      }
+
       return true;
     } catch (error) {
       toast({
-        title: "Invalid JSON File",
-        description: error instanceof Error ? error.message : "File contains invalid JSON format",
+        title: "Invalid JSON Structure",
+        description: error instanceof Error ? error.message : "File contains invalid JSON structure",
         variant: "destructive",
       });
       return false;
@@ -249,13 +311,26 @@ export function FileUploadModal({ isOpen, onClose }: FileUploadModalProps) {
           )}
 
           {/* File Requirements */}
-          <div className="text-xs text-muted-foreground space-y-1 bg-muted/30 p-3 rounded-lg">
+          <div className="text-xs text-muted-foreground space-y-2 bg-muted/30 p-3 rounded-lg">
             <p className="font-medium">File Requirements:</p>
-            <ul className="space-y-1 ml-2">
-              <li>• File must be in JSON format (.json)</li>
-              <li>• File name pattern: bankNameTransaction.json</li>
-              <li>• Examples: hdfcTransaction.json, iciciTransaction.json</li>
-            </ul>
+            <div className="space-y-1 ml-2">
+              <p>• File must be in JSON format (.json)</p>
+              <p>• File name pattern: bankNameTransaction.json</p>
+              <p>• Examples: hdfcTransaction.json, iciciTransaction.json</p>
+            </div>
+            
+            <p className="font-medium mt-2">JSON Structure (array of objects):</p>
+            <div className="bg-background/50 p-2 rounded text-xs font-mono">
+              <div>{"{"}</div>
+              <div className="ml-2">"date": "2025-08-01",</div>
+              <div className="ml-2">"refId": "0000557994507513",</div>
+              <div className="ml-2">"amount": 686.0,</div>
+              <div className="ml-2">"type": "withdrawl", // or "deposit"</div>
+              <div className="ml-2">"closingBy": 237341.32,</div>
+              <div className="ml-2">"category": "food_delivery",</div>
+              <div className="ml-2">"tags": "swiggy"</div>
+              <div>{"}"}</div>
+            </div>
           </div>
 
           {/* Action Buttons */}
