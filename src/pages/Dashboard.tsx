@@ -35,12 +35,12 @@ export function Dashboard() {
   return (
     <PageContent>
       {/* Filters */}
-      <div className="flex justify-end">
+      <div className="flex justify-end overflow-x-auto">
         <InlineFilters onFiltersChange={handleFiltersChange} />
       </div>
       
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
         <MetricCard
           title="Balance"
           value={`₹${data.balance.toLocaleString()}`}
@@ -72,13 +72,13 @@ export function Dashboard() {
       </div>
 
       {/* Charts and Cards Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
-        <div className="xl:col-span-2 space-y-4 sm:space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+        <div className="lg:col-span-2 space-y-3 sm:space-y-4 md:space-y-6">
           <FinanceChart data={data.monthlyData} />
           <TransactionList expenseCategories={data.expenseCategoriesList} />
         </div>
         
-        <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-3 sm:space-y-4 md:space-y-6">
           <ExpenseChart data={data.expenseCategoriesList as any} />
         </div>
       </div>

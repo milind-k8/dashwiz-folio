@@ -79,43 +79,43 @@ export function TransactionList({ expenseCategories = [] }: TransactionListProps
   }
 
   return (
-    <Card className="p-4 sm:p-6 shadow-card">
-      <div className="flex items-center justify-between mb-4 sm:mb-6">
-        <h3 className="text-base sm:text-lg font-semibold text-foreground">
+    <Card className="p-3 sm:p-4 md:p-6 shadow-card">
+      <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-6">
+        <h3 className="text-sm sm:text-base md:text-lg font-semibold text-foreground">
           Category Spending
         </h3>
-        <span className="text-sm text-muted-foreground">
+        <span className="text-xs sm:text-sm text-muted-foreground">
           {filteredCategories.length} {filteredCategories.length === 1 ? 'category' : 'categories'}
         </span>
       </div>
 
       {/* Search Bar */}
-      <div className="relative mb-4">
+      <div className="relative mb-3 sm:mb-4">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
           placeholder="Search categories or tags..."
           value={searchTerm}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="pl-9"
+          className="pl-9 h-8 sm:h-9"
         />
       </div>
 
       {/* Categories Table */}
-      <div className="border rounded-lg">
+      <div className="border rounded-lg overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[40%]">Category</TableHead>
-              <TableHead className="w-[35%]">Tags</TableHead>
-              <TableHead className="w-[15%] text-center">Share</TableHead>
-              <TableHead className="w-[10%] text-right">Amount</TableHead>
+              <TableHead className="min-w-[120px] sm:w-[40%] text-xs sm:text-sm">Category</TableHead>
+              <TableHead className="min-w-[100px] sm:w-[35%] text-xs sm:text-sm hidden sm:table-cell">Tags</TableHead>
+              <TableHead className="min-w-[60px] sm:w-[15%] text-center text-xs sm:text-sm">Share</TableHead>
+              <TableHead className="min-w-[80px] sm:w-[10%] text-right text-xs sm:text-sm">Amount</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginatedCategories.length === 0 ? (
               <TableRow>
                 <td colSpan={4} className="text-center py-8">
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     No categories found matching "{searchTerm}"
                   </p>
                 </td>

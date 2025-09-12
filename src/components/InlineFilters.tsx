@@ -89,23 +89,23 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
   }
 
   return (
-    <div className="flex items-center gap-3 text-sm">
-      <span className="text-muted-foreground font-medium">Filter:</span>
+    <div className="flex flex-wrap items-center gap-2 text-sm min-w-0">
+      <span className="text-muted-foreground font-medium whitespace-nowrap">Filter:</span>
       
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="flex items-center gap-2 px-3 py-2 bg-card border border-border rounded-md hover:bg-muted/50 transition-colors font-medium text-foreground min-w-[140px] justify-between">
+          <button className="flex items-center gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-card border border-border rounded-md hover:bg-muted/50 transition-colors font-medium text-foreground min-w-[100px] sm:min-w-[140px] justify-between text-xs sm:text-sm">
             <span className="truncate">
               {allChecked || selectedBanks.length === 0
                 ? 'All Banks'
                 : `${selectedBanks.length} selected`}
             </span>
-            <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56 bg-card border border-border shadow-lg z-50">
+        <DropdownMenuContent className="w-48 sm:w-56 bg-card border border-border shadow-lg z-50">
           <DropdownMenuCheckboxItem 
             checked={allChecked} 
             onCheckedChange={toggleAllBanks}
@@ -125,10 +125,10 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <div className="w-px h-4 bg-border" />
+      <div className="w-px h-3 sm:h-4 bg-border" />
 
       <Select value={selectedDuration} onValueChange={handleDurationChange}>
-        <SelectTrigger className="w-44 h-9 bg-card border border-border hover:bg-muted/50 transition-colors font-medium">
+        <SelectTrigger className="w-32 sm:w-44 h-7 sm:h-9 bg-card border border-border hover:bg-muted/50 transition-colors font-medium text-xs sm:text-sm">
           <SelectValue />
         </SelectTrigger>
         <SelectContent className="bg-card border border-border shadow-lg z-50">
@@ -136,7 +136,7 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
             <SelectItem 
               key={option.value} 
               value={option.value}
-              className="hover:bg-muted/50 cursor-pointer"
+              className="hover:bg-muted/50 cursor-pointer text-xs sm:text-sm"
             >
               {option.label}
             </SelectItem>

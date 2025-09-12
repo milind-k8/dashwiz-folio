@@ -31,44 +31,44 @@ export function CategoryRow({
         className="cursor-pointer hover:bg-muted/50"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <TableCell>
+        <TableCell className="py-2 sm:py-3">
           <div className="flex items-center gap-2">
             {isExpanded ? (
-              <ChevronDown className="w-4 h-4 text-muted-foreground" />
+              <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" />
             ) : (
-              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" />
             )}
             <div
-              className="w-3 h-3 rounded-full"
+              className="w-2 h-2 sm:w-3 sm:h-3 rounded-full flex-shrink-0"
               style={{ backgroundColor: color }}
             />
-            <span className="font-medium text-foreground">{category}</span>
+            <span className="font-medium text-foreground text-xs sm:text-sm truncate">{category}</span>
           </div>
         </TableCell>
         
-        <TableCell>
+        <TableCell className="py-2 sm:py-3 hidden sm:table-cell">
           <div className="flex flex-wrap gap-1">
-            {tags.slice(0, 3).map((tag) => (
+            {tags.slice(0, 2).map((tag) => (
               <Badge key={tag} variant="secondary" className="text-xs">
                 {tag}
               </Badge>
             ))}
-            {tags.length > 3 && (
+            {tags.length > 2 && (
               <Badge variant="outline" className="text-xs">
-                +{tags.length - 3} more
+                +{tags.length - 2} more
               </Badge>
             )}
           </div>
         </TableCell>
         
-        <TableCell className="text-center">
+        <TableCell className="text-center py-2 sm:py-3">
           <Badge variant="outline" className="text-xs">
             {percentage}%
           </Badge>
         </TableCell>
         
-        <TableCell className="text-right">
-          <span className="font-semibold text-destructive">
+        <TableCell className="text-right py-2 sm:py-3">
+          <span className="font-semibold text-destructive text-xs sm:text-sm">
             {formatCurrency(amount)}
           </span>
         </TableCell>
@@ -81,32 +81,32 @@ export function CategoryRow({
         
         return (
           <TableRow key={`${category}-${tag}`} className="bg-muted/20">
-            <TableCell>
-              <div className="flex items-center gap-2 ml-6">
+            <TableCell className="py-2">
+              <div className="flex items-center gap-2 ml-4 sm:ml-6">
                 <div
-                  className="w-2 h-2 rounded-full"
+                  className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full flex-shrink-0"
                   style={{ backgroundColor: color }}
                 />
-                <span className="text-sm font-medium text-foreground">
+                <span className="text-xs sm:text-sm font-medium text-foreground">
                   {tag}
                 </span>
               </div>
             </TableCell>
             
-            <TableCell>
+            <TableCell className="py-2 hidden sm:table-cell">
               <span className="text-xs text-muted-foreground">
                 Sub-category of {category}
               </span>
             </TableCell>
             
-            <TableCell className="text-center">
+            <TableCell className="text-center py-2">
               <Badge variant="secondary" className="text-xs">
                 {tagPercentage}%
               </Badge>
             </TableCell>
             
-            <TableCell className="text-right">
-              <span className="text-sm font-medium text-destructive">
+            <TableCell className="text-right py-2">
+              <span className="text-xs sm:text-sm font-medium text-destructive">
                 {formatCurrency(tagAmount)}
               </span>
             </TableCell>
