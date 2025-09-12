@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { MetricCard } from '@/components/MetricCard';
 import { FinanceChart } from '@/components/FinanceChart';
 import { ExpenseChart } from '@/components/ExpenseChart';
@@ -11,8 +12,7 @@ import { Wallet, TrendingUp, PiggyBank, CreditCard as CreditCardIcon } from 'luc
 
 export function Dashboard() {
   const { getFilteredData } = useBankData();
-  const [selectedBanks, setSelectedBanks] = useState<string[]>(['all-banks']);
-  const [selectedDuration, setSelectedDuration] = useState('current-month');
+  const [searchParams, setSearchParams] = useSearchParams();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState<{
     title: string;
@@ -20,9 +20,21 @@ export function Dashboard() {
     type: 'balance' | 'income' | 'expenses' | 'savings';
   } | null>(null);
 
+  // Get filter values from URL params
+  const selectedBanks = searchParams.get('banks')?.split(',').filter(Boolean) || [];
+  const selectedDuration = searchParams.get('duration') || 'current-month';
+
   const handleFiltersChange = (banks: string[], duration: string) => {
-    setSelectedBanks(banks);
-    setSelectedDuration(duration);
+    setSearchParams(prev => {
+      const newParams = new URLSearchParams(prev);
+      if (banks.length > 0) {
+        newParams.set('banks', banks.join(','));
+      } else {
+        newParams.delete('banks');
+      }
+      newParams.set('duration', duration);
+      return newParams;
+    });
   };
 
   const handleMetricClick = (title: string, value: number, type: 'balance' | 'income' | 'expenses' | 'savings') => {

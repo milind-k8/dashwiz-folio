@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { 
   Select,
   SelectContent,
@@ -19,9 +20,12 @@ interface InlineFiltersProps {
 }
 
 export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
-  const [selectedBanks, setSelectedBanks] = useState<string[]>([]);
-  const [selectedDuration, setSelectedDuration] = useState('current-month');
+  const [searchParams] = useSearchParams();
   const { availableBanks, isLoading } = useBankData();
+
+  // Get filter values from URL params
+  const selectedBanks = searchParams.get('banks')?.split(',').filter(Boolean) || [];
+  const selectedDuration = searchParams.get('duration') || 'current-month';
 
   const getBankLabel = (bankCode: string) => {
     const labels: Record<string, string> = {
@@ -57,27 +61,29 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
   const allChecked = selectedBanks.length === 0 || (availableBanks.length > 0 && availableBanks.every(b => selectedBanks.includes(b)));
 
   const toggleAllBanks = () => {
-    if (allChecked) {
-      setSelectedBanks([]);
-    } else {
-      setSelectedBanks([...availableBanks]);
+    const newBanks = allChecked ? [] : [...availableBanks];
+    if (onFiltersChange) {
+      onFiltersChange(newBanks, selectedDuration);
     }
   };
 
   const toggleBank = (value: string) => {
-    setSelectedBanks(prev => {
-      const next = new Set(prev);
-      if (next.has(value)) {
-        next.delete(value);
-      } else {
-        next.add(value);
-      }
-      return Array.from(next);
-    });
+    const currentBanks = new Set(selectedBanks);
+    if (currentBanks.has(value)) {
+      currentBanks.delete(value);
+    } else {
+      currentBanks.add(value);
+    }
+    const newBanks = Array.from(currentBanks);
+    if (onFiltersChange) {
+      onFiltersChange(newBanks, selectedDuration);
+    }
   };
 
   const handleDurationChange = (value: string) => {
-    setSelectedDuration(value);
+    if (onFiltersChange) {
+      onFiltersChange(selectedBanks, value);
+    }
   };
 
   if (isLoading) {
