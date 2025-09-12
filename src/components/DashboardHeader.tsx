@@ -10,7 +10,7 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProps) {
   return (
-    <header className="flex items-center gap-4 p-4 lg:p-6 bg-card border-b border-border">
+    <header className="flex items-center gap-4 p-4 bg-card border-b border-border">
       <SidebarTrigger className="lg:hidden" />
       
       <div className="flex-1">
