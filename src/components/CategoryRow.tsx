@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { TableRow, TableCell } from '@/components/ui/table';
 
 interface CategoryRowProps {
   category: string;
@@ -26,77 +27,92 @@ export function CategoryRow({
   return (
     <>
       {/* Main Category Row */}
-      <div
-        className="flex items-center gap-3 p-3 hover:bg-muted/50 rounded-lg cursor-pointer transition-colors"
+      <TableRow 
+        className="cursor-pointer hover:bg-muted/50"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div className="flex items-center gap-2">
-          {isExpanded ? (
-            <ChevronDown className="w-4 h-4 text-muted-foreground" />
-          ) : (
-            <ChevronRight className="w-4 h-4 text-muted-foreground" />
-          )}
-          <div
-            className="w-3 h-3 rounded-full"
-            style={{ backgroundColor: color }}
-          />
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="font-medium text-foreground truncate">
-                {category}
-              </p>
-              <div className="flex items-center gap-2 mt-1">
-                <Badge variant="secondary" className="text-xs">
-                  {tags.length} {tags.length === 1 ? 'tag' : 'tags'}
-                </Badge>
-                <span className="text-xs text-muted-foreground">
-                  {percentage}% of expenses
-                </span>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="font-semibold text-destructive">
-                {formatCurrency(amount)}
-              </p>
-            </div>
+        <TableCell>
+          <div className="flex items-center gap-2">
+            {isExpanded ? (
+              <ChevronDown className="w-4 h-4 text-muted-foreground" />
+            ) : (
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            )}
+            <div
+              className="w-3 h-3 rounded-full"
+              style={{ backgroundColor: color }}
+            />
+            <span className="font-medium text-foreground">{category}</span>
           </div>
-        </div>
-      </div>
+        </TableCell>
+        
+        <TableCell>
+          <div className="flex flex-wrap gap-1">
+            {tags.slice(0, 3).map((tag) => (
+              <Badge key={tag} variant="secondary" className="text-xs">
+                {tag}
+              </Badge>
+            ))}
+            {tags.length > 3 && (
+              <Badge variant="outline" className="text-xs">
+                +{tags.length - 3} more
+              </Badge>
+            )}
+          </div>
+        </TableCell>
+        
+        <TableCell className="text-center">
+          <Badge variant="outline" className="text-xs">
+            {percentage}%
+          </Badge>
+        </TableCell>
+        
+        <TableCell className="text-right">
+          <span className="font-semibold text-destructive">
+            {formatCurrency(amount)}
+          </span>
+        </TableCell>
+      </TableRow>
 
       {/* Expanded Tag Rows */}
-      {isExpanded && (
-        <div className="ml-6 mt-2 space-y-2">
-          {tags.map((tag) => {
-            const tagAmount = tagSpending[tag] || 0;
-            const tagPercentage = amount > 0 ? Math.round((tagAmount / amount) * 100) : 0;
-            
-            return (
-              <div
-                key={tag}
-                className="flex items-center justify-between p-2 rounded-md bg-muted/30 border-l-2"
-                style={{ borderLeftColor: color }}
-              >
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-foreground">
-                    {tag}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {tagPercentage}% of {category.toLowerCase()}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium text-destructive">
-                    {formatCurrency(tagAmount)}
-                  </p>
-                </div>
+      {isExpanded && tags.map((tag) => {
+        const tagAmount = tagSpending[tag] || 0;
+        const tagPercentage = amount > 0 ? Math.round((tagAmount / amount) * 100) : 0;
+        
+        return (
+          <TableRow key={`${category}-${tag}`} className="bg-muted/20">
+            <TableCell>
+              <div className="flex items-center gap-2 ml-6">
+                <div
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: color }}
+                />
+                <span className="text-sm font-medium text-foreground">
+                  {tag}
+                </span>
               </div>
-            );
-          })}
-        </div>
-      )}
+            </TableCell>
+            
+            <TableCell>
+              <span className="text-xs text-muted-foreground">
+                Sub-category of {category}
+              </span>
+            </TableCell>
+            
+            <TableCell className="text-center">
+              <Badge variant="secondary" className="text-xs">
+                {tagPercentage}%
+              </Badge>
+            </TableCell>
+            
+            <TableCell className="text-right">
+              <span className="text-sm font-medium text-destructive">
+                {formatCurrency(tagAmount)}
+              </span>
+            </TableCell>
+          </TableRow>
+        );
+      })}
     </>
   );
 }

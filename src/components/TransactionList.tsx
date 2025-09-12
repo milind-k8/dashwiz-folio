@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { CategoryRow } from '@/components/CategoryRow';
 
@@ -99,27 +100,41 @@ export function TransactionList({ expenseCategories = [] }: TransactionListProps
         />
       </div>
 
-      {/* Categories List */}
-      <div className="space-y-2">
-        {paginatedCategories.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">
-              No categories found matching "{searchTerm}"
-            </p>
-          </div>
-        ) : (
-          paginatedCategories.map((category) => (
-            <CategoryRow
-              key={category.category}
-              category={category.category}
-              amount={category.amount}
-              percentage={category.percentage}
-              color={category.color}
-              tags={category.tags}
-              tagSpending={getTagSpending(category.category, category.tags, category.amount)}
-            />
-          ))
-        )}
+      {/* Categories Table */}
+      <div className="border rounded-lg">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[40%]">Category</TableHead>
+              <TableHead className="w-[35%]">Tags</TableHead>
+              <TableHead className="w-[15%] text-center">Share</TableHead>
+              <TableHead className="w-[10%] text-right">Amount</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {paginatedCategories.length === 0 ? (
+              <TableRow>
+                <td colSpan={4} className="text-center py-8">
+                  <p className="text-muted-foreground">
+                    No categories found matching "{searchTerm}"
+                  </p>
+                </td>
+              </TableRow>
+            ) : (
+              paginatedCategories.map((category) => (
+                <CategoryRow
+                  key={category.category}
+                  category={category.category}
+                  amount={category.amount}
+                  percentage={category.percentage}
+                  color={category.color}
+                  tags={category.tags}
+                  tagSpending={getTagSpending(category.category, category.tags, category.amount)}
+                />
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
 
       {/* Pagination */}
