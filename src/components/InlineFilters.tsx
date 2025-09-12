@@ -89,19 +89,28 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
   }
 
   return (
-    <div className="flex items-center gap-2 text-sm">
-      <span className="text-muted-foreground">Filter:</span>
+    <div className="flex items-center gap-3 text-sm">
+      <span className="text-muted-foreground font-medium">Filter:</span>
       
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="w-40 h-8 border-0 bg-transparent text-foreground font-medium text-left truncate px-2">
-            {allChecked || selectedBanks.length === 0
-              ? 'All Banks'
-              : `${selectedBanks.length} selected`}
+          <button className="flex items-center gap-2 px-3 py-2 bg-card border border-border rounded-md hover:bg-muted/50 transition-colors font-medium text-foreground min-w-[140px] justify-between">
+            <span className="truncate">
+              {allChecked || selectedBanks.length === 0
+                ? 'All Banks'
+                : `${selectedBanks.length} selected`}
+            </span>
+            <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56">
-          <DropdownMenuCheckboxItem checked={allChecked} onCheckedChange={toggleAllBanks}>
+        <DropdownMenuContent className="w-56 bg-card border border-border shadow-lg z-50">
+          <DropdownMenuCheckboxItem 
+            checked={allChecked} 
+            onCheckedChange={toggleAllBanks}
+            className="font-medium"
+          >
             All Banks
           </DropdownMenuCheckboxItem>
           {bankOptions.map((option) => (
@@ -116,15 +125,19 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <span className="text-muted-foreground">|</span>
+      <div className="w-px h-4 bg-border" />
 
       <Select value={selectedDuration} onValueChange={handleDurationChange}>
-        <SelectTrigger className="w-36 h-8 border-0 bg-transparent text-foreground font-medium">
+        <SelectTrigger className="w-44 h-9 bg-card border border-border hover:bg-muted/50 transition-colors font-medium">
           <SelectValue />
         </SelectTrigger>
-        <SelectContent className="border-0">
+        <SelectContent className="bg-card border border-border shadow-lg z-50">
           {durationOptions.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
+            <SelectItem 
+              key={option.value} 
+              value={option.value}
+              className="hover:bg-muted/50 cursor-pointer"
+            >
               {option.label}
             </SelectItem>
           ))}
