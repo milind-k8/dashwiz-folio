@@ -1,11 +1,86 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { Sidebar } from '@/components/Sidebar';
+import { DashboardHeader } from '@/components/DashboardHeader';
+import { MetricCard } from '@/components/MetricCard';
+import { FinanceChart } from '@/components/FinanceChart';
+import { ExpenseChart } from '@/components/ExpenseChart';
+import { CreditCard } from '@/components/CreditCard';
+import { TransactionList } from '@/components/TransactionList';
+import { useFinancialStore } from '@/store/financialStore';
+import { Wallet, TrendingUp, PiggyBank, CreditCard as CreditCardIcon } from 'lucide-react';
 
 const Index = () => {
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const { data } = useFinancialStore();
+
+  if (activeTab !== 'dashboard') {
+    return (
+      <div className="flex min-h-screen bg-background">
+        <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        <div className="flex-1">
+          <DashboardHeader />
+          <div className="p-6">
+            <div className="text-center py-12">
+              <h2 className="text-2xl font-bold text-foreground mb-2">
+                {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+              </h2>
+              <p className="text-muted-foreground">This section is coming soon!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="flex min-h-screen bg-background">
+      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
+      
+      <div className="flex-1">
+        <DashboardHeader />
+        
+        <main className="p-6 space-y-6 animate-fade-in">
+          {/* Metrics Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <MetricCard
+              title="Balance"
+              value={`$${data.balance.toLocaleString()}`}
+              icon={Wallet}
+              isHighlighted={true}
+            />
+            <MetricCard
+              title="Income"
+              value={`$${data.income.toLocaleString()}`}
+              icon={TrendingUp}
+              trend="+8.2%"
+            />
+            <MetricCard
+              title="Savings"
+              value={`$${data.savings.toLocaleString()}`}
+              icon={PiggyBank}
+              trend="+5.8%"
+            />
+            <MetricCard
+              title="Expenses"
+              value={`$${data.expenses.toLocaleString()}`}
+              icon={CreditCardIcon}
+              trend="-2.1%"
+            />
+          </div>
+
+          {/* Charts and Cards Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              <FinanceChart />
+              <TransactionList />
+            </div>
+            
+            <div className="space-y-6">
+              <CreditCard />
+              <ExpenseChart />
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   );
