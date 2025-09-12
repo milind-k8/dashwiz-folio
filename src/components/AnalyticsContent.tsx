@@ -55,7 +55,6 @@ export const AnalyticsContent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [tick, setTick] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState<'all' | 'deposit' | 'withdrawl'>('all');
 
   useEffect(() => {
     const init = async () => {
@@ -105,20 +104,19 @@ export const AnalyticsContent = () => {
     };
   }, [transactions, banks]);
 
-  // Filter transactions based on search and type
+  // Filter transactions based on search term only
   const filteredTransactions = useMemo(() => {
     return transactions.filter(transaction => {
       const matchesSearch = searchTerm === '' || 
         transaction.refId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transaction.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transaction.tags.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transaction.bank.toLowerCase().includes(searchTerm.toLowerCase());
+        transaction.date.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        transaction.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (transaction.tags && transaction.tags.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        transaction.amount.toString().includes(searchTerm.toLowerCase());
       
-      const matchesType = filterType === 'all' || transaction.type === filterType;
-      
-      return matchesSearch && matchesType;
+      return matchesSearch;
     });
-  }, [transactions, searchTerm, filterType]);
+  }, [transactions, searchTerm]);
 
   return (
     <div className="p-4 md:p-6 space-y-6 animate-fade-in">
@@ -290,45 +288,14 @@ export const AnalyticsContent = () => {
             </div>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search transactions..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-full sm:w-64"
-              />
-            </div>
-            
-            <div className="flex gap-2">
-              <Button
-                variant={filterType === 'all' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilterType('all')}
-                className="px-3"
-              >
-                All
-              </Button>
-              <Button
-                variant={filterType === 'deposit' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilterType('deposit')}
-                className="px-3 text-green-600 border-green-200 hover:bg-green-50 dark:text-green-400 dark:border-green-800 dark:hover:bg-green-950"
-              >
-                <TrendingUp className="h-3 w-3 mr-1" />
-                Deposits
-              </Button>
-              <Button
-                variant={filterType === 'withdrawl' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilterType('withdrawl')}
-                className="px-3 text-red-600 border-red-200 hover:bg-red-50 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-950"
-              >
-                <TrendingDown className="h-3 w-3 mr-1" />
-                Withdrawals
-              </Button>
-            </div>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search transactions..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 w-full sm:w-64"
+            />
           </div>
         </div>
         
@@ -337,71 +304,76 @@ export const AnalyticsContent = () => {
             <Table>
               <TableHeader className="bg-muted/30">
                 <TableRow>
-                  <TableHead className="font-semibold w-20 min-w-[60px]">Bank</TableHead>
-                  <TableHead className="font-semibold w-32 min-w-[100px]">Reference ID</TableHead>
-                  <TableHead className="font-semibold w-28 min-w-[90px]">Date</TableHead>
-                  <TableHead className="font-semibold w-24 min-w-[80px]">Type</TableHead>
-                  <TableHead className="font-semibold w-28 min-w-[90px] text-right">Amount</TableHead>
-                  <TableHead className="font-semibold w-24 min-w-[80px]">Category</TableHead>
-                  <TableHead className="font-semibold w-32 min-w-[100px]">Tags</TableHead>
+                  <TableHead className="font-semibold w-32 min-w-[120px]">Date</TableHead>
+                  <TableHead className="font-semibold w-40 min-w-[140px]">Reference</TableHead>
+                  <TableHead className="font-semibold w-28 min-w-[100px]">Type</TableHead>
+                  <TableHead className="font-semibold w-32 min-w-[120px] text-right">Amount</TableHead>
+                  <TableHead className="font-semibold w-40 min-w-[140px]">Tags</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredTransactions.map((t) => (
                   <TableRow key={`${t.bank}-${t.refId}`} className="hover:bg-muted/20 transition-colors">
-                    <TableCell className="w-20">
-                      <Badge variant="outline" className="uppercase font-mono text-xs truncate max-w-full">
-                        {t.bank}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="w-32 font-mono text-xs text-muted-foreground">
-                      <div className="truncate">{t.refId}</div>
-                    </TableCell>
-                    <TableCell className="w-28">
+                    <TableCell className="w-32">
                       <div className="flex items-center gap-2 min-w-0">
-                        <Calendar className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-                        <span className="text-sm truncate">{t.date}</span>
+                        <Calendar className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                        <span className="text-sm font-medium">{t.date}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="w-24">
+                    <TableCell className="w-40">
+                      <div className="font-mono text-sm text-muted-foreground truncate">{t.refId}</div>
+                    </TableCell>
+                    <TableCell className="w-28">
                       <Badge 
                         variant={t.type === 'deposit' ? 'default' : 'secondary'}
-                        className={`text-xs ${
+                        className={`text-xs font-medium ${
                           t.type === 'deposit' 
                             ? 'bg-green-100 text-green-700 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-400'
                             : 'bg-red-100 text-red-700 hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400'
                         }`}
                       >
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1.5">
                           {t.type === 'deposit' ? (
                             <ArrowUpRight className="h-3 w-3 flex-shrink-0" />
                           ) : (
                             <ArrowDownRight className="h-3 w-3 flex-shrink-0" />
                           )}
-                          <span className="truncate">{t.type}</span>
+                          <span className="capitalize">{t.type}</span>
                         </div>
                       </Badge>
                     </TableCell>
-                    <TableCell className="w-28 text-right font-mono font-medium">
-                      <div className="truncate">₹{t.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                    <TableCell className="w-32 text-right">
+                      <div className="font-mono font-semibold text-sm">
+                        ₹{t.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </div>
                     </TableCell>
-                    <TableCell className="w-24">
-                      <Badge variant="outline" className="text-xs truncate max-w-full">
-                        {t.category}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="w-32 text-sm text-muted-foreground">
-                      <div className="truncate">{t.tags || '-'}</div>
+                    <TableCell className="w-40">
+                      <div className="text-sm text-muted-foreground">
+                        {t.tags ? (
+                          <div className="flex flex-wrap gap-1">
+                            {t.tags.split(',').slice(0, 2).map((tag, index) => (
+                              <Badge key={index} variant="outline" className="text-xs px-2 py-0.5">
+                                {tag.trim()}
+                              </Badge>
+                            ))}
+                            {t.tags.split(',').length > 2 && (
+                              <span className="text-xs text-muted-foreground">+{t.tags.split(',').length - 2}</span>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">-</span>
+                        )}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
                 {!filteredTransactions.length && (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                       {isLoading ? (
                         <TableLoader text="Loading transactions..." />
-                      ) : searchTerm || filterType !== 'all' ? (
-                        'No transactions match your current filters'
+                      ) : searchTerm ? (
+                        'No transactions match your search'
                       ) : (
                         'No transactions found'
                       )}
