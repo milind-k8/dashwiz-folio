@@ -6,6 +6,8 @@ import { FinanceChart } from '@/components/FinanceChart';
 import { ExpenseChart } from '@/components/ExpenseChart';
 import { CreditCard } from '@/components/CreditCard';
 import { TransactionList } from '@/components/TransactionList';
+import { CardFilter } from '@/components/CardFilter';
+import { DurationFilter } from '@/components/DurationFilter';
 import { useFinancialStore } from '@/store/financialStore';
 import { Wallet, TrendingUp, PiggyBank, CreditCard as CreditCardIcon } from 'lucide-react';
 import { SidebarProvider } from '@/components/ui/sidebar';
@@ -80,6 +82,12 @@ const Index = () => {
               </div>
               
               <div className="space-y-4 sm:space-y-6">
+                {/* Filters */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <CardFilter />
+                  <DurationFilter />
+                </div>
+                
                 <CreditCard />
                 <ExpenseChart />
               </div>
