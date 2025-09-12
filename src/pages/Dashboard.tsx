@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { MetricCard } from '@/components/MetricCard';
 import { FinanceChart } from '@/components/FinanceChart';
 import { ExpenseChart } from '@/components/ExpenseChart';
-import { CreditCard } from '@/components/CreditCard';
 import { TransactionList } from '@/components/TransactionList';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
@@ -80,7 +79,6 @@ export function Dashboard() {
         </div>
         
         <div className="space-y-4 sm:space-y-6">
-          <CreditCard />
           <ExpenseChart data={data.expenseCategoriesList as any} />
         </div>
       </div>
