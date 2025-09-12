@@ -133,16 +133,15 @@ export function Dashboard() {
         />
       </div>
 
-      {/* Charts and Cards Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
-        <div className="lg:col-span-2 space-y-3 sm:space-y-4 md:space-y-6">
-          <FinanceChart data={data.monthlyData} />
-          <TransactionList expenseCategories={data.expenseCategoriesList} />
-        </div>
-        
-        <div className="space-y-3 sm:space-y-4 md:space-y-6">
-          <ExpenseChart data={data.expenseCategoriesList as any} />
-        </div>
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
+        <FinanceChart data={data.monthlyData} />
+        <ExpenseChart data={data.expenseCategoriesList as any} />
+      </div>
+
+      {/* Category Spending - Full Width */}
+      <div className="mt-3 sm:mt-4 md:mt-6">
+        <TransactionList expenseCategories={data.expenseCategoriesList} />
       </div>
 
       {/* Bank Data Modal */}
