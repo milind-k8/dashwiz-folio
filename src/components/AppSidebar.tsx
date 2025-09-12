@@ -50,16 +50,16 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
     >
       <SidebarContent>
         <div className="p-4">
-          <div className={`flex items-center ${open || isMobile ? 'gap-3' : 'justify-center'}`}>
-            <div className={`${open || isMobile ? 'w-8 h-8' : 'w-6 h-6'} bg-gradient-primary rounded-lg flex items-center justify-center`}>
-              <IndianRupee className={`${open || isMobile ? 'w-5 h-5' : 'w-4 h-4'} text-white`} />
+          <div className={`flex items-center ${open || isMobile ? 'justify-between' : 'justify-center'}`}>
+            <div className="flex items-center gap-3">
+              <div className={`${open || isMobile ? 'w-8 h-8' : 'w-6 h-6'} bg-gradient-primary rounded-lg flex items-center justify-center`}>
+                <IndianRupee className={`${open || isMobile ? 'w-5 h-5' : 'w-4 h-4'} text-white`} />
+              </div>
+              {(open || isMobile) && (
+                <span className="text-xl font-bold text-foreground">PisaWise</span>
+              )}
             </div>
-            {(open || isMobile) && (
-              <span className="text-xl font-bold text-foreground">PisaWise</span>
-            )}
-          </div>
-          {!isMobile && (
-            <div className="mt-3 flex justify-center">
+            {!isMobile && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -72,8 +72,8 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                   <ChevronRight className="w-3 h-3" />
                 )}
               </Button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
         
         <SidebarGroup>
