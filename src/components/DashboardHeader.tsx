@@ -10,23 +10,23 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProps) {
   return (
-    <header className="flex items-center gap-4 p-3 sm:p-4 bg-card border-b border-border">
+    <header className="sticky top-0 z-40 flex items-center gap-3 px-3 sm:px-4 py-2 bg-card/95 backdrop-blur-sm border-b border-border">
       <SidebarTrigger className="lg:hidden" />
       
       <div className="flex-1">
-        <h1 className="text-lg sm:text-xl font-semibold text-foreground">{pageTitle}</h1>
+        <h1 className="text-base sm:text-lg font-semibold text-foreground">{pageTitle}</h1>
       </div>
       
-      <div className="flex items-center gap-2 lg:gap-4">
-        <Button variant="outline" size="sm" className="gap-2 hidden sm:flex">
-          <Plus className="w-4 h-4" />
-          <span className="hidden md:inline">Add Transaction</span>
+      <div className="flex items-center gap-2">
+        <Button variant="outline" size="sm" className="gap-2 hidden sm:flex h-8">
+          <Plus className="w-3 h-3" />
+          <span className="hidden md:inline text-sm">Add Transaction</span>
         </Button>
         
         <ThemeToggle />
         
-        <Avatar className="w-8 h-8">
-          <AvatarFallback className="bg-primary text-primary-foreground font-medium">
+        <Avatar className="w-7 h-7">
+          <AvatarFallback className="bg-primary text-primary-foreground font-medium text-xs">
             JS
           </AvatarFallback>
         </Avatar>
