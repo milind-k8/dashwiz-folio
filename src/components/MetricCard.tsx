@@ -1,10 +1,9 @@
 import { Card } from '@/components/ui/card';
 import { LucideIcon } from 'lucide-react';
-import { ReactNode } from 'react';
 
 interface MetricCardProps {
   title: string;
-  value: string | ReactNode;
+  value: string;
   icon: LucideIcon;
   trend?: string;
   isHighlighted?: boolean;

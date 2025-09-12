@@ -1,7 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { useFinancialStore } from '@/store/financialStore';
-import { IndianRupee } from 'lucide-react';
 
 export function ExpenseChart() {
   const { data } = useFinancialStore();
@@ -13,24 +12,15 @@ export function ExpenseChart() {
         <div className="grid grid-cols-2 gap-3 sm:gap-4 text-sm">
           <div>
             <span className="text-muted-foreground text-xs sm:text-sm">Daily</span>
-            <div className="flex items-center gap-1">
-              <IndianRupee className="h-3 w-3 sm:h-4 sm:w-4" />
-              <p className="font-semibold text-foreground text-sm sm:text-base">573.12</p>
-            </div>
+            <p className="font-semibold text-foreground text-sm sm:text-base">₹573.12</p>
           </div>
           <div>
             <span className="text-muted-foreground text-xs sm:text-sm">Weekly</span>
-            <div className="flex items-center gap-1">
-              <IndianRupee className="h-3 w-3 sm:h-4 sm:w-4" />
-              <p className="font-semibold text-foreground text-sm sm:text-base">4,791</p>
-            </div>
+            <p className="font-semibold text-foreground text-sm sm:text-base">₹4,791</p>
           </div>
           <div>
             <span className="text-muted-foreground text-xs sm:text-sm">Monthly</span>
-            <div className="flex items-center gap-1">
-              <IndianRupee className="h-3 w-3 sm:h-4 sm:w-4" />
-              <p className="font-semibold text-foreground text-sm sm:text-base">19,112</p>
-            </div>
+            <p className="font-semibold text-foreground text-sm sm:text-base">₹19,112</p>
           </div>
         </div>
       </div>
