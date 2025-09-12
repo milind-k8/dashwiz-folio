@@ -7,6 +7,7 @@ interface MetricCardProps {
   icon: LucideIcon;
   trend?: string;
   isHighlighted?: boolean;
+  onClick?: () => void;
 }
 
 export function MetricCard({ 
@@ -14,7 +15,8 @@ export function MetricCard({
   value, 
   icon: Icon, 
   trend, 
-  isHighlighted = false 
+  isHighlighted = false,
+  onClick
 }: MetricCardProps) {
   return (
     <Card 
@@ -22,7 +24,8 @@ export function MetricCard({
         isHighlighted 
           ? 'bg-gradient-card text-white border-0 shadow-card' 
           : 'bg-card border-border shadow-card hover:shadow-elevated'
-      }`}
+      } ${onClick ? 'cursor-pointer hover:scale-[1.02]' : ''}`}
+      onClick={onClick}
     >
       <div className="flex items-center justify-between mb-3 sm:mb-4">
         <div className={`p-2 rounded-lg ${

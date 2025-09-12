@@ -6,6 +6,7 @@ import { CreditCard } from '@/components/CreditCard';
 import { TransactionList } from '@/components/TransactionList';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
+import { BankDataModal } from '@/components/BankDataModal';
 import { useBankData } from '@/hooks/useBankData';
 import { Wallet, TrendingUp, PiggyBank, CreditCard as CreditCardIcon } from 'lucide-react';
 
@@ -13,10 +14,21 @@ export function Dashboard() {
   const { getFilteredData } = useBankData();
   const [selectedBanks, setSelectedBanks] = useState<string[]>(['all-banks']);
   const [selectedDuration, setSelectedDuration] = useState('current-month');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalData, setModalData] = useState<{
+    title: string;
+    value: number;
+    type: 'balance' | 'income' | 'expenses' | 'savings';
+  } | null>(null);
 
   const handleFiltersChange = (banks: string[], duration: string) => {
     setSelectedBanks(banks);
     setSelectedDuration(duration);
+  };
+
+  const handleMetricClick = (title: string, value: number, type: 'balance' | 'income' | 'expenses' | 'savings') => {
+    setModalData({ title, value, type });
+    setModalOpen(true);
   };
 
   const data = getFilteredData(selectedBanks, selectedDuration);
@@ -35,24 +47,28 @@ export function Dashboard() {
           value={`₹${data.balance.toLocaleString()}`}
           icon={Wallet}
           isHighlighted={true}
+          onClick={() => handleMetricClick('Balance', data.balance, 'balance')}
         />
         <MetricCard
           title="Income"
           value={`₹${data.income.toLocaleString()}`}
           icon={TrendingUp}
           trend="+8.2%"
+          onClick={() => handleMetricClick('Income', data.income, 'income')}
         />
         <MetricCard
           title="Savings"
           value={`₹${data.savings.toLocaleString()}`}
           icon={PiggyBank}
           trend="+5.8%"
+          onClick={() => handleMetricClick('Savings', data.savings, 'savings')}
         />
         <MetricCard
           title="Expenses"
           value={`₹${data.expenses.toLocaleString()}`}
           icon={CreditCardIcon}
           trend="-2.1%"
+          onClick={() => handleMetricClick('Expenses', data.expenses, 'expenses')}
         />
       </div>
 
@@ -68,6 +84,19 @@ export function Dashboard() {
           <ExpenseChart data={data.expenseCategoriesList as any} />
         </div>
       </div>
+
+      {/* Bank Data Modal */}
+      {modalData && (
+        <BankDataModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          title={modalData.title}
+          totalValue={modalData.value}
+          selectedBanks={selectedBanks}
+          selectedDuration={selectedDuration}
+          metricType={modalData.type}
+        />
+      )}
     </PageContent>
   );
 }
