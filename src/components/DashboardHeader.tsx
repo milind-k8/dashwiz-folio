@@ -1,6 +1,5 @@
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
@@ -20,16 +19,10 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
       <div className="flex items-center gap-2">
         <Button variant="outline" size="sm" className="gap-2 hidden sm:flex h-8">
           <Plus className="w-3 h-3" />
-          <span className="hidden md:inline text-sm">Add Transaction</span>
+          <span className="text-sm">Add Transaction</span>
         </Button>
         
         <ThemeToggle />
-        
-        <Avatar className="w-7 h-7">
-          <AvatarFallback className="bg-primary text-primary-foreground font-medium text-xs">
-            JS
-          </AvatarFallback>
-        </Avatar>
       </div>
     </header>
   );
