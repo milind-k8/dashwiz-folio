@@ -48,22 +48,18 @@ export function Dashboard() {
   return (
     <PageContent>
       {/* Header Section */}
-      <div className="space-y-2">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="space-y-1">
-            <h1 className="text-xl md:text-2xl font-bold text-foreground">
-              Financial Overview
-            </h1>
-            <p className="text-muted-foreground text-xs md:text-sm">
-              Track your income, expenses, and savings across all your accounts
-            </p>
-          </div>
-          
-          {/* Filters */}
-          <div className="flex justify-end overflow-x-auto">
-            <InlineFilters onFiltersChange={handleFiltersChange} />
-          </div>
-        </div>
+      <div className="space-y-1 mb-4">
+        <h1 className="text-xl md:text-2xl font-bold text-foreground">
+          Financial Overview
+        </h1>
+        <p className="text-muted-foreground text-xs md:text-sm">
+          Track your income, expenses, and savings across all your accounts
+        </p>
+      </div>
+      
+      {/* Filters Section */}
+      <div className="flex justify-end overflow-x-auto mb-6">
+        <InlineFilters onFiltersChange={handleFiltersChange} />
       </div>
       
       {/* Metrics Grid */}
