@@ -22,6 +22,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -40,6 +41,7 @@ interface AppSidebarProps {
 
 export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
   const { open, setOpen } = useSidebar();
+  const isMobile = useIsMobile();
 
   return (
     <Sidebar 
@@ -48,32 +50,34 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
     >
       <SidebarContent>
         <div className="p-4">
-          <div className={`flex items-center ${open ? 'gap-3' : 'justify-center'}`}>
-            <div className={`${open ? 'w-8 h-8' : 'w-6 h-6'} bg-gradient-primary rounded-lg flex items-center justify-center`}>
-              <IndianRupee className={`${open ? 'w-5 h-5' : 'w-4 h-4'} text-white`} />
+          <div className={`flex items-center ${open || isMobile ? 'gap-3' : 'justify-center'}`}>
+            <div className={`${open || isMobile ? 'w-8 h-8' : 'w-6 h-6'} bg-gradient-primary rounded-lg flex items-center justify-center`}>
+              <IndianRupee className={`${open || isMobile ? 'w-5 h-5' : 'w-4 h-4'} text-white`} />
             </div>
-            {open && (
+            {(open || isMobile) && (
               <span className="text-xl font-bold text-foreground">PisaWise</span>
             )}
           </div>
-          <div className="mt-3 flex justify-center">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setOpen(!open)}
-              className="h-6 w-6 p-0"
-            >
-              {open ? (
-                <ChevronLeft className="w-3 h-3" />
-              ) : (
-                <ChevronRight className="w-3 h-3" />
-              )}
-            </Button>
-          </div>
+          {!isMobile && (
+            <div className="mt-3 flex justify-center">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setOpen(!open)}
+                className="h-6 w-6 p-0"
+              >
+                {open ? (
+                  <ChevronLeft className="w-3 h-3" />
+                ) : (
+                  <ChevronRight className="w-3 h-3" />
+                )}
+              </Button>
+            </div>
+          )}
         </div>
         
         <SidebarGroup>
-          {open && <SidebarGroupLabel>Menu</SidebarGroupLabel>}
+          {(open || isMobile) && <SidebarGroupLabel>Menu</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => {
@@ -85,11 +89,11 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                     <SidebarMenuButton
                       onClick={() => onTabChange(item.id)}
                       isActive={isActive}
-                      className={`w-full h-10 ${open ? 'justify-start px-3' : 'justify-center px-0'}`}
-                      tooltip={!open ? item.label : undefined}
+                      className={`w-full h-10 ${(open || isMobile) ? 'justify-start px-3' : 'justify-center px-0'}`}
+                      tooltip={!(open || isMobile) ? item.label : undefined}
                     >
-                      <Icon className={`w-5 h-5 ${!open ? 'mx-auto' : ''}`} />
-                      {open && <span className="ml-3">{item.label}</span>}
+                      <Icon className={`w-5 h-5 ${!(open || isMobile) ? 'mx-auto' : ''}`} />
+                      {(open || isMobile) && <span className="ml-3">{item.label}</span>}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
