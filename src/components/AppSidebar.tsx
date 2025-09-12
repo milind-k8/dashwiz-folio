@@ -7,8 +7,8 @@ import {
   CreditCard,
   Target,
   IndianRupee,
-  ChevronLeft,
-  ChevronRight
+  ChevronsLeft,
+  ChevronsRight
 } from 'lucide-react';
 import {
   Sidebar,
@@ -66,7 +66,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                 onClick={() => setOpen(!open)}
                 className="h-6 w-6 p-0"
               >
-                <ChevronLeft className="w-3 h-3" />
+                <ChevronsLeft className="w-3 h-3" />
               </Button>
             )}
           </div>
@@ -78,7 +78,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
                 onClick={() => setOpen(!open)}
                 className="h-6 w-6 p-0"
               >
-                <ChevronRight className="w-3 h-3" />
+                <ChevronsRight className="w-3 h-3" />
               </Button>
             </div>
           )}
