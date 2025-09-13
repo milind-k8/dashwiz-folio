@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { bankDataService } from '@/services/bankDataService';
 import { getBanksSync, getTransactionsForBanksSync, isDbReady } from '@/lib/lokiDb';
 import { BanksSkeleton } from '@/components/SkeletonLoaders';
-import { SecurityIndicator } from '@/components/SecurityComponents';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -129,14 +128,6 @@ export const BanksContent = () => {
           </div>
         </Card>
       </div>
-
-      {/* Security Indicator */}
-      <SecurityIndicator
-        lastLogin={new Date()}
-        location="Mumbai, India"
-        deviceCount={1}
-        securityScore={92}
-      />
 
       {/* Banks Management */}
       <Card className="p-4 md:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">

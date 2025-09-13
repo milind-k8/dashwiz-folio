@@ -7,9 +7,7 @@ import { TransactionList } from '@/components/TransactionList';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
 import { BankDataModal } from '@/components/BankDataModal';
-import { QuickActionsGrid, FloatingActionButton } from '@/components/QuickActions';
 import { FinancialInsights } from '@/components/FinancialInsights';
-import { SecurityIndicator } from '@/components/SecurityComponents';
 import { DashboardSkeleton } from '@/components/SkeletonLoaders';
 import { useBankData } from '@/hooks/useBankData';
 import { Wallet, TrendingUp, PiggyBank, CreditCard as CreditCardIcon } from 'lucide-react';
@@ -155,14 +153,6 @@ export function Dashboard() {
         />
       </div>
 
-      {/* Quick Actions */}
-      <QuickActionsGrid
-        onAddIncome={() => console.log('Add Income')}
-        onAddExpense={() => console.log('Add Expense')}
-        onViewReports={() => console.log('View Reports')}
-        onExportData={() => console.log('Export Data')}
-      />
-
       {/* Financial Insights */}
       <FinancialInsights
         insights={sampleInsights}
@@ -170,14 +160,6 @@ export function Dashboard() {
         totalBalance={data.balance}
         monthlyIncome={data.income}
         monthlyExpenses={data.expenses}
-      />
-
-      {/* Security Indicator */}
-      <SecurityIndicator
-        lastLogin={new Date()}
-        location="Mumbai, India"
-        deviceCount={2}
-        securityScore={85}
       />
 
       {/* Charts Grid */}
@@ -191,12 +173,6 @@ export function Dashboard() {
         <TransactionList expenseCategories={data.expenseCategoriesList} />
       </div>
 
-      {/* Floating Action Button */}
-      <FloatingActionButton
-        onAddTransaction={() => console.log('Add Transaction')}
-        onQuickDeposit={() => console.log('Quick Deposit')}
-        onQuickWithdraw={() => console.log('Quick Withdraw')}
-      />
 
       {/* Bank Data Modal */}
       {modalData && (
