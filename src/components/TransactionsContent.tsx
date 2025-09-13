@@ -58,7 +58,7 @@ interface TxnRow {
   tags: string;
 }
 
-export const AnalyticsContent = () => {
+export const TransactionsContent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [tick, setTick] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
@@ -140,10 +140,10 @@ export const AnalyticsContent = () => {
       {/* Header */}
       <div className="space-y-2">
         <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-          Analytics Dashboard
+          Transaction History
         </h1>
         <p className="text-muted-foreground">
-          Comprehensive overview of your financial data and transaction history
+          Comprehensive overview of your transaction data and history
         </p>
       </div>
 

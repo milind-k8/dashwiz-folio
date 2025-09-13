@@ -5,29 +5,17 @@ import { AppSidebar } from '@/components/AppSidebar';
 import { DashboardHeader } from '@/components/DashboardHeader';
 
 const pathToTab = (pathname: string): string => {
-  if (pathname.startsWith('/analytics')) return 'analytics';
-  if (pathname.startsWith('/wallet')) return 'wallet';
-  if (pathname.startsWith('/investments')) return 'investments';
-  if (pathname.startsWith('/cards')) return 'cards';
-  if (pathname.startsWith('/goals')) return 'goals';
-  if (pathname.startsWith('/settings')) return 'settings';
+  if (pathname.startsWith('/transactions')) return 'transactions';
+  if (pathname.startsWith('/banks')) return 'banks';
   return 'dashboard';
 };
 
 const tabToPath = (tab: string): string => {
   switch (tab) {
-    case 'analytics':
-      return '/analytics';
-    case 'wallet':
-      return '/wallet';
-    case 'investments':
-      return '/investments';
-    case 'cards':
-      return '/cards';
-    case 'goals':
-      return '/goals';
-    case 'settings':
-      return '/settings';
+    case 'transactions':
+      return '/transactions';
+    case 'banks':
+      return '/banks';
     default:
       return '/';
   }

@@ -7,7 +7,8 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { lazy, Suspense } from 'react';
 import { PageLoader } from '@/components/ui/loader';
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
-const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
+const TransactionsPage = lazy(() => import('./pages/TransactionsPage'));
+const BanksPage = lazy(() => import('./pages/BanksPage'));
 const WalletPage = lazy(() => import('./pages/WalletPage'));
 const InvestmentsPage = lazy(() => import('./pages/InvestmentsPage'));
 const CardsPage = lazy(() => import('./pages/CardsPage'));
@@ -29,7 +30,8 @@ const App = () => (
             {/* No redirects needed here */}
             <Route element={<RootLayout />}>
               <Route index element={<Suspense fallback={<PageLoader />}><DashboardPage /></Suspense>} />
-              <Route path="analytics" element={<Suspense fallback={<PageLoader />}><AnalyticsPage /></Suspense>} />
+              <Route path="transactions" element={<Suspense fallback={<PageLoader />}><TransactionsPage /></Suspense>} />
+              <Route path="banks" element={<Suspense fallback={<PageLoader />}><BanksPage /></Suspense>} />
               <Route path="wallet" element={<Suspense fallback={<PageLoader />}><WalletPage /></Suspense>} />
               <Route path="investments" element={<Suspense fallback={<PageLoader />}><InvestmentsPage /></Suspense>} />
               <Route path="cards" element={<Suspense fallback={<PageLoader />}><CardsPage /></Suspense>} />

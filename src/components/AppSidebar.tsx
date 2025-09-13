@@ -1,14 +1,11 @@
 import { 
   LayoutDashboard, 
-  TrendingUp, 
-  Wallet, 
-  PieChart, 
-  Settings, 
-  CreditCard,
-  Target,
+  Receipt, 
+  Building, 
   IndianRupee,
   ChevronsLeft,
-  ChevronsRight
+  ChevronsRight,
+  Monitor
 } from 'lucide-react';
 import {
   Sidebar,
@@ -24,15 +21,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useNavigate } from 'react-router-dom';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'analytics', label: 'Analytics', icon: TrendingUp },
-  { id: 'wallet', label: 'Wallet', icon: Wallet },
-  { id: 'investments', label: 'Investments', icon: PieChart },
-  { id: 'cards', label: 'Cards', icon: CreditCard },
-  { id: 'goals', label: 'Goals', icon: Target },
-  { id: 'settings', label: 'Settings', icon: Settings },
+  { id: 'transactions', label: 'Transactions', icon: Receipt },
+  { id: 'banks', label: 'Banks', icon: Building },
 ];
 
 interface AppSidebarProps {
@@ -47,18 +41,10 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
 
   const tabToPath = (tab: string): string => {
     switch (tab) {
-      case 'analytics':
-        return '/analytics';
-      case 'wallet':
-        return '/wallet';
-      case 'investments':
-        return '/investments';
-      case 'cards':
-        return '/cards';
-      case 'goals':
-        return '/goals';
-      case 'settings':
-        return '/settings';
+      case 'transactions':
+        return '/transactions';
+      case 'banks':
+        return '/banks';
       default:
         return '/';
     }
@@ -133,6 +119,13 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        
+        <div className="mt-auto p-4 border-t border-border">
+          <div className={`flex items-center ${(open || isMobile) ? 'justify-between' : 'justify-center'}`}>
+            {(open || isMobile) && <span className="text-sm font-medium text-muted-foreground">Theme</span>}
+            <ThemeToggle />
+          </div>
+        </div>
       </SidebarContent>
     </Sidebar>
   );
