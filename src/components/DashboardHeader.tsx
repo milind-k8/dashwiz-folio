@@ -45,21 +45,27 @@ export function DashboardHeader({ activeTab, onTabChange }: DashboardHeaderProps
         </div>
 
         {/* Navigation Items - Center */}
-        <nav className="flex items-center gap-1">
+        <nav className="flex items-center">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             
             return (
-              <Button
+              <button
                 key={item.id}
-                variant={isActive ? "default" : "ghost"}
                 onClick={() => handleTabChange(item.id)}
-                className="flex items-center gap-2 px-4 py-2"
+                className={`relative flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors duration-200 hover:text-primary ${
+                  isActive 
+                    ? 'text-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
               >
                 <Icon className="w-4 h-4" />
                 <span>{item.label}</span>
-              </Button>
+                {isActive && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
+                )}
+              </button>
             );
           })}
         </nav>
