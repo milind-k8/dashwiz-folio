@@ -33,14 +33,14 @@ export function BottomNavbar({ activeTab, onTabChange }: BottomNavbarProps) {
                 onTabChange(item.id);
                 navigate(item.path);
               }}
-              className={`flex flex-col items-center justify-center p-1 rounded-lg min-w-0 flex-1 transition-colors ${
+              className={`flex flex-col items-center justify-center p-1 rounded-lg min-w-0 flex-1 transition-colors relative ${
                 isActive 
-                  ? 'text-primary bg-primary/10' 
+                  ? 'text-primary' 
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-              }`}
+              } ${isActive ? 'before:absolute before:top-0 before:left-1/2 before:-translate-x-1/2 before:w-6 before:h-0.5 before:bg-primary before:rounded-b' : ''}`}
             >
-              <Icon className="w-4 h-4 mb-0.5" />
-              <span className="text-[10px] font-medium truncate">{item.label}</span>
+              <Icon className="w-5 h-5 mb-0.5" />
+              <span className="text-xs font-medium truncate">{item.label}</span>
             </button>
           );
         })}
