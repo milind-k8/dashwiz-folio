@@ -32,7 +32,7 @@ export function BottomNavbar({ activeTab, onTabChange }: BottomNavbarProps) {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-1 safe-area-pb z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-lg border-t border-border px-4 py-2 safe-area-pb z-50" style={{ minHeight: 'var(--touch-target)' }}>
       <nav className="flex items-center">
         {menuItems.map((item) => {
           const Icon = item.icon;

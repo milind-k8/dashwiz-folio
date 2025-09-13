@@ -7,6 +7,10 @@ import { TransactionList } from '@/components/TransactionList';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
 import { BankDataModal } from '@/components/BankDataModal';
+import { QuickActionsGrid, FloatingActionButton } from '@/components/QuickActions';
+import { FinancialInsights } from '@/components/FinancialInsights';
+import { SecurityIndicator } from '@/components/SecurityComponents';
+import { DashboardSkeleton } from '@/components/SkeletonLoaders';
 import { useBankData } from '@/hooks/useBankData';
 import { Wallet, TrendingUp, PiggyBank, CreditCard as CreditCardIcon } from 'lucide-react';
 
@@ -14,6 +18,7 @@ export function Dashboard() {
   const { getFilteredData } = useBankData();
   const [searchParams, setSearchParams] = useSearchParams();
   const [modalOpen, setModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [modalData, setModalData] = useState<{
     title: string;
     value: number;
@@ -84,6 +89,23 @@ export function Dashboard() {
     };
   }, [getFilteredData, selectedBanks, selectedDuration]);
 
+  // Sample data for enhanced features
+  const sampleInsights = [
+    { title: "Spending Trend", value: "↗️ Increasing", change: 12, trend: 'up' as const, description: "15% increase this month" },
+    { title: "Top Category", value: "Food & Dining", change: 0, trend: 'neutral' as const, description: "32% of total expenses" },
+    { title: "Savings Goal", value: "78% Complete", change: 8, trend: 'up' as const, description: "₹22,000 remaining" }
+  ];
+
+  const sampleGoals = [
+    { category: "Food & Dining", spent: 8000, budget: 12000, progress: 66.7 },
+    { category: "Transportation", spent: 4500, budget: 5000, progress: 90 },
+    { category: "Entertainment", spent: 2000, budget: 4000, progress: 50 }
+  ];
+
+  if (isLoading) {
+    return <DashboardSkeleton />;
+  }
+
   return (
     <PageContent>
       {/* Header Section */}
@@ -133,6 +155,31 @@ export function Dashboard() {
         />
       </div>
 
+      {/* Quick Actions */}
+      <QuickActionsGrid
+        onAddIncome={() => console.log('Add Income')}
+        onAddExpense={() => console.log('Add Expense')}
+        onViewReports={() => console.log('View Reports')}
+        onExportData={() => console.log('Export Data')}
+      />
+
+      {/* Financial Insights */}
+      <FinancialInsights
+        insights={sampleInsights}
+        spendingGoals={sampleGoals}
+        totalBalance={data.balance}
+        monthlyIncome={data.income}
+        monthlyExpenses={data.expenses}
+      />
+
+      {/* Security Indicator */}
+      <SecurityIndicator
+        lastLogin={new Date()}
+        location="Mumbai, India"
+        deviceCount={2}
+        securityScore={85}
+      />
+
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
         <FinanceChart data={data.monthlyData} />
@@ -143,6 +190,13 @@ export function Dashboard() {
       <div className="mt-3 sm:mt-4 md:mt-6">
         <TransactionList expenseCategories={data.expenseCategoriesList} />
       </div>
+
+      {/* Floating Action Button */}
+      <FloatingActionButton
+        onAddTransaction={() => console.log('Add Transaction')}
+        onQuickDeposit={() => console.log('Quick Deposit')}
+        onQuickWithdraw={() => console.log('Quick Withdraw')}
+      />
 
       {/* Bank Data Modal */}
       {modalData && (

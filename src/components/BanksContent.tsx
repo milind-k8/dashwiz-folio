@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { bankDataService } from '@/services/bankDataService';
 import { getBanksSync, getTransactionsForBanksSync, isDbReady } from '@/lib/lokiDb';
-import { TableLoader } from '@/components/ui/loader';
+import { BanksSkeleton } from '@/components/SkeletonLoaders';
+import { SecurityIndicator } from '@/components/SecurityComponents';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -57,6 +58,10 @@ export const BanksContent = () => {
     if (!isDbReady()) return [];
     return getTransactionsForBanksSync(['all-banks']);
   }, [tick, isLoading]);
+
+  if (isLoading) {
+    return <BanksSkeleton />;
+  }
 
   return (
     <div className="p-4 md:p-6 space-y-6 animate-fade-in">
@@ -124,6 +129,14 @@ export const BanksContent = () => {
           </div>
         </Card>
       </div>
+
+      {/* Security Indicator */}
+      <SecurityIndicator
+        lastLogin={new Date()}
+        location="Mumbai, India"
+        deviceCount={1}
+        securityScore={92}
+      />
 
       {/* Banks Management */}
       <Card className="p-4 md:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -206,7 +219,7 @@ export const BanksContent = () => {
                 <TableRow>
                   <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
                     {isLoading ? (
-                      <TableLoader text="Loading banks..." />
+                      <BanksSkeleton />
                     ) : (
                       <div className="flex flex-col items-center gap-2">
                         <Building className="h-8 w-8 text-muted-foreground/50" />
