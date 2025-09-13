@@ -8,25 +8,6 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Consistent Spacing Scale */
-    --spacing-xs: 0.25rem;
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
-    --spacing-2xl: 3rem;
-    
-    /* Enhanced Touch Targets */
-    --touch-target: 44px;
-    --touch-target-sm: 40px;
-    
-    /* Financial App Colors */
-    --income: 142 76% 36%;
-    --expense: 0 84% 60%;
-    --neutral: 240 6% 50%;
-    --security: 234 89% 56%;
-    
-    /* Original Colors */
     --background: 220 20% 97%;
     --foreground: 224 15% 20%;
 
@@ -61,49 +42,32 @@ All colors MUST be HSL.
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    /* Enhanced Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(234 89% 56%), hsl(234 89% 66%));
     --gradient-card: linear-gradient(135deg, hsl(234 89% 56%), hsl(234 89% 46%));
-    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 46%));
-    --gradient-warning: linear-gradient(135deg, hsl(38 92% 50%), hsl(38 92% 60%));
-    --gradient-income: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 46%));
-    --gradient-expense: linear-gradient(135deg, hsl(0 84% 60%), hsl(0 84% 70%));
     
-    /* Enhanced Shadows */
     --shadow-card: 0 4px 20px -2px hsl(234 89% 56% / 0.1);
     --shadow-elevated: 0 10px 40px -10px hsl(234 89% 56% / 0.15);
-    --shadow-floating: 0 20px 50px -10px hsl(234 89% 56% / 0.2);
-    --shadow-security: 0 4px 20px -2px hsl(234 89% 56% / 0.15);
 
     --radius: 0.5rem;
 
-    /* Sidebar Variables */
     --sidebar-background: 0 0% 98%;
+
     --sidebar-foreground: 240 5.3% 26.1%;
+
     --sidebar-primary: 240 5.9% 10%;
+
     --sidebar-primary-foreground: 0 0% 98%;
+
     --sidebar-accent: 240 4.8% 95.9%;
+
     --sidebar-accent-foreground: 240 5.9% 10%;
+
     --sidebar-border: 220 13% 91%;
+
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    /* Enhanced Gradients for Dark Mode */
-    --gradient-primary: linear-gradient(135deg, hsl(234 89% 66%), hsl(234 89% 76%));
-    --gradient-card: linear-gradient(135deg, hsl(234 89% 66%), hsl(234 89% 56%));
-    --gradient-success: linear-gradient(135deg, hsl(142 76% 46%), hsl(142 76% 56%));
-    --gradient-warning: linear-gradient(135deg, hsl(38 92% 60%), hsl(38 92% 70%));
-    --gradient-income: linear-gradient(135deg, hsl(142 76% 46%), hsl(142 76% 56%));
-    --gradient-expense: linear-gradient(135deg, hsl(0 84% 60%), hsl(0 84% 70%));
-    
-    /* Enhanced Shadows for Dark Mode */
-    --shadow-card: 0 4px 20px -2px hsl(234 89% 66% / 0.2);
-    --shadow-elevated: 0 10px 40px -10px hsl(234 89% 66% / 0.25);
-    --shadow-floating: 0 20px 50px -10px hsl(234 89% 66% / 0.3);
-    --shadow-security: 0 4px 20px -2px hsl(234 89% 66% / 0.2);
-    
-    /* Original Dark Colors */
     --background: 224 20% 8%;
     --foreground: 220 20% 95%;
 
@@ -137,7 +101,12 @@ All colors MUST be HSL.
 
     --warning: 38 92% 60%;
     --warning-foreground: 0 0% 100%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(234 89% 66%), hsl(234 89% 76%));
+    --gradient-card: linear-gradient(135deg, hsl(234 89% 66%), hsl(234 89% 56%));
     
+    --shadow-card: 0 4px 20px -2px hsl(234 89% 66% / 0.2);
+    --shadow-elevated: 0 10px 40px -10px hsl(234 89% 66% / 0.25);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -156,39 +125,5 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-  }
-}
-
-/* Utility Classes */
-@layer utilities {
-  .hover-scale {
-    @apply transition-transform duration-200 hover:scale-[1.02];
-  }
-  
-  .animate-fade-in {
-    animation: fade-in 0.3s ease-out;
-  }
-  
-  .animate-slide-up {
-    animation: slide-up 0.3s ease-out;
-  }
-  
-  .safe-area-pb {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  
-  .gradient-text {
-    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
-  }
-}
-
-@keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
