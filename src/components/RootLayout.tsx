@@ -1,7 +1,5 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useMemo, useCallback } from 'react';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { AppSidebar } from '@/components/AppSidebar';
 import { DashboardHeader } from '@/components/DashboardHeader';
 
 const pathToTab = (pathname: string): string => {
@@ -28,17 +26,12 @@ export const RootLayout = () => {
   const onTabChange = useCallback((tab: string) => navigate(tabToPath(tab)), [navigate]);
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-background overflow-hidden">
-        <AppSidebar activeTab={activeTab} onTabChange={onTabChange} />
-        <div className="flex-1 flex flex-col min-w-0 h-screen">
-          <DashboardHeader pageTitle={activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} />
-          <main className="flex-1 overflow-auto px-0">
-            <Outlet />
-          </main>
-        </div>
-      </div>
-    </SidebarProvider>
+    <div className="flex min-h-screen w-full bg-background flex-col">
+      <DashboardHeader activeTab={activeTab} onTabChange={onTabChange} />
+      <main className="flex-1 overflow-auto">
+        <Outlet />
+      </main>
+    </div>
   );
 };
 
