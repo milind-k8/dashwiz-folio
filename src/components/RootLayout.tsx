@@ -3,6 +3,8 @@ import { useMemo, useCallback } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { DashboardHeader } from '@/components/DashboardHeader';
+import { BottomNavbar } from '@/components/BottomNavbar';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const pathToTab = (pathname: string): string => {
   if (pathname.startsWith('/transactions')) return 'transactions';
@@ -24,19 +26,21 @@ const tabToPath = (tab: string): string => {
 export const RootLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const activeTab = useMemo(() => pathToTab(location.pathname), [location.pathname]);
   const onTabChange = useCallback((tab: string) => navigate(tabToPath(tab)), [navigate]);
 
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-background overflow-hidden">
-        <AppSidebar activeTab={activeTab} onTabChange={onTabChange} />
+        {!isMobile && <AppSidebar activeTab={activeTab} onTabChange={onTabChange} />}
         <div className="flex-1 flex flex-col min-w-0 h-screen">
           <DashboardHeader pageTitle={activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} />
-          <main className="flex-1 overflow-auto px-0">
+          <main className={`flex-1 overflow-auto px-0 ${isMobile ? 'pb-16' : ''}`}>
             <Outlet />
           </main>
         </div>
+        <BottomNavbar activeTab={activeTab} onTabChange={onTabChange} />
       </div>
     </SidebarProvider>
   );
