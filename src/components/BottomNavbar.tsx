@@ -33,7 +33,7 @@ export function BottomNavbar({ activeTab, onTabChange }: BottomNavbarProps) {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-1 safe-area-pb z-50">
-      <nav className="flex items-center justify-around">
+      <nav className="flex items-center">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -42,7 +42,7 @@ export function BottomNavbar({ activeTab, onTabChange }: BottomNavbarProps) {
             <button
               key={item.id}
               onClick={() => handleTabChange(item.id)}
-              className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 transition-colors duration-200 ${
+              className={`relative flex-1 flex flex-col items-center gap-0.5 py-1.5 transition-colors duration-200 ${
                 isActive 
                   ? 'text-primary' 
                   : 'text-muted-foreground'

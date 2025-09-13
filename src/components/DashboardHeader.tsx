@@ -35,7 +35,7 @@ export function DashboardHeader({ activeTab, onTabChange }: DashboardHeaderProps
   };
 
   return (
-    <header className="bg-background border-b border-border px-4 py-3">
+    <header className="sticky top-0 z-50 bg-background border-b border-border px-4 py-3">
       <div className="flex items-center justify-between w-full">
         {/* Brand Icon - Left */}
         <div className="flex items-center gap-3">
