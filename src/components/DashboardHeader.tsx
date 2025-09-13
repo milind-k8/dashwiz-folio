@@ -1,7 +1,7 @@
 import { LayoutDashboard, Receipt, Building, IndianRupee } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -16,6 +16,7 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ activeTab, onTabChange }: DashboardHeaderProps) {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const tabToPath = (tab: string): string => {
     switch (tab) {
@@ -44,29 +45,34 @@ export function DashboardHeader({ activeTab, onTabChange }: DashboardHeaderProps
           <span className="text-xl font-bold text-foreground">PisaWise</span>
         </div>
 
-        {/* Navigation Items - Center */}
-        <nav className="flex items-center">
-          {menuItems.map((item) => {
-            const isActive = activeTab === item.id;
-            
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleTabChange(item.id)}
-                className={`relative flex items-center px-6 py-3 text-sm font-medium transition-colors duration-200 hover:text-primary ${
-                  isActive 
-                    ? 'text-primary' 
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                <span>{item.label}</span>
-                {isActive && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
-                )}
-              </button>
-            );
-          })}
-        </nav>
+        {/* Navigation Items - Center (Hidden on mobile) */}
+        {!isMobile && (
+          <nav className="flex items-center">
+            {menuItems.map((item) => {
+              const isActive = activeTab === item.id;
+              
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleTabChange(item.id)}
+                  className={`relative flex items-center px-6 py-3 text-sm font-medium transition-colors duration-200 hover:text-primary ${
+                    isActive 
+                      ? 'text-primary' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  {isActive && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
+                  )}
+                </button>
+              );
+            })}
+          </nav>
+        )}
+
+        {/* Spacer for mobile to push theme toggle to right */}
+        {isMobile && <div className="flex-1" />}
 
         {/* Theme Toggle - Right */}
         <div className="flex items-center">
