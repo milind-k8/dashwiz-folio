@@ -31,7 +31,7 @@ export const RootLayout = () => {
   return (
     <div className="flex min-h-screen w-full bg-background flex-col">
       <DashboardHeader activeTab={activeTab} onTabChange={onTabChange} />
-      <main className={`flex-1 overflow-auto ${isMobile ? 'pb-20' : ''}`}>
+      <main className={`flex-1 overflow-auto ${isMobile ? 'pb-16' : ''}`}>
         <Outlet />
       </main>
       {isMobile && (
