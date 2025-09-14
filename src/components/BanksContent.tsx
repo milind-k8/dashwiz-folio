@@ -80,51 +80,6 @@ export const BanksContent = () => {
         </Button>
       </div>
 
-      {/* Banks Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="p-4 bg-gradient-to-br from-blue-50/50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-900/10 border-blue-200/50 dark:border-blue-800/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Total Banks</p>
-              <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">
-                {banks.length}
-              </p>
-            </div>
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-full">
-              <Building className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4 bg-gradient-to-br from-green-50/50 to-green-100/50 dark:from-green-950/20 dark:to-green-900/10 border-green-200/50 dark:border-green-800/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-green-600 dark:text-green-400">Total Transactions</p>
-              <p className="text-2xl font-bold text-green-700 dark:text-green-300">
-                {transactions.length.toLocaleString()}
-              </p>
-            </div>
-            <div className="p-2 bg-green-100 dark:bg-green-900/50 rounded-full">
-              <Database className="h-5 w-5 text-green-600 dark:text-green-400" />
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4 bg-gradient-to-br from-purple-50/50 to-purple-100/50 dark:from-purple-950/20 dark:to-purple-900/10 border-purple-200/50 dark:border-purple-800/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Data Status</p>
-              <p className="text-lg font-bold text-purple-700 dark:text-purple-300">
-                {banks.length > 0 ? 'Connected' : 'No Data'}
-              </p>
-            </div>
-            <div className="p-2 bg-purple-100 dark:bg-purple-900/50 rounded-full">
-              <Upload className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-            </div>
-          </div>
-        </Card>
-      </div>
-
       {/* Banks Management */}
       <Card className="p-4 md:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
         <div className="flex items-center gap-3 mb-6">

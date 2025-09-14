@@ -16,9 +16,7 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
 
   return (
     <>
-      <header className="sticky top-0 z-50 flex items-center gap-3 px-3 sm:px-4 py-2 bg-card/95 backdrop-blur-lg border-b border-border shadow-sm">
-        <SidebarTrigger className="lg:hidden" />
-        
+      <header className="sticky top-0 z-50 flex items-center gap-3 px-3 sm:px-4 py-2 bg-card/95 backdrop-blur-lg border-b border-border shadow-sm">        
         {isMobile && (
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-gradient-primary rounded-lg flex items-center justify-center">
@@ -35,14 +33,6 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
         </div>
         
         <div className="flex items-center gap-2">
-          <Button 
-            size="sm" 
-            className="flex h-8 w-8 p-0 bg-primary text-primary-foreground hover:bg-primary/90"
-            onClick={() => setIsUploadModalOpen(true)}
-          >
-            <Plus className="w-4 h-4" />
-          </Button>
-          
           <div className="border border-border rounded-md h-8">
             <ThemeToggle />
           </div>

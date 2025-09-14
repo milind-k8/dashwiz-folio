@@ -21,7 +21,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useNavigate } from 'react-router-dom';
-import { ThemeToggle } from '@/components/ThemeToggle';
 
 const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -119,13 +118,6 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        
-        <div className="mt-auto p-4 border-t border-border">
-          <div className={`flex items-center ${(open || isMobile) ? 'justify-between' : 'justify-center'}`}>
-            {(open || isMobile) && <span className="text-sm font-medium text-muted-foreground">Theme</span>}
-            <ThemeToggle />
-          </div>
-        </div>
       </SidebarContent>
     </Sidebar>
   );

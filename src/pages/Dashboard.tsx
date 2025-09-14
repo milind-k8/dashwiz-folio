@@ -8,7 +8,7 @@ import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
 import { BankDataModal } from '@/components/BankDataModal';
 import { useBankData } from '@/hooks/useBankData';
-import { Wallet, TrendingUp, PiggyBank, CreditCard as CreditCardIcon } from 'lucide-react';
+import { Wallet, CreditCard as CreditCardIcon } from 'lucide-react';
 
 export function Dashboard() {
   const { getFilteredData } = useBankData();
@@ -102,7 +102,7 @@ export function Dashboard() {
       </div>
       
       {/* Metrics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mt-8">
+      <div className="grid grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6 mt-8">
         <MetricCard
           title="Balance"
           value={`₹${data.balance.toLocaleString()}`}
@@ -110,7 +110,7 @@ export function Dashboard() {
           isHighlighted={true}
           onClick={() => handleMetricClick('Balance', data.balance, 'balance')}
         />
-        <MetricCard
+        {/* <MetricCard
           title="Income"
           value={`₹${data.income.toLocaleString()}`}
           icon={TrendingUp}
@@ -123,7 +123,7 @@ export function Dashboard() {
           icon={PiggyBank}
           trend={trendsData.savings}
           onClick={() => handleMetricClick('Savings', data.savings, 'savings')}
-        />
+        /> */}
         <MetricCard
           title="Expenses"
           value={`₹${data.expenses.toLocaleString()}`}
@@ -133,16 +133,16 @@ export function Dashboard() {
         />
       </div>
 
+      <div className="mt-3 sm:mt-4 md:mt-6">
+        <TransactionList expenseCategories={data.expenseCategoriesList} />
+      </div>
+
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
         <FinanceChart data={data.monthlyData} />
         <ExpenseChart data={data.expenseCategoriesList as any} />
       </div>
 
-      {/* Category Spending - Full Width */}
-      <div className="mt-3 sm:mt-4 md:mt-6">
-        <TransactionList expenseCategories={data.expenseCategoriesList} />
-      </div>
 
       {/* Bank Data Modal */}
       {modalData && (
