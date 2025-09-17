@@ -133,6 +133,10 @@ All colors MUST be HSL.
     padding-bottom: env(safe-area-inset-bottom);
   }
   
+  .pb-safe-enhanced {
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+  }
+  
   .pt-safe {
     padding-top: env(safe-area-inset-top);
   }
@@ -143,5 +147,14 @@ All colors MUST be HSL.
   
   .pr-safe {
     padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* iOS PWA specific styles */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  @media (display-mode: standalone) {
+    .pb-safe-enhanced {
+      padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+    }
   }
 }

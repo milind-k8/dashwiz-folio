@@ -20,8 +20,8 @@ export function BottomNavbar({ activeTab, onTabChange }: BottomNavbarProps) {
   if (!isMobile) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-t border-border pb-safe">
-      <div className="flex items-center justify-around px-1 py-0.5" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-t border-border">
+      <div className="flex items-center justify-around px-1 py-2 pb-safe-enhanced">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
