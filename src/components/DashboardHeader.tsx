@@ -16,7 +16,7 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
 
   return (
     <>
-      <div className="flex items-center gap-3 px-3 sm:px-4 py-2">        
+      <header className="sticky top-0 z-50 flex items-center gap-3 px-3 sm:px-4 py-2 bg-card/95 backdrop-blur-lg border-b border-border shadow-sm">        
         {isMobile && (
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-gradient-primary rounded-lg flex items-center justify-center">
@@ -28,10 +28,7 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
         
         <div className="flex-1">
           {!isMobile && (
-            <>
-              <SidebarTrigger className="mr-2" />
-              <h1 className="text-base sm:text-lg font-semibold text-foreground inline">{pageTitle}</h1>
-            </>
+            <h1 className="text-base sm:text-lg font-semibold text-foreground">{pageTitle}</h1>
           )}
         </div>
         
@@ -40,7 +37,7 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
             <ThemeToggle />
           </div>
         </div>
-      </div>
+      </header>
 
       <FileUploadModal 
         isOpen={isUploadModalOpen}
