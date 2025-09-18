@@ -76,7 +76,27 @@ export const useBankData = () => {
       });
     }
     
-    // Calculate metrics
+    // Calculate metrics by bank
+    const bankMetrics = new Map<string, { balance: number; income: number; expenses: number }>();
+    
+    transactions.forEach(t => {
+      const bankName = toTitleCase(t.bank);
+      if (!bankMetrics.has(bankName)) {
+        bankMetrics.set(bankName, { balance: 0, income: 0, expenses: 0 });
+      }
+      const metrics = bankMetrics.get(bankName)!;
+      
+      if (t.type === 'deposit') {
+        metrics.income += t.amount;
+      } else if (t.type === 'withdrawl') {
+        metrics.expenses += t.amount;
+      }
+      
+      // Use latest closing balance for each bank
+      metrics.balance = t.closingBy;
+    });
+
+    // Calculate totals
     const income = transactions
       .filter(t => t.type === 'deposit')
       .reduce((sum, t) => sum + t.amount, 0);
@@ -85,8 +105,16 @@ export const useBankData = () => {
       .filter(t => t.type === 'withdrawl')
       .reduce((sum, t) => sum + t.amount, 0);
     
-    const balance = transactions.length > 0 ? transactions[0].closingBy : 0;
+    const totalBalance = Array.from(bankMetrics.values()).reduce((sum, metrics) => sum + metrics.balance, 0);
     const savings = income - expenses;
+
+    // Convert bank metrics to array format
+    const bankBreakdown = Array.from(bankMetrics.entries()).map(([bankName, metrics]) => ({
+      bank: bankName,
+      balance: metrics.balance,
+      income: metrics.income,
+      expenses: metrics.expenses
+    })).sort((a, b) => b.balance - a.balance);
 
     // Group expenses by category and collect tags
     const expenseCategoryTotals = transactions
@@ -170,13 +198,14 @@ export const useBankData = () => {
 
     return {
       transactions,
-      balance,
+      balance: totalBalance,
       income,
       expenses,
       savings,
       expenseCategories: expenseCategoryTotals,
       expenseCategoriesList,
       monthlyData,
+      bankBreakdown,
     };
   }, []);
 

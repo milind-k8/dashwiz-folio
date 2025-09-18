@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MetricCard } from '@/components/MetricCard';
+import { EnhancedMetricCard } from '@/components/EnhancedMetricCard';
 import { FinanceChart } from '@/components/FinanceChart';
 import { ExpenseChart } from '@/components/ExpenseChart';
 import { TransactionList } from '@/components/TransactionList';
@@ -102,34 +102,24 @@ export function Dashboard() {
       </div>
       
       {/* Metrics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6 mt-8">
-        <MetricCard
-          title="Balance"
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6 mt-8">
+        <EnhancedMetricCard
+          title="Total Balance"
           value={`₹${data.balance.toLocaleString()}`}
           icon={Wallet}
           isHighlighted={true}
           onClick={() => handleMetricClick('Balance', data.balance, 'balance')}
+          bankBreakdown={data.bankBreakdown}
+          metricType="balance"
         />
-        {/* <MetricCard
-          title="Income"
-          value={`₹${data.income.toLocaleString()}`}
-          icon={TrendingUp}
-          trend={trendsData.income}
-          onClick={() => handleMetricClick('Income', data.income, 'income')}
-        />
-        <MetricCard
-          title="Savings"
-          value={`₹${data.savings.toLocaleString()}`}
-          icon={PiggyBank}
-          trend={trendsData.savings}
-          onClick={() => handleMetricClick('Savings', data.savings, 'savings')}
-        /> */}
-        <MetricCard
-          title="Expenses"
+        <EnhancedMetricCard
+          title="Total Expenses"
           value={`₹${data.expenses.toLocaleString()}`}
           icon={CreditCardIcon}
           trend={trendsData.expenses}
           onClick={() => handleMetricClick('Expenses', data.expenses, 'expenses')}
+          bankBreakdown={data.bankBreakdown}
+          metricType="expenses"
         />
       </div>
 
