@@ -6,19 +6,12 @@ import { ExpenseChart } from '@/components/ExpenseChart';
 import { TransactionList } from '@/components/TransactionList';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
-import { BankDataModal } from '@/components/BankDataModal';
 import { useBankData } from '@/hooks/useBankData';
 import { Wallet, CreditCard as CreditCardIcon } from 'lucide-react';
 
 export function Dashboard() {
   const { getFilteredData } = useBankData();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalData, setModalData] = useState<{
-    title: string;
-    value: number;
-    type: 'balance' | 'income' | 'expenses' | 'savings';
-  } | null>(null);
 
   // Get filter values from URL params
   const selectedBanks = searchParams.get('banks')?.split(',').filter(Boolean) || [];
@@ -34,11 +27,6 @@ export function Dashboard() {
       return newParams;
     }, { replace: true });
   }, [setSearchParams]);
-
-  const handleMetricClick = useCallback((title: string, value: number, type: 'balance' | 'income' | 'expenses' | 'savings') => {
-    setModalData({ title, value, type });
-    setModalOpen(true);
-  }, []);
 
   // Memoize the expensive data calculation
   const data = useMemo(() => {
@@ -108,7 +96,6 @@ export function Dashboard() {
           value={`₹${data.balance.toLocaleString()}`}
           icon={Wallet}
           isHighlighted={true}
-          onClick={() => handleMetricClick('Balance', data.balance, 'balance')}
           bankBreakdown={data.bankBreakdown}
           metricType="balance"
         />
@@ -117,7 +104,6 @@ export function Dashboard() {
           value={`₹${data.expenses.toLocaleString()}`}
           icon={CreditCardIcon}
           trend={trendsData.expenses}
-          onClick={() => handleMetricClick('Expenses', data.expenses, 'expenses')}
           bankBreakdown={data.bankBreakdown}
           metricType="expenses"
         />
@@ -132,20 +118,6 @@ export function Dashboard() {
         <FinanceChart data={data.monthlyData} />
         <ExpenseChart data={data.expenseCategoriesList as any} />
       </div>
-
-
-      {/* Bank Data Modal */}
-      {modalData && (
-        <BankDataModal
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-          title={modalData.title}
-          totalValue={modalData.value}
-          selectedBanks={selectedBanks}
-          selectedDuration={selectedDuration}
-          metricType={modalData.type}
-        />
-      )}
     </PageContent>
   );
 }
