@@ -1,5 +1,4 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { LucideIcon } from 'lucide-react';
 
 interface BankBreakdown {
@@ -47,103 +46,126 @@ export function EnhancedMetricCard({
 
   return (
     <Card 
-      className={`transition-all duration-300 ${
+      className={`group relative overflow-hidden transition-all duration-500 ease-out hover:shadow-xl hover:-translate-y-1 ${
         isHighlighted 
-          ? 'bg-gradient-card text-white border-0 shadow-card' 
-          : 'bg-card border-border shadow-card hover:shadow-elevated'
+          ? 'bg-gradient-to-br from-primary via-primary to-primary/90 text-white border-0 shadow-lg' 
+          : 'bg-card/50 backdrop-blur-sm border border-border/50 shadow-sm hover:border-primary/20 hover:bg-card/80'
       }`}
     >
-      <CardContent className="p-3 sm:p-4">
-        {/* Header Section */}
-        <div className="flex items-center justify-between mb-3 sm:mb-4">
-          <div className={`p-2 rounded-lg ${
+      {/* Subtle gradient overlay for highlighted cards */}
+      {isHighlighted && (
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/5 pointer-events-none" />
+      )}
+      
+      <CardContent className="p-6 relative">
+        {/* Header Section with Icon and Trend */}
+        <div className="flex items-start justify-between mb-6">
+          <div className={`p-3 rounded-xl transition-all duration-300 group-hover:scale-110 ${
             isHighlighted 
-              ? 'bg-white/20' 
-              : 'bg-primary/10'
+              ? 'bg-white/15 backdrop-blur-sm shadow-sm' 
+              : 'bg-primary/8 group-hover:bg-primary/12'
           }`}>
-            <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${
+            <Icon className={`w-5 h-5 transition-colors duration-300 ${
               isHighlighted 
-                ? 'text-white' 
-                : 'text-primary'
+                ? 'text-white drop-shadow-sm' 
+                : 'text-primary group-hover:text-primary/80'
             }`} />
           </div>
+          
           {trend && (
-            <span className={`text-xs sm:text-sm font-medium ${
+            <div className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${
               isHighlighted 
-                ? 'text-white/80' 
-                : 'text-success'
+                ? 'bg-white/15 text-white/90 backdrop-blur-sm' 
+                : 'bg-success/10 text-success border border-success/20'
             }`}>
               {trend}
-            </span>
+            </div>
           )}
         </div>
         
-        {/* Main Metric */}
-        <div className="space-y-2">
-          <p className={`text-sm font-medium ${
-            isHighlighted 
-              ? 'text-white/80' 
-              : 'text-muted-foreground'
-          }`}>
-            {title}
-          </p>
-          <p className={`text-xl sm:text-2xl font-bold ${
-            isHighlighted 
-              ? 'text-white' 
-              : 'text-foreground'
-          }`}>
-            {value}
-          </p>
-        </div>
-
-        {/* Bank Breakdown */}
-        {hasBreakdown && filteredBreakdown.length > 0 && (
-          <div className="mt-4 space-y-2">
-            <p className={`text-xs font-medium ${
+        {/* Main Content */}
+        <div className="space-y-3">
+          <div className="space-y-1">
+            <h3 className={`text-sm font-medium tracking-wide transition-colors duration-300 ${
               isHighlighted 
-                ? 'text-white/70' 
-                : 'text-muted-foreground'
+                ? 'text-white/75' 
+                : 'text-muted-foreground group-hover:text-foreground/80'
             }`}>
-              By Bank ({filteredBreakdown.length})
+              {title}
+            </h3>
+            <p className={`text-3xl font-bold tracking-tight transition-all duration-300 ${
+              isHighlighted 
+                ? 'text-white drop-shadow-sm' 
+                : 'text-foreground group-hover:text-primary'
+            }`}>
+              {value}
             </p>
-            
-            <div className="space-y-2 max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20">
-              {filteredBreakdown.map((bank, index) => {
-                const bankValue = getMetricValue(bank);
-                return (
-                  <div 
-                    key={bank.bank} 
-                    className={`flex items-center justify-between py-2 px-3 rounded-lg text-xs ${
-                      isHighlighted 
-                        ? 'bg-white/10' 
-                        : 'bg-muted/50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 min-w-0 flex-1">
-                      <Badge 
-                        variant="outline" 
-                        className={`text-xs px-2 py-0.5 ${
-                          isHighlighted 
-                            ? 'border-white/30 text-white/90' 
-                            : 'border-primary/30 text-primary'
-                        }`}
-                      >
-                        {bank.bank}
-                      </Badge>
-                    </div>
-                    <span className={`font-semibold text-sm ${
-                      isHighlighted 
-                        ? 'text-white' 
-                        : 'text-foreground'
-                    }`}>
-                      ₹{bankValue.toLocaleString()}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
           </div>
-        )}
+
+          {/* Bank Breakdown Section */}
+          {hasBreakdown && filteredBreakdown.length > 0 && (
+            <div className="pt-4 border-t border-white/10">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className={`text-xs font-semibold uppercase tracking-wider ${
+                  isHighlighted 
+                    ? 'text-white/60' 
+                    : 'text-muted-foreground'
+                }`}>
+                  By Bank
+                </h4>
+                <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                  isHighlighted 
+                    ? 'bg-white/10 text-white/80' 
+                    : 'bg-muted/50 text-muted-foreground'
+                }`}>
+                  {filteredBreakdown.length}
+                </span>
+              </div>
+              
+              <div className="space-y-3 max-h-48 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20">
+                {filteredBreakdown.map((bank, index) => {
+                  const bankValue = getMetricValue(bank);
+                  const isLargest = index === 0; // Assuming sorted by value
+                  
+                  return (
+                    <div 
+                      key={bank.bank} 
+                      className={`group/item flex items-center justify-between p-3 rounded-lg transition-all duration-300 hover:scale-[1.02] ${
+                        isHighlighted 
+                          ? 'bg-white/8 hover:bg-white/12 backdrop-blur-sm' 
+                          : 'bg-muted/30 hover:bg-muted/50 border border-border/50 hover:border-primary/30'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                          isHighlighted 
+                            ? 'bg-white/60' 
+                            : 'bg-primary/60'
+                        } ${isLargest ? 'ring-2 ring-white/30' : ''}`} />
+                        
+                        <span className={`font-medium text-sm truncate transition-colors duration-300 ${
+                          isHighlighted 
+                            ? 'text-white/90 group-hover/item:text-white' 
+                            : 'text-foreground/80 group-hover/item:text-foreground'
+                        }`}>
+                          {bank.bank}
+                        </span>
+                      </div>
+                      
+                      <div className={`font-bold text-sm transition-all duration-300 ${
+                        isHighlighted 
+                          ? 'text-white group-hover/item:scale-105' 
+                          : 'text-foreground group-hover/item:text-primary group-hover/item:scale-105'
+                      }`}>
+                        ₹{bankValue.toLocaleString()}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
