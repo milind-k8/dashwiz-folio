@@ -37,11 +37,6 @@ export function NavUser() {
       .slice(0, 2);
   };
 
-  const getUserName = (email: string) => {
-    const name = email.split('@')[0];
-    return name.charAt(0).toUpperCase() + name.slice(1);
-  };
-
   if (!user) return null;
 
   return (
@@ -63,7 +58,7 @@ export function NavUser() {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
-              {getUserName(user.email || '')}
+              {user.user_metadata?.name || ''}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}
