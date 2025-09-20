@@ -33,9 +33,7 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
         </div>
         
         <div className="flex items-center gap-2">
-          <div className="border border-border rounded-md h-8">
-            <ThemeToggle />
-          </div>
+          <ThemeToggle />
         </div>
       </header>
 

@@ -88,18 +88,13 @@ export function Dashboard() {
       {/* Concise Header */}
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Wallet className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-foreground">
-                Financial Dashboard
-              </h1>
-              <p className="text-xs sm:text-sm text-muted-foreground">
-                Track your financial health
-              </p>
-            </div>
+          <div>
+            <h1 className="text-base sm:text-lg font-medium text-foreground">
+              Financial Dashboard
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Track your financial health
+            </p>
           </div>
           
           {/* Filters */}
