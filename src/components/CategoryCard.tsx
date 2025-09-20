@@ -83,12 +83,6 @@ export function CategoryCard({
       {/* Expanded Tag Details */}
       {isExpanded && (
         <div className="border-t border-border/30 pt-3 px-3 pb-3 space-y-2">
-          <div className="flex items-center gap-2 mb-2">
-            <Tag className="w-3.5 h-3.5 text-muted-foreground" />
-            <h5 className="text-xs font-medium text-muted-foreground">
-              Tag Breakdown ({tags.length} {tags.length === 1 ? 'tag' : 'tags'})
-            </h5>
-          </div>
           {tags.map((tag) => {
             const tagAmount = tagSpending[tag] || 0;
             const tagCount = tagCounts[tag] || 1;

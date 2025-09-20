@@ -50,6 +50,56 @@ export function EnhancedMetricCard({
   const isPositiveTrend = trendValue && trendValue > 0;
   const isNegativeTrend = trendValue && trendValue < 0;
   const isExpenses = metricType === 'expenses';
+  
+  // Check if custom background colors are applied
+  const hasCustomBg = className && (
+    className.includes('bg-gradient-to-br') || 
+    className.includes('bg-red-') || 
+    className.includes('bg-blue-') || 
+    className.includes('bg-green-') || 
+    className.includes('bg-yellow-') || 
+    className.includes('bg-purple-') || 
+    className.includes('bg-pink-') || 
+    className.includes('bg-orange-') || 
+    className.includes('bg-indigo-') || 
+    className.includes('bg-teal-') || 
+    className.includes('bg-cyan-') || 
+    className.includes('bg-emerald-') || 
+    className.includes('bg-lime-') || 
+    className.includes('bg-amber-') || 
+    className.includes('bg-violet-') || 
+    className.includes('bg-fuchsia-') || 
+    className.includes('bg-rose-') || 
+    className.includes('bg-slate-') || 
+    className.includes('bg-gray-') || 
+    className.includes('bg-zinc-') || 
+    className.includes('bg-neutral-') || 
+    className.includes('bg-stone-')
+  );
+  
+  // Determine if we should use light or dark text based on background
+  const useLightText = hasCustomBg && (
+    className.includes('text-white') || 
+    className.includes('from-red-500') || 
+    className.includes('from-blue-500') || 
+    className.includes('from-green-500') || 
+    className.includes('from-purple-500') || 
+    className.includes('from-pink-500') || 
+    className.includes('from-indigo-500') || 
+    className.includes('from-teal-500') || 
+    className.includes('from-cyan-500') || 
+    className.includes('from-emerald-500') || 
+    className.includes('from-violet-500') || 
+    className.includes('from-violet-500') || 
+    className.includes('from-rose-500') || 
+    className.includes('from-slate-500') || 
+    className.includes('from-gray-500') || 
+    className.includes('from-zinc-500') || 
+    className.includes('from-neutral-500') || 
+    className.includes('from-stone-500')
+  );
+  
+  const useDarkText = hasCustomBg && !useLightText;
 
   return (
     <Card
@@ -72,13 +122,13 @@ export function EnhancedMetricCard({
           <div className="space-y-1 min-w-0 flex-1">
             <h3 className={cn(
               "text-xs font-medium tracking-wide uppercase truncate",
-              isHighlighted ? "text-white/80" : "text-muted-foreground"
+              isHighlighted ? "text-white/80" : useLightText ? "text-white/80" : useDarkText ? "text-gray-800" : "text-muted-foreground"
             )}>
               {title}
             </h3>
             <p className={cn(
               "text-lg sm:text-xl lg:text-2xl font-bold tracking-tight break-words",
-              isHighlighted ? "text-white drop-shadow-sm" : "text-foreground"
+              isHighlighted ? "text-white drop-shadow-sm" : useLightText ? "text-white drop-shadow-sm" : useDarkText ? "text-gray-900" : "text-foreground"
             )}>
               {value}
             </p>
@@ -87,7 +137,7 @@ export function EnhancedMetricCard({
             {trend && (
               <div className={cn(
                 "flex items-center gap-1 text-xs font-medium",
-                isPositiveTrend ? "text-success" : isNegativeTrend ? "text-destructive" : "text-muted-foreground"
+                isPositiveTrend ? "text-success" : isNegativeTrend ? "text-destructive" : useLightText ? "text-white/70" : useDarkText ? "text-gray-600" : "text-muted-foreground"
               )}>
                 {isPositiveTrend ? (
                   <TrendingUp className="w-3 h-3 flex-shrink-0" />
@@ -105,21 +155,35 @@ export function EnhancedMetricCard({
             "group-hover:scale-110 group-hover:rotate-3",
             isHighlighted 
               ? "bg-white/20" 
-              : "bg-primary/10"
+              : useLightText 
+                ? "bg-white/20" 
+                : useDarkText 
+                  ? "bg-gray-200/50" 
+                  : "bg-primary/10"
           )}>
             <Icon className={cn(
               "w-4 h-4 sm:w-5 sm:h-5 transition-colors duration-300",
               isHighlighted 
                 ? "text-white" 
-                : "text-primary"
+                : useLightText 
+                  ? "text-white" 
+                  : useDarkText 
+                    ? "text-gray-700" 
+                    : "text-primary"
             )} />
           </div>
         </div>
 
         {/* Bank Breakdown Section */}
         {filteredBreakdown.length > 0 && (
-          <div className="space-y-2 border-t border-white/10 pt-3">
-            <div className="text-xs font-medium text-muted-foreground/70 uppercase tracking-wide">
+          <div className={cn(
+            "space-y-2 border-t pt-3",
+            isHighlighted || useLightText ? "border-white/10" : useDarkText ? "border-gray-300/50" : "border-border"
+          )}>
+            <div className={cn(
+              "text-xs font-medium uppercase tracking-wide",
+              isHighlighted || useLightText ? "text-white/70" : useDarkText ? "text-gray-600" : "text-muted-foreground/70"
+            )}>
               Breakdown
             </div>
             <div className="space-y-1 max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
@@ -134,19 +198,19 @@ export function EnhancedMetricCard({
                       "flex items-center justify-between p-2 rounded-md transition-all duration-300",
                       "hover:bg-muted/50 hover:scale-[1.01]",
                       "animate-in slide-in-from-left-2 fade-in-0",
-                      "bg-muted/30"
+                      isHighlighted || useLightText ? "bg-white/10" : useDarkText ? "bg-gray-100/50" : "bg-muted/30"
                     )}
                     style={{ animationDelay: `${delay}ms` }}
                   >
                     <span className={cn(
                       "text-xs font-medium truncate uppercase flex-1 min-w-0",
-                      isHighlighted ? "text-white/90" : "text-foreground/80"
+                      isHighlighted || useLightText ? "text-white/90" : useDarkText ? "text-gray-700" : "text-foreground/80"
                     )}>
                       {bank.bank}
                     </span>
                     <span className={cn(
                       "font-semibold text-xs flex-shrink-0 ml-2",
-                      isHighlighted ? "text-white" : "text-foreground"
+                      isHighlighted || useLightText ? "text-white" : useDarkText ? "text-gray-900" : "text-foreground"
                     )}>
                       {isExpenses ? "-" : ""}₹{bankValue.toLocaleString()}
                     </span>
@@ -154,7 +218,10 @@ export function EnhancedMetricCard({
                 );
               })}
               {filteredBreakdown.length > 3 && (
-                <div className="text-xs text-muted-foreground/60 text-center py-1">
+                <div className={cn(
+                  "text-xs text-center py-1",
+                  isHighlighted || useLightText ? "text-white/60" : useDarkText ? "text-gray-500" : "text-muted-foreground/60"
+                )}>
                   +{filteredBreakdown.length - 3} more
                 </div>
               )}

@@ -110,10 +110,9 @@ export function Dashboard() {
           title="Total Balance"
           value={`₹${data.balance.toLocaleString()}`}
           icon={Wallet}
-          isHighlighted={false}
+          isHighlighted={true}
           bankBreakdown={data.bankBreakdown}
           metricType="balance"
-          className="border-primary/20 bg-gradient-to-br from-primary/5 via-card/60 to-primary/5"
         />
         <EnhancedMetricCard
           title="Monthly Expenses"
@@ -122,6 +121,7 @@ export function Dashboard() {
           trend={trendsData.expenses}
           bankBreakdown={data.bankBreakdown}
           metricType="expenses"
+          className="bg-gradient-to-br from-red-200 via-red-300 to-red-400 text-red-900 border-0 shadow-card"
         />
       </div>
 
