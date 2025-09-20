@@ -118,7 +118,7 @@ export function EnhancedMetricCard({
       
       <CardContent className="relative p-3 sm:p-4 space-y-3 sm:space-y-4">
         {/* Header Section */}
-        <div className="flex items-start sm:items-center justify-between gap-3">
+        <div className="flex items-start justify-between gap-3">
           <div className="space-y-1 min-w-0 flex-1">
             <h3 className={cn(
               "text-xs font-medium tracking-wide uppercase truncate",
@@ -149,9 +149,9 @@ export function EnhancedMetricCard({
             )}
           </div>
 
-          {/* Icon container with enhanced styling */}
+          {/* Icon container with enhanced styling - positioned at top right */}
           <div className={cn(
-            "p-2 sm:p-3 rounded-xl transition-all duration-300 flex-shrink-0",
+            "p-2 sm:p-3 rounded-xl transition-all duration-300 flex-shrink-0 self-start",
             "group-hover:scale-110 group-hover:rotate-3",
             isHighlighted 
               ? "bg-white/20" 

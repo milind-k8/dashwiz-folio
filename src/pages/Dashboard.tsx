@@ -118,7 +118,6 @@ export function Dashboard() {
           title="Monthly Expenses"
           value={`₹${data.expenses.toLocaleString()}`}
           icon={CreditCardIcon}
-          trend={trendsData.expenses}
           bankBreakdown={data.bankBreakdown}
           metricType="expenses"
           className="bg-gradient-to-br from-red-200 via-red-300 to-red-400 text-red-900 border-0 shadow-card"
