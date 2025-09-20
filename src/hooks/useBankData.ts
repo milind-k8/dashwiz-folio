@@ -116,26 +116,43 @@ export const useBankData = () => {
       expenses: metrics.expenses
     })).sort((a, b) => b.balance - a.balance);
 
-    // Group expenses by category and collect tags
-    const expenseCategoryTotals = transactions
-      .filter(t => t.type === 'withdrawl')
-      .reduce((acc, t) => {
-        acc[t.category] = (acc[t.category] || 0) + t.amount;
-        return acc;
-      }, {} as Record<string, number>);
+    // Group expenses by category and collect tags with improved logic
+    const expenseTransactions = transactions.filter(t => t.type === 'withdrawl');
+    
+    const expenseCategoryData = expenseTransactions.reduce((acc, t) => {
+      const category = t.category || 'Uncategorized';
+      
+      if (!acc[category]) {
+        acc[category] = {
+          total: 0,
+          transactions: [],
+          tags: new Set<string>()
+        };
+      }
+      
+      // Add to total amount
+      acc[category].total += t.amount;
+      
+      // Store transaction for detailed breakdown
+      acc[category].transactions.push(t);
+      
+      // Collect tags
+      if (t.tags) {
+        const tagList = t.tags.split(',').map(s => s.trim()).filter(Boolean);
+        tagList.forEach(tag => acc[category].tags.add(tag));
+      }
+      
+      return acc;
+    }, {} as Record<string, { total: number; transactions: any[]; tags: Set<string> }>);
 
-    const expenseCategoryTags = transactions
-      .filter(t => t.type === 'withdrawl')
-      .reduce((acc, t) => {
-        const list = (t.tags || '')
-          .split(',')
-          .map(s => s.trim())
-          .filter(Boolean);
-        const set = acc[t.category] || new Set<string>();
-        list.forEach(tag => set.add(tag));
-        acc[t.category] = set;
-        return acc;
-      }, {} as Record<string, Set<string>>);
+    // Extract totals and tags for backward compatibility
+    const expenseCategoryTotals = Object.fromEntries(
+      Object.entries(expenseCategoryData).map(([category, data]) => [category, data.total])
+    );
+    
+    const expenseCategoryTags = Object.fromEntries(
+      Object.entries(expenseCategoryData).map(([category, data]) => [category, data.tags])
+    );
 
     const totalExpenses = Object.values(expenseCategoryTotals).reduce((s, v) => s + v, 0);
     const colorPalette = [
@@ -148,7 +165,8 @@ export const useBankData = () => {
         amount,
         percentage: totalExpenses > 0 ? Math.round((amount / totalExpenses) * 100) : 0,
         color: colorPalette[idx % colorPalette.length],
-        tags: Array.from(expenseCategoryTags[category] || new Set<string>()).map(toTitleCase)
+        tags: Array.from(expenseCategoryTags[category] || new Set<string>()).map(toTitleCase),
+        transactions: expenseCategoryData[category]?.transactions || []
       }));
 
     // Build monthly series for charts

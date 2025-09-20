@@ -130,19 +130,10 @@ export function Dashboard() {
         />
       </div>
 
-      {/* Transaction Summary Card */}
-      <Card className="mb-8 shadow-lg border-0 bg-gradient-to-r from-card/50 to-card/30 backdrop-blur-sm">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-foreground">Recent Activity</h3>
-            <Button variant="ghost" size="sm">
-              View All
-              <ArrowDownRight className="w-4 h-4 ml-2" />
-            </Button>
-          </div>
-          <TransactionList expenseCategories={data.expenseCategoriesList} />
-        </CardContent>
-      </Card>
+      {/* Transaction Summary */}
+      <div className="mb-8">
+        <TransactionList expenseCategories={data.expenseCategoriesList} />
+      </div>
 
       {/* Enhanced Charts Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
