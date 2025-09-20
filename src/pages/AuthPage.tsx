@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Mail, LogIn, UserPlus } from 'lucide-react';
+import { LogIn, UserPlus } from 'lucide-react';
+import { GoogleIcon } from '@/components/icons/GoogleIcon';
 
 export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -146,7 +147,7 @@ export default function AuthPage() {
             disabled={isLoading}
             className="w-full h-12"
           >
-            <Mail className="mr-2 h-4 w-4" />
+            <GoogleIcon className="mr-2" size={16} />
             Continue with Google
           </Button>
 
