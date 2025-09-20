@@ -41,14 +41,8 @@ export default function AuthPage() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const redirectUrl = isLocal ? 'http://localhost:3000/' : `${window.location.origin}/`;
-      
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectUrl
-        }
+        provider: 'google'
       });
 
       if (error) {
@@ -75,15 +69,9 @@ export default function AuthPage() {
 
     try {
       if (isSignUp) {
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const redirectUrl = isLocal ? 'http://localhost:3000/' : `${window.location.origin}/`;
-        
         const { error } = await supabase.auth.signUp({
           email,
-          password,
-          options: {
-            emailRedirectTo: redirectUrl
-          }
+          password
         });
 
         if (error) {

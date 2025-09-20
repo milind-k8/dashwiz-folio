@@ -23,6 +23,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // Handle token expiration
+        if (event === 'TOKEN_REFRESHED' && !session) {
+          // Token refresh failed, redirect to login
+          window.location.href = '/auth';
+        }
       }
     );
 
