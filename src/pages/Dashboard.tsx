@@ -88,7 +88,7 @@ export function Dashboard() {
       {/* Concise Header */}
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
+          <div className="hidden sm:block">
             <h1 className="text-base sm:text-lg font-medium text-foreground">
               Financial Dashboard
             </h1>
