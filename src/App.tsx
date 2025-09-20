@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { AuthProvider } from "@/hooks/useAuth";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { lazy, Suspense } from 'react';
 import { PageLoader } from '@/components/ui/loader';
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
@@ -14,6 +16,7 @@ const InvestmentsPage = lazy(() => import('./pages/InvestmentsPage'));
 const CardsPage = lazy(() => import('./pages/CardsPage'));
 const GoalsPage = lazy(() => import('./pages/GoalsPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
+const AuthPage = lazy(() => import('./pages/AuthPage'));
 import { RootLayout } from '@/components/RootLayout';
 import NotFound from "./pages/NotFound";
 
@@ -22,27 +25,28 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="system" storageKey="dashboard-theme">
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* No redirects needed here */}
-            <Route element={<RootLayout />}>
-              <Route index element={<Suspense fallback={<PageLoader />}><DashboardPage /></Suspense>} />
-              <Route path="transactions" element={<Suspense fallback={<PageLoader />}><TransactionsPage /></Suspense>} />
-              <Route path="banks" element={<Suspense fallback={<PageLoader />}><BanksPage /></Suspense>} />
-              <Route path="wallet" element={<Suspense fallback={<PageLoader />}><WalletPage /></Suspense>} />
-              <Route path="investments" element={<Suspense fallback={<PageLoader />}><InvestmentsPage /></Suspense>} />
-              <Route path="cards" element={<Suspense fallback={<PageLoader />}><CardsPage /></Suspense>} />
-              <Route path="goals" element={<Suspense fallback={<PageLoader />}><GoalsPage /></Suspense>} />
-              <Route path="settings" element={<Suspense fallback={<PageLoader />}><SettingsPage /></Suspense>} />
-            </Route>
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/auth" element={<Suspense fallback={<PageLoader />}><AuthPage /></Suspense>} />
+              <Route element={<ProtectedRoute><RootLayout /></ProtectedRoute>}>
+                <Route index element={<Suspense fallback={<PageLoader />}><DashboardPage /></Suspense>} />
+                <Route path="transactions" element={<Suspense fallback={<PageLoader />}><TransactionsPage /></Suspense>} />
+                <Route path="banks" element={<Suspense fallback={<PageLoader />}><BanksPage /></Suspense>} />
+                <Route path="wallet" element={<Suspense fallback={<PageLoader />}><WalletPage /></Suspense>} />
+                <Route path="investments" element={<Suspense fallback={<PageLoader />}><InvestmentsPage /></Suspense>} />
+                <Route path="cards" element={<Suspense fallback={<PageLoader />}><CardsPage /></Suspense>} />
+                <Route path="goals" element={<Suspense fallback={<PageLoader />}><GoalsPage /></Suspense>} />
+                <Route path="settings" element={<Suspense fallback={<PageLoader />}><SettingsPage /></Suspense>} />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );

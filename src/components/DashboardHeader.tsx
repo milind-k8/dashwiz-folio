@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Plus, IndianRupee } from 'lucide-react';
+import { Plus, IndianRupee, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { FileUploadModal } from '@/components/FileUploadModal';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAuth } from '@/hooks/useAuth';
 
 interface DashboardHeaderProps {
   pageTitle?: string;
@@ -13,6 +14,7 @@ interface DashboardHeaderProps {
 export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProps) {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const isMobile = useIsMobile();
+  const { signOut } = useAuth();
 
   return (
     <>
@@ -33,6 +35,15 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
         </div>
         
         <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={signOut}
+            className="gap-2"
+          >
+            <LogOut className="h-4 w-4" />
+            {!isMobile && "Sign out"}
+          </Button>
           <ThemeToggle />
         </div>
       </header>
