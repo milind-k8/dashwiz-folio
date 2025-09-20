@@ -6,11 +6,14 @@ import { ExpenseChart } from '@/components/ExpenseChart';
 import { TransactionList } from '@/components/TransactionList';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
+import { DashboardSkeleton } from '@/components/DashboardSkeleton';
 import { useBankData } from '@/hooks/useBankData';
-import { Wallet, CreditCard as CreditCardIcon } from 'lucide-react';
+import { Wallet, CreditCard as CreditCardIcon, ArrowDownRight } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 export function Dashboard() {
-  const { getFilteredData } = useBankData();
+  const { getFilteredData, isLoading } = useBankData();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Get filter values from URL params
@@ -72,35 +75,53 @@ export function Dashboard() {
     };
   }, [getFilteredData, selectedBanks, selectedDuration]);
 
+  if (isLoading) {
+    return (
+      <PageContent>
+        <DashboardSkeleton />
+      </PageContent>
+    );
+  }
+
   return (
     <PageContent>
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <div className="space-y-1">
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-            Financial Overview
-          </h1>
-          <div className="w-12 h-1 bg-gradient-to-r from-primary to-primary/60 rounded-full"></div>
-        </div>
-        
-        {/* Filters */}
-        <div className="flex justify-end overflow-x-auto">
-          <InlineFilters onFiltersChange={handleFiltersChange} />
+      {/* Concise Header */}
+      <div className="mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Wallet className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-foreground">
+                Financial Dashboard
+              </h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Track your financial health
+              </p>
+            </div>
+          </div>
+          
+          {/* Filters */}
+          <div className="flex justify-end">
+            <InlineFilters onFiltersChange={handleFiltersChange} />
+          </div>
         </div>
       </div>
       
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mt-8">
+      {/* Enhanced Metrics Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6 mb-8">
         <EnhancedMetricCard
           title="Total Balance"
           value={`₹${data.balance.toLocaleString()}`}
           icon={Wallet}
-          isHighlighted={true}
+          isHighlighted={false}
           bankBreakdown={data.bankBreakdown}
           metricType="balance"
+          className="border-primary/20 bg-gradient-to-br from-primary/5 via-card/60 to-primary/5"
         />
         <EnhancedMetricCard
-          title="Total Expenses"
+          title="Monthly Expenses"
           value={`₹${data.expenses.toLocaleString()}`}
           icon={CreditCardIcon}
           trend={trendsData.expenses}
@@ -109,14 +130,32 @@ export function Dashboard() {
         />
       </div>
 
-      <div className="mt-3 sm:mt-4 md:mt-6">
-        <TransactionList expenseCategories={data.expenseCategoriesList} />
-      </div>
+      {/* Transaction Summary Card */}
+      <Card className="mb-8 shadow-lg border-0 bg-gradient-to-r from-card/50 to-card/30 backdrop-blur-sm">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-foreground">Recent Activity</h3>
+            <Button variant="ghost" size="sm">
+              View All
+              <ArrowDownRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+          <TransactionList expenseCategories={data.expenseCategoriesList} />
+        </CardContent>
+      </Card>
 
-      {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
-        <FinanceChart data={data.monthlyData} />
-        <ExpenseChart data={data.expenseCategoriesList as any} />
+      {/* Enhanced Charts Grid */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <Card className="shadow-lg border-0 bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-sm">
+          <CardContent className="p-6">
+            <FinanceChart data={data.monthlyData} />
+          </CardContent>
+        </Card>
+        <Card className="shadow-lg border-0 bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-sm">
+          <CardContent className="p-6">
+            <ExpenseChart data={data.expenseCategoriesList as any} />
+          </CardContent>
+        </Card>
       </div>
     </PageContent>
   );

@@ -66,22 +66,22 @@ export function ExpenseChart({ data: series }: ExpenseChartProps) {
   }, []);
 
   return (
-    <Card className="p-4 sm:p-6 shadow-card">
-      <div className="mb-4 sm:mb-6 flex items-end justify-between">
+    <div className="space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
         <div>
-          <h3 className="text-base sm:text-lg font-semibold text-foreground">All Expenses</h3>
-          <p className="text-xs sm:text-sm text-muted-foreground">By category</p>
+          <h3 className="text-lg font-semibold text-foreground">Expense Breakdown</h3>
+          <p className="text-sm text-muted-foreground">Spending by category</p>
         </div>
         <div className="text-right">
-          <span className="text-xs text-muted-foreground">Total</span>
-          <div className="text-sm sm:text-base font-semibold text-foreground">₹{totalAmount.toLocaleString()}</div>
+          <span className="text-xs text-muted-foreground">Total Spent</span>
+          <div className="text-lg font-bold text-foreground">₹{totalAmount.toLocaleString()}</div>
         </div>
       </div>
 
       <div className="flex flex-col items-center gap-4">
         <div className="w-full">
-          <div className="relative h-[200px]">
-            <ResponsiveContainer width="100%" height={200}>
+          <div className="relative h-48 sm:h-56">
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={chartData as any}
@@ -111,16 +111,16 @@ export function ExpenseChart({ data: series }: ExpenseChartProps) {
         
         <div className="w-full pt-2">
           <UiTooltipProvider delayDuration={0}>
-            <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-              {Array.isArray(chartData) && chartData.map((category: any, index: number) => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+              {Array.isArray(chartData) && chartData.slice(0, 8).map((category: any, index: number) => (
                 <UiTooltip key={index}>
                   <UiTooltipTrigger asChild>
-                    <div className="flex items-center gap-2 min-w-0 cursor-default">
+                    <div className="flex items-center gap-2 min-w-0 cursor-default p-2 rounded-lg hover:bg-muted/50 transition-colors">
                       <span 
-                        className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0" 
+                        className="w-2.5 h-2.5 rounded-full flex-shrink-0" 
                         style={{ backgroundColor: category.color }}
                       ></span>
-                      <span className="text-xs sm:text-sm text-muted-foreground truncate max-w-[10rem]">{category.category}</span>
+                      <span className="text-xs text-muted-foreground truncate">{category.category}</span>
                     </div>
                   </UiTooltipTrigger>
                   <UiTooltipContent sideOffset={6} className="max-w-[240px] leading-5 break-words">
@@ -153,6 +153,6 @@ export function ExpenseChart({ data: series }: ExpenseChartProps) {
           </UiTooltipProvider>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }

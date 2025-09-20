@@ -89,60 +89,62 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2 text-sm min-w-0">
-      <span className="text-muted-foreground font-medium whitespace-nowrap">Filter:</span>
-      
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button className="flex items-center gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-card border border-border rounded-md hover:bg-muted/50 transition-colors font-medium text-foreground min-w-[100px] sm:min-w-[140px] justify-between text-xs sm:text-sm">
-            <span className="truncate">
-              {allChecked || selectedBanks.length === 0
-                ? 'All Banks'
-                : `${selectedBanks.length} selected`}
-            </span>
-            <svg className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-48 sm:w-56 bg-card border border-border shadow-lg z-50">
-          <DropdownMenuCheckboxItem 
-            checked={allChecked} 
-            onCheckedChange={toggleAllBanks}
-            className="font-medium"
-          >
-            All Banks
-          </DropdownMenuCheckboxItem>
-          {bankOptions.map((option) => (
-            <DropdownMenuCheckboxItem
-              key={option.value}
-              checked={selectedBanks.includes(option.value)}
-              onCheckedChange={() => toggleBank(option.value)}
+    <div className="flex flex-row items-center gap-3 text-sm min-w-0 w-full">
+      {/* Bank Filter - 50% width on mobile */}
+      <div className="flex-1 min-w-0">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-2 px-3 py-2 bg-card/50 border border-border/50 rounded-lg hover:bg-muted/50 transition-all duration-200 font-medium text-foreground w-full justify-between text-sm backdrop-blur-sm">
+              <span className="truncate">
+                {allChecked || selectedBanks.length === 0
+                  ? 'All Banks'
+                  : `${selectedBanks.length} selected`}
+              </span>
+              <svg className="w-4 h-4 text-muted-foreground flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56 bg-card/95 backdrop-blur-sm border border-border/50 shadow-xl z-50">
+            <DropdownMenuCheckboxItem 
+              checked={allChecked} 
+              onCheckedChange={toggleAllBanks}
+              className="font-medium"
             >
-              {option.label}
+              All Banks
             </DropdownMenuCheckboxItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+            {bankOptions.map((option) => (
+              <DropdownMenuCheckboxItem
+                key={option.value}
+                checked={selectedBanks.includes(option.value)}
+                onCheckedChange={() => toggleBank(option.value)}
+              >
+                {option.label}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
-      <div className="w-px h-3 sm:h-4 bg-border" />
-
-      <Select value={selectedDuration} onValueChange={handleDurationChange}>
-        <SelectTrigger className="w-32 sm:w-44 h-7 sm:h-9 bg-card border border-border hover:bg-muted/50 transition-colors font-medium text-xs sm:text-sm focus:ring-0 focus:ring-offset-0">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent className="bg-card border border-border shadow-lg z-50">
-          {durationOptions.map((option) => (
-            <SelectItem 
-              key={option.value} 
-              value={option.value}
-              className="hover:bg-muted/50 cursor-pointer text-xs sm:text-sm"
-            >
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      {/* Duration Filter - 50% width on mobile */}
+      <div className="flex-1 min-w-0">
+        <Select value={selectedDuration} onValueChange={handleDurationChange}>
+          <SelectTrigger className="w-full h-9 bg-card/50 border border-border/50 hover:bg-muted/50 transition-all duration-200 font-medium text-sm focus:ring-0 focus:ring-offset-0 backdrop-blur-sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-xl z-50">
+            {durationOptions.map((option) => (
+              <SelectItem 
+                key={option.value} 
+                value={option.value}
+                className="hover:bg-muted/50 cursor-pointer text-sm"
+              >
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   );
 }

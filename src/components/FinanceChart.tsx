@@ -18,26 +18,16 @@ export function FinanceChart({ data: series }: FinanceChartProps) {
   const chartData = series ?? data.monthlyData;
 
   return (
-    <Card className="p-4 sm:p-6 shadow-card">
-      <div className="mb-4 sm:mb-6">
-        <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">Finances</h3>
-        <div className="flex flex-wrap gap-3 sm:gap-4 text-xs sm:text-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-primary"></div>
-            <span className="text-muted-foreground">Income</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-destructive"></div>
-            <span className="text-muted-foreground">Expenses</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-success"></div>
-            <span className="text-muted-foreground">Savings</span>
-          </div>
+    <div className="space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h3 className="text-lg font-semibold text-foreground">Financial Trends</h3>
+          <p className="text-sm text-muted-foreground">Monthly income, expenses & savings</p>
         </div>
       </div>
       
-      <ResponsiveContainer width="100%" height={250}>
+      <div className="h-64 sm:h-80">
+        <ResponsiveContainer width="100%" height="100%">
         <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
           <XAxis 
@@ -101,7 +91,8 @@ export function FinanceChart({ data: series }: FinanceChartProps) {
             dot={{ fill: 'hsl(var(--success))', strokeWidth: 2, r: 4 }}
           />
         </LineChart>
-      </ResponsiveContainer>
-    </Card>
+        </ResponsiveContainer>
+      </div>
+    </div>
   );
 }
