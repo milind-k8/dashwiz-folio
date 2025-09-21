@@ -1,8 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -11,20 +10,12 @@ import { PageLoader } from '@/components/ui/loader';
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const TransactionsPage = lazy(() => import('./pages/TransactionsPage'));
 const BanksPage = lazy(() => import('./pages/BanksPage'));
-const WalletPage = lazy(() => import('./pages/WalletPage'));
-const InvestmentsPage = lazy(() => import('./pages/InvestmentsPage'));
-const CardsPage = lazy(() => import('./pages/CardsPage'));
-const GoalsPage = lazy(() => import('./pages/GoalsPage'));
-const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const AuthPage = lazy(() => import('./pages/AuthPage'));
 import { RootLayout } from '@/components/RootLayout';
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
-
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="system" storageKey="dashboard-theme">
+  <ThemeProvider defaultTheme="system" storageKey="dashboard-theme">
       <AuthProvider>
         <TooltipProvider>
           <Toaster />
@@ -36,11 +27,6 @@ const App = () => (
                 <Route index element={<Suspense fallback={<PageLoader />}><DashboardPage /></Suspense>} />
                 <Route path="transactions" element={<Suspense fallback={<PageLoader />}><TransactionsPage /></Suspense>} />
                 <Route path="banks" element={<Suspense fallback={<PageLoader />}><BanksPage /></Suspense>} />
-                <Route path="wallet" element={<Suspense fallback={<PageLoader />}><WalletPage /></Suspense>} />
-                <Route path="investments" element={<Suspense fallback={<PageLoader />}><InvestmentsPage /></Suspense>} />
-                <Route path="cards" element={<Suspense fallback={<PageLoader />}><CardsPage /></Suspense>} />
-                <Route path="goals" element={<Suspense fallback={<PageLoader />}><GoalsPage /></Suspense>} />
-                <Route path="settings" element={<Suspense fallback={<PageLoader />}><SettingsPage /></Suspense>} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
@@ -48,7 +34,6 @@ const App = () => (
         </TooltipProvider>
       </AuthProvider>
     </ThemeProvider>
-  </QueryClientProvider>
 );
 
 export default App;
