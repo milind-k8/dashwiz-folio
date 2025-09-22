@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +26,14 @@ export const TransactionsContent = () => {
   const { loading } = useGlobalData();
   const { banks, transactions } = useGlobalStore();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBankId, setSelectedBankId] = useState<string>('all');
+  const [selectedBankId, setSelectedBankId] = useState<string>('');
+
+  // Set first bank as default when banks are loaded
+  useEffect(() => {
+    if (banks.length > 0 && !selectedBankId) {
+      setSelectedBankId(banks[0].id);
+    }
+  }, [banks, selectedBankId]);
 
   // Get bank name by ID
   const getBankName = (bankId: string) => {
@@ -36,14 +43,23 @@ export const TransactionsContent = () => {
 
   // Filter transactions based on search term and selected bank
   const filteredTransactions = useMemo(() => {
+    if (!selectedBankId) {
+      return [];
+    }
+    
     return transactions.filter(transaction => {
+      // Exclude balance transactions
+      if (transaction.transaction_type === 'balance') {
+        return false;
+      }
+      
       const matchesSearch = searchTerm === '' || 
         (transaction.merchant && transaction.merchant.toLowerCase().includes(searchTerm.toLowerCase())) ||
         transaction.amount.toString().includes(searchTerm.toLowerCase()) ||
         transaction.transaction_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (transaction.category && transaction.category.toLowerCase().includes(searchTerm.toLowerCase()));
       
-      const matchesBank = selectedBankId === 'all' || transaction.bank_id === selectedBankId;
+      const matchesBank = transaction.bank_id === selectedBankId;
       
       return matchesSearch && matchesBank;
     });
@@ -91,10 +107,9 @@ export const TransactionsContent = () => {
           
           <Select value={selectedBankId} onValueChange={setSelectedBankId}>
             <SelectTrigger className="w-full sm:w-48">
-              <SelectValue placeholder="All Banks" />
+              <SelectValue placeholder="Select Bank" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Banks</SelectItem>
               {banks.map((bank) => (
                 <SelectItem key={bank.id} value={bank.id}>
                   {bank.bank_name.toUpperCase()}
@@ -111,7 +126,7 @@ export const TransactionsContent = () => {
           <Card className="p-8 text-center">
             <DollarSign className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <p className="text-muted-foreground">
-              {searchTerm || selectedBankId ? 'No transactions match your filters' : 'No transactions found'}
+              {searchTerm ? 'No transactions match your search' : 'No transactions found'}
             </p>
           </Card>
         ) : (
@@ -198,8 +213,7 @@ export const TransactionsContent = () => {
         <Card className="p-4 bg-muted/30">
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
-              Showing {filteredTransactions.length} transaction{filteredTransactions.length !== 1 ? 's' : ''}
-              {selectedBankId && ` from ${getBankName(selectedBankId)}`}
+              Showing {filteredTransactions.length} transaction{filteredTransactions.length !== 1 ? 's' : ''} from {getBankName(selectedBankId)}
             </p>
           </div>
         </Card>
