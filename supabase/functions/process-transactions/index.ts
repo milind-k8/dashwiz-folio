@@ -10,6 +10,7 @@ const corsHeaders = {
 interface ProcessTransactionsRequest {
   bankName: string;
   month: string; // format: "9/2025"
+  googleAccessToken: string;
 }
 
 interface GmailMessage {
@@ -48,22 +49,19 @@ serve(async (req) => {
       });
     }
 
-    // Get user's session to access Google token
-    const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
-    
-    if (sessionError || !session?.provider_token) {
+    const { bankName, month, googleAccessToken }: ProcessTransactionsRequest = await req.json();
+
+    if (!googleAccessToken) {
       return new Response(JSON.stringify({ 
-        error: 'Google authentication required. Please sign out and sign in with Google.' 
+        error: 'Google access token is required' 
       }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const { bankName, month }: ProcessTransactionsRequest = await req.json();
-
     // Start background processing with Google token
-    EdgeRuntime.waitUntil(processTransactionsBackground(user.id, bankName, month, session.provider_token));
+    EdgeRuntime.waitUntil(processTransactionsBackground(user.id, bankName, month, googleAccessToken));
 
     return new Response(JSON.stringify({ 
       success: true, 

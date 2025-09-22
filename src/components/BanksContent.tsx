@@ -169,10 +169,28 @@ export const BanksContent = () => {
     try {
       setProcessingBanks(prev => new Set([...prev, selectedBank.bank_name]));
       
+      // Get user session to access Google token
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session?.provider_token) {
+        toast({
+          title: "Authentication Required",
+          description: "Google authentication required. Please sign out and sign in with Google.",
+          variant: "destructive"
+        });
+        setProcessingBanks(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(selectedBank.bank_name);
+          return newSet;
+        });
+        return;
+      }
+      
       const { data, error } = await supabase.functions.invoke('process-transactions', {
         body: { 
           bankName: selectedBank.bank_name.toLowerCase(),
-          month: selectedMonth 
+          month: selectedMonth,
+          googleAccessToken: session.provider_token
         }
       });
 
