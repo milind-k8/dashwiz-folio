@@ -34,13 +34,21 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { 
   CreditCard, 
   Trash2,
   Building,
   Plus,
   CheckCircle,
-  Loader2
+  Loader2,
+  Download
 } from 'lucide-react';
 
 interface UserBank {
@@ -57,6 +65,7 @@ const AVAILABLE_BANKS = [
 export const BanksContent = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [showAddBankDialog, setShowAddBankDialog] = useState(false);
+  const [processingBanks, setProcessingBanks] = useState<Set<string>>(new Set());
   const { session } = useAuth();
   const { toast } = useToast();
   
@@ -143,6 +152,63 @@ export const BanksContent = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleProcessTransactions = async (bankName: string, month: string) => {
+    try {
+      setProcessingBanks(prev => new Set([...prev, bankName]));
+      
+      const { data, error } = await supabase.functions.invoke('process-transactions', {
+        body: { 
+          bankName: bankName.toLowerCase(),
+          month 
+        }
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Failed to process transactions');
+      }
+
+      if (data.success) {
+        toast({
+          title: "Processing Started",
+          description: `Transaction processing for ${bankName} (${month}) has been initiated.`,
+        });
+      } else {
+        toast({
+          title: "Processing Failed",
+          description: data.message || "Could not start transaction processing.",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      console.error('Error processing transactions:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to process transactions. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setProcessingBanks(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(bankName);
+        return newSet;
+      });
+    }
+  };
+
+  // Get current and previous month options
+  const getMonthOptions = () => {
+    const now = new Date();
+    const currentMonth = `${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
+    
+    const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1);
+    const previousMonth = `${(prevMonth.getMonth() + 1).toString().padStart(2, '0')}/${prevMonth.getFullYear()}`;
+    
+    return [
+      { value: currentMonth, label: `Current Month (${currentMonth})` },
+      { value: previousMonth, label: `Previous Month (${previousMonth})` }
+    ];
   };
 
   if (!session?.user) {
@@ -243,13 +309,14 @@ export const BanksContent = () => {
                 <TableHead className="font-semibold">Bank Name</TableHead>
                 <TableHead className="font-semibold">Account Number</TableHead>
                 <TableHead className="font-semibold">Added On</TableHead>
+                <TableHead className="font-semibold">Process Transactions</TableHead>
                 <TableHead className="font-semibold w-20">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8">
+                  <TableCell colSpan={5} className="text-center py-8">
                     <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
                     <p className="text-muted-foreground">Loading your banks...</p>
                   </TableCell>
@@ -273,6 +340,25 @@ export const BanksContent = () => {
                     <TableCell>
                       <div className="text-sm text-muted-foreground">
                         {new Date(bank.created_at).toLocaleDateString()}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Select onValueChange={(month) => handleProcessTransactions(bank.bank_name, month)}>
+                          <SelectTrigger className="w-48">
+                            <SelectValue placeholder="Select month to process" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {getMonthOptions().map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {processingBanks.has(bank.bank_name) && (
+                          <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                        )}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -305,7 +391,7 @@ export const BanksContent = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8">
+                  <TableCell colSpan={5} className="text-center py-8">
                     <div className="flex flex-col items-center gap-2">
                       <Building className="h-8 w-8 text-muted-foreground/50" />
                       <p className="text-muted-foreground">No banks connected yet</p>
