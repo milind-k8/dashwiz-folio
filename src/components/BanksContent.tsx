@@ -97,8 +97,21 @@ export const BanksContent = () => {
     try {
       setIsVerifying(true);
       
+      // Check if user has Google access token
+      if (!session?.provider_token) {
+        toast({
+          title: "Google Authentication Required",
+          description: "Please sign out and sign in with Google to verify your bank account.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       const { data, error } = await supabase.functions.invoke('verify-bank', {
-        body: { bankName }
+        body: { 
+          bankName,
+          googleAccessToken: session.provider_token
+        }
       });
 
       if (error) {

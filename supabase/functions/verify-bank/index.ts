@@ -15,6 +15,7 @@ const supabase = createClient(
 
 interface BankVerificationRequest {
   bankName: string;
+  googleAccessToken: string;
 }
 
 serve(async (req) => {
@@ -38,21 +39,12 @@ serve(async (req) => {
       throw new Error('Unauthorized');
     }
 
-    const { bankName }: BankVerificationRequest = await req.json();
+    const { bankName, googleAccessToken }: BankVerificationRequest = await req.json();
 
     console.log(`Bank verification request - Bank: ${bankName}, User: ${user.id}`);
 
-    // Get Google access token from user session
-    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-    
-    if (sessionError || !sessionData.session) {
-      throw new Error('No active session found. User needs to sign in.');
-    }
-
-    const googleAccessToken = sessionData.session.provider_token;
-
     if (!googleAccessToken) {
-      throw new Error('No Google access token found. Please sign out and sign in again with Google.');
+      throw new Error('Google access token is required. Please sign in with Google.');
     }
 
     // Search for bank emails based on bank name
