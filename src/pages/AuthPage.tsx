@@ -47,7 +47,8 @@ export default function AuthPage() {
           scopes: 'https://www.googleapis.com/auth/gmail.readonly',
           queryParams: {
             access_type: 'offline',
-            prompt: 'consent',
+            prompt: 'select_account',
+            include_granted_scopes: 'true',
           },
         }
       });
