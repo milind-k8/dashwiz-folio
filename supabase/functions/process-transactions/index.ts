@@ -83,7 +83,7 @@ async function processTransactionsBackground(userId: string, bankName: string, m
       .from('user_banks')
       .select('*')
       .eq('user_id', userId)
-      .eq('bank_name', bankName)
+      .ilike('bank_name', bankName)
       .maybeSingle();
 
     if (bankError) {
