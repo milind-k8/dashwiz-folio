@@ -65,6 +65,9 @@ const AVAILABLE_BANKS = [
 export const BanksContent = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [showAddBankDialog, setShowAddBankDialog] = useState(false);
+  const [showProcessDialog, setShowProcessDialog] = useState(false);
+  const [selectedBank, setSelectedBank] = useState<UserBank | null>(null);
+  const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [processingBanks, setProcessingBanks] = useState<Set<string>>(new Set());
   const { session } = useAuth();
   const { toast } = useToast();
@@ -154,14 +157,22 @@ export const BanksContent = () => {
     }
   };
 
-  const handleProcessTransactions = async (bankName: string, month: string) => {
+  const openProcessDialog = (bank: UserBank) => {
+    setSelectedBank(bank);
+    setSelectedMonth('');
+    setShowProcessDialog(true);
+  };
+
+  const handleProcessTransactions = async () => {
+    if (!selectedBank || !selectedMonth) return;
+
     try {
-      setProcessingBanks(prev => new Set([...prev, bankName]));
+      setProcessingBanks(prev => new Set([...prev, selectedBank.bank_name]));
       
       const { data, error } = await supabase.functions.invoke('process-transactions', {
         body: { 
-          bankName: bankName.toLowerCase(),
-          month 
+          bankName: selectedBank.bank_name.toLowerCase(),
+          month: selectedMonth 
         }
       });
 
@@ -172,8 +183,9 @@ export const BanksContent = () => {
       if (data.success) {
         toast({
           title: "Processing Started",
-          description: `Transaction processing for ${bankName} (${month}) has been initiated.`,
+          description: `Transaction processing for ${selectedBank.bank_name} (${selectedMonth}) has been initiated.`,
         });
+        setShowProcessDialog(false);
       } else {
         toast({
           title: "Processing Failed",
@@ -191,7 +203,7 @@ export const BanksContent = () => {
     } finally {
       setProcessingBanks(prev => {
         const newSet = new Set(prev);
-        newSet.delete(bankName);
+        newSet.delete(selectedBank.bank_name);
         return newSet;
       });
     }
@@ -288,6 +300,59 @@ export const BanksContent = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Process Transactions Dialog */}
+        <Dialog open={showProcessDialog} onOpenChange={setShowProcessDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Scan Bank Transactions</DialogTitle>
+              <DialogDescription>
+                Select a month to scan and process transactions from {selectedBank?.bank_name} Bank.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Select Month</label>
+                <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose month to scan" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {getMonthOptions().map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowProcessDialog(false)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleProcessTransactions}
+                disabled={!selectedMonth || (selectedBank && processingBanks.has(selectedBank.bank_name))}
+                className="flex items-center gap-2"
+              >
+                {selectedBank && processingBanks.has(selectedBank.bank_name) ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Starting Scan...
+                  </>
+                ) : (
+                  <>
+                    <Download className="h-4 w-4" />
+                    Start Scanning
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Connected Banks List */}
@@ -344,21 +409,25 @@ export const BanksContent = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Select onValueChange={(month) => handleProcessTransactions(bank.bank_name, month)}>
-                          <SelectTrigger className="w-48">
-                            <SelectValue placeholder="Select month to process" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {getMonthOptions().map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {processingBanks.has(bank.bank_name) && (
-                          <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                        )}
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => openProcessDialog(bank)}
+                          disabled={processingBanks.has(bank.bank_name)}
+                          className="flex items-center gap-2"
+                        >
+                          {processingBanks.has(bank.bank_name) ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              Processing...
+                            </>
+                          ) : (
+                            <>
+                              <Download className="h-4 w-4" />
+                              Scan Transactions
+                            </>
+                          )}
+                        </Button>
                       </div>
                     </TableCell>
                     <TableCell>
