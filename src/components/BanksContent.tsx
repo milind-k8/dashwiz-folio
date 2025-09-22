@@ -46,7 +46,7 @@ import {
 interface UserBank {
   id: string;
   bank_name: string;
-  card_number: string;
+  bank_account_no: string;
   created_at: string;
 }
 
@@ -241,7 +241,7 @@ export const BanksContent = () => {
             <TableHeader className="bg-muted/30">
               <TableRow>
                 <TableHead className="font-semibold">Bank Name</TableHead>
-                <TableHead className="font-semibold">Card Number</TableHead>
+                <TableHead className="font-semibold">Account Number</TableHead>
                 <TableHead className="font-semibold">Added On</TableHead>
                 <TableHead className="font-semibold w-20">Actions</TableHead>
               </TableRow>
@@ -267,7 +267,7 @@ export const BanksContent = () => {
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary" className="font-mono">
-                        {bank.card_number}
+                        {bank.bank_account_no}
                       </Badge>
                     </TableCell>
                     <TableCell>

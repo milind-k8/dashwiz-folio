@@ -4,7 +4,7 @@ export interface Bank {
   id: string;
   user_id: string;
   bank_name: string;
-  card_number: string;
+  bank_account_no: string;
   created_at: string;
   updated_at: string;
 }

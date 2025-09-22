@@ -29,9 +29,9 @@ interface BankEmailResult {
   error?: string;
 }
 
-interface CardExtractionResult {
+interface BankAccountExtractionResult {
   success: boolean;
-  cardNumber?: string;
+  bankAccountNo?: string;
   error?: string;
 }
 
@@ -64,26 +64,26 @@ serve(async (req) => {
       );
     }
 
-    const cardResult = extractCardNumber(emailResult.messages[0], bankName);
+    const accountResult = extractBankAccountNo(emailResult.messages[0], bankName);
     
-    if (!cardResult.success || !cardResult.cardNumber) {
+    if (!accountResult.success || !accountResult.bankAccountNo) {
       return createErrorResponse(
-        `Could not extract card number from ${bankName} email. Please ensure your email notifications are properly configured and contain transaction details, then try again.`,
+        `Could not extract bank account number from ${bankName} email. Please ensure your email notifications are properly configured and contain transaction details, then try again.`,
         false
       );
     }
 
-    const existingBank = await checkExistingBank(user.id, bankName, cardResult.cardNumber);
+    const existingBank = await checkExistingBank(user.id, bankName, accountResult.bankAccountNo);
     if (existingBank) {
       return createErrorResponse(
-        `${bankName.toUpperCase()} bank with card number ${cardResult.cardNumber} is already added.`,
+        `${bankName.toUpperCase()} bank with account number ${accountResult.bankAccountNo} is already added.`,
         false
       );
     }
 
-    const savedBank = await saveBankToDatabase(user.id, bankName, cardResult.cardNumber);
+    const savedBank = await saveBankToDatabase(user.id, bankName, accountResult.bankAccountNo);
     
-    console.log(`Bank verified and saved successfully: ${bankName} - ${cardResult.cardNumber}`);
+    console.log(`Bank verified and saved successfully: ${bankName} - ${accountResult.bankAccountNo}`);
 
     return new Response(JSON.stringify({ 
       success: true, 
@@ -138,13 +138,13 @@ function createErrorResponse(message: string, isServerError: boolean = true): Re
   });
 }
 
-async function checkExistingBank(userId: string, bankName: string, cardNumber: string): Promise<boolean> {
+async function checkExistingBank(userId: string, bankName: string, bankAccountNo: string): Promise<boolean> {
   const { data: existingBank, error: checkError } = await supabaseAdmin
     .from('user_banks')
     .select('*')
     .eq('user_id', userId)
     .eq('bank_name', bankName.toUpperCase())
-    .eq('card_number', cardNumber)
+    .eq('bank_account_no', bankAccountNo)
     .maybeSingle();
 
   if (checkError) {
@@ -155,13 +155,13 @@ async function checkExistingBank(userId: string, bankName: string, cardNumber: s
   return !!existingBank;
 }
 
-async function saveBankToDatabase(userId: string, bankName: string, cardNumber: string) {
+async function saveBankToDatabase(userId: string, bankName: string, bankAccountNo: string) {
   const { data: savedBank, error: saveError } = await supabaseAdmin
     .from('user_banks')
     .insert({
       user_id: userId,
       bank_name: bankName.toUpperCase(),
-      card_number: cardNumber
+      bank_account_no: bankAccountNo
     })
     .select()
     .single();
@@ -239,7 +239,7 @@ async function fetchBankEmails(accessToken: string, query: string): Promise<Bank
   }
 }
 
-function extractCardNumber(message: any, bankName: string): CardExtractionResult {
+function extractBankAccountNo(message: any, bankName: string): BankAccountExtractionResult {
   try {
     // Get email content from snippet or payload
     let emailContent = message.snippet || '';
@@ -258,11 +258,11 @@ function extractCardNumber(message: any, bankName: string): CardExtractionResult
       }
     }
 
-    console.log('Email content for card extraction:', emailContent.substring(0, 200));
+    console.log('Email content for bank account extraction:', emailContent.substring(0, 200));
 
-    // HDFC card number pattern: looks for patterns like XX1234, XX****1234, etc.
+    // HDFC bank account number pattern: looks for patterns like XX1234, XX****1234, etc.
     if (bankName.toLowerCase() === 'hdfc') {
-      // Pattern for HDFC card numbers: XX followed by 4 digits or **** followed by 4 digits
+      // Pattern for HDFC bank account numbers: XX followed by 4 digits or **** followed by 4 digits
       const patterns = [
         /XX(\*{4}|\d{4})/g,  // XX**** or XX1234
         /\*{4}(\d{4})/g,     // ****1234
@@ -277,7 +277,7 @@ function extractCardNumber(message: any, bankName: string): CardExtractionResult
           if (match.includes('****')) {
             return {
               success: true,
-              cardNumber: match
+              bankAccountNo: match
             };
           } else {
             // Extract last 4 digits and format as XX****
@@ -285,7 +285,7 @@ function extractCardNumber(message: any, bankName: string): CardExtractionResult
             if (digits.length >= 4) {
               return {
                 success: true,
-                cardNumber: `XX${digits.slice(-4)}`
+                bankAccountNo: `XX${digits.slice(-4)}`
               };
             }
           }
@@ -293,10 +293,10 @@ function extractCardNumber(message: any, bankName: string): CardExtractionResult
       }
     }
 
-    console.log(`No card number pattern found for ${bankName}`);
+    console.log(`No bank account number pattern found for ${bankName}`);
     return {
       success: false,
-      error: `No card number pattern found for ${bankName}`
+      error: `No bank account number pattern found for ${bankName}`
     };
   } catch (error) {
     console.error('Error extracting card number:', error);

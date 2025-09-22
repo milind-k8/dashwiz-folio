@@ -16,24 +16,24 @@ export type Database = {
     Tables: {
       user_banks: {
         Row: {
+          bank_account_no: string
           bank_name: string
-          card_number: string
           created_at: string
           id: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          bank_account_no: string
           bank_name: string
-          card_number: string
           created_at?: string
           id?: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          bank_account_no?: string
           bank_name?: string
-          card_number?: string
           created_at?: string
           id?: string
           updated_at?: string
