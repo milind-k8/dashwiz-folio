@@ -114,7 +114,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_transactions_with_details: {
+        Args: { months_back?: number; user_uuid: string }
+        Returns: {
+          amount: number
+          bank_account_no: string
+          bank_id: string
+          bank_name: string
+          category: string
+          created_at: string
+          mail_id: string
+          mail_time: string
+          merchant: string
+          snippet: string
+          transaction_id: string
+          transaction_type: string
+          updated_at: string
+        }[]
+      }
     }
     Enums: {
       transaction_type: "debit" | "credit" | "balance"
