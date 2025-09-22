@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useGlobalStore } from '@/store/globalStore';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -54,44 +55,13 @@ const AVAILABLE_BANKS = [
 ];
 
 export const BanksContent = () => {
-  const [userBanks, setUserBanks] = useState<UserBank[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isVerifying, setIsVerifying] = useState(false);
   const [showAddBankDialog, setShowAddBankDialog] = useState(false);
   const { session } = useAuth();
   const { toast } = useToast();
-
-  useEffect(() => {
-    if (session?.user) {
-      fetchUserBanks();
-    }
-  }, [session]);
-
-  const fetchUserBanks = async () => {
-    try {
-      setIsLoading(true);
-      const { data, error } = await supabase
-        .from('user_banks')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching user banks:', error);
-        toast({
-          title: "Error",
-          description: "Failed to fetch your banks. Please try again.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      setUserBanks(data || []);
-    } catch (error) {
-      console.error('Error in fetchUserBanks:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  
+  // Use global store for banks data
+  const { banks: userBanks, loading: isLoading, addBank, removeBank } = useGlobalStore();
 
   const handleVerifyBank = async (bankName: string) => {
     try {
@@ -124,7 +94,10 @@ export const BanksContent = () => {
           description: data.message,
         });
         setShowAddBankDialog(false);
-        fetchUserBanks(); // Refresh the list
+        // Add the new bank to global store
+        if (data.bank) {
+          addBank(data.bank);
+        }
       } else {
         toast({
           title: "Verification Failed",
@@ -160,7 +133,8 @@ export const BanksContent = () => {
         description: `${bankName} bank has been removed.`,
       });
       
-      fetchUserBanks(); // Refresh the list
+      // Remove from global store
+      removeBank(bankId);
     } catch (error: any) {
       console.error('Error deleting bank:', error);
       toast({
