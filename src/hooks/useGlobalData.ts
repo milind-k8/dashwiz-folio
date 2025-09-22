@@ -24,77 +24,53 @@ export const useGlobalData = () => {
     try {
       setLoading(true);
       
-      // Fetch banks
-      const { data: banksData, error: banksError } = await supabase
-        .from('user_banks')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+      // Call the single database function to get all data at once
+      const { data, error } = await supabase
+        .rpc('get_user_transactions_with_details', { 
+          user_uuid: user.id, 
+          months_back: 3 
+        });
 
-      if (banksError) {
-        console.error('Error fetching banks:', banksError);
+      if (error) {
+        console.error('Error fetching data:', error);
         toast({
           title: "Error",
-          description: "Failed to load bank data",
+          description: "Failed to load data",
           variant: "destructive",
         });
         return;
       }
 
-      setBanks(banksData || []);
+      // Extract unique banks from the transaction data
+      const uniqueBanks = new Map();
+      data?.forEach(item => {
+        if (!uniqueBanks.has(item.bank_id)) {
+          uniqueBanks.set(item.bank_id, {
+            id: item.bank_id,
+            user_id: user.id,
+            bank_name: item.bank_name,
+            bank_account_no: item.bank_account_no,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
+        }
+      });
 
-      // Fetch transactions for last 3 months
-      const threeMonthsAgo = new Date();
-      threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-      
-      const { data: transactionsData, error: transactionsError } = await supabase
-        .from('transactions')
-        .select(`
-          id,
-          bank_id,
-          amount,
-          transaction_type,
-          mail_time,
-          merchant,
-          snippet,
-          mail_id,
-          created_at,
-          updated_at
-        `)
-        .in('bank_id', (banksData || []).map(bank => bank.id))
-        .gte('mail_time', threeMonthsAgo.toISOString())
-        .order('mail_time', { ascending: false });
+      setBanks(Array.from(uniqueBanks.values()));
 
-      if (transactionsError) {
-        console.error('Error fetching transactions:', transactionsError);
-        toast({
-          title: "Error",
-          description: "Failed to load transaction data",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Fetch merchant categories for existing merchants only
-      const merchantNames = [...new Set(transactionsData?.map(t => t.merchant).filter(Boolean))];
-      let merchantCategories: Record<string, string> = {};
-      
-      if (merchantNames.length > 0) {
-        const { data: merchantsData } = await supabase
-          .from('merchants')
-          .select('merchant_name, category')
-          .in('merchant_name', merchantNames);
-        
-        merchantCategories = merchantsData?.reduce((acc, merchant) => {
-          acc[merchant.merchant_name] = merchant.category;
-          return acc;
-        }, {} as Record<string, string>) || {};
-      }
-
-      // Process transactions to include category
-      const processedTransactions = (transactionsData || []).map(transaction => ({
-        ...transaction,
-        category: transaction.merchant ? (merchantCategories[transaction.merchant] || 'Other') : 'Other'
+      // Process transactions from the function result
+      const processedTransactions = (data || []).map(item => ({
+        id: item.transaction_id,
+        bank_id: item.bank_id,
+        amount: item.amount,
+        transaction_type: item.transaction_type as 'debit' | 'credit' | 'balance',
+        mail_time: item.mail_time,
+        merchant: item.merchant,
+        snippet: item.snippet,
+        mail_id: item.mail_id,
+        created_at: item.created_at,
+        updated_at: item.updated_at,
+        category: item.category
       }));
 
       setTransactions(processedTransactions);
