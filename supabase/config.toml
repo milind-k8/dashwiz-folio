@@ -2,3 +2,6 @@ project_id = "yudnrvzjeqtyldrpbunw"
 
 [functions.gmail]
 verify_jwt = true
+
+[functions.verify-bank]
+verify_jwt = true
