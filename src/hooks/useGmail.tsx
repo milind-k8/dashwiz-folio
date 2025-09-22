@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { gmailService } from '@/services/gmailService';
 import { useAuth } from './useAuth';
 import { useToast } from './use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
-interface GmailMessage {
+export interface GmailMessage {
   id: string;
   threadId: string;
   snippet: string;
@@ -21,14 +21,10 @@ export function useGmail() {
 
   useEffect(() => {
     // Check if Gmail access is available when session changes
-    if (session?.provider_token) {
-      setIsGmailAvailable(gmailService.isGmailAccessAvailable());
-    } else {
-      setIsGmailAvailable(false);
-    }
+    setIsGmailAvailable(!!session?.provider_token);
   }, [session]);
 
-  const fetchMessages = async (maxResults: number = 10) => {
+  const fetchMessages = async (maxResults: number = 10, query: string = '') => {
     if (!isGmailAvailable) {
       toast({
         title: "Gmail not available",
@@ -40,13 +36,24 @@ export function useGmail() {
 
     setIsLoading(true);
     try {
-      const fetchedMessages = await gmailService.getMessages(maxResults);
-      setMessages(fetchedMessages);
-    } catch (error) {
+      const { data, error } = await supabase.functions.invoke('gmail', {
+        body: { maxResults, query }
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Failed to fetch messages');
+      }
+
+      setMessages(data.messages || []);
+      toast({
+        title: "Success",
+        description: `Fetched ${data.messages?.length || 0} messages from Gmail.`,
+      });
+    } catch (error: any) {
       console.error('Error fetching Gmail messages:', error);
       toast({
         title: "Error",
-        description: "Failed to fetch Gmail messages. Please try again.",
+        description: error.message || "Failed to fetch Gmail messages. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -65,17 +72,30 @@ export function useGmail() {
     }
 
     try {
-      await gmailService.sendEmail(to, subject, body);
+      const { data, error } = await supabase.functions.invoke('gmail', {
+        method: 'POST',
+        body: {
+          to,
+          subject,
+          body,
+          action: 'send'
+        },
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Failed to send email');
+      }
+
       toast({
         title: "Email sent",
         description: "Your email has been sent successfully.",
       });
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending email:', error);
       toast({
         title: "Error",
-        description: "Failed to send email. Please try again.",
+        description: error.message || "Failed to send email. Please try again.",
         variant: "destructive",
       });
       return false;
