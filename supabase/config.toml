@@ -5,3 +5,6 @@ verify_jwt = true
 
 [functions.verify-bank]
 verify_jwt = true
+
+[functions.process-transactions]
+verify_jwt = true
