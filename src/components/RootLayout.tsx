@@ -5,6 +5,7 @@ import { AppSidebar } from '@/components/AppSidebar';
 import { DashboardHeader } from '@/components/DashboardHeader';
 import { BottomNavbar } from '@/components/BottomNavbar';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useGlobalData } from '@/hooks/useGlobalData';
 
 const pathToTab = (pathname: string): string => {
   if (pathname.startsWith('/transactions')) return 'transactions';
@@ -29,6 +30,9 @@ export const RootLayout = () => {
   const isMobile = useIsMobile();
   const activeTab = useMemo(() => pathToTab(location.pathname), [location.pathname]);
   const onTabChange = useCallback((tab: string) => navigate(tabToPath(tab)), [navigate]);
+  
+  // Initialize global data
+  useGlobalData();
 
   return (
     <SidebarProvider>
