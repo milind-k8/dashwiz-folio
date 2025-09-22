@@ -84,10 +84,15 @@ async function processTransactionsBackground(userId: string, bankName: string, m
       .select('*')
       .eq('user_id', userId)
       .eq('bank_name', bankName)
-      .single();
+      .maybeSingle();
 
-    if (bankError || !bank) {
-      console.error('Bank not found for user:', bankError);
+    if (bankError) {
+      console.error('Error querying bank:', bankError);
+      return;
+    }
+
+    if (!bank) {
+      console.error(`Bank '${bankName}' not found for user ${userId}`);
       return;
     }
 
