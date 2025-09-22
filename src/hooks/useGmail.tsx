@@ -62,44 +62,13 @@ export function useGmail() {
   };
 
   const sendEmail = async (to: string, subject: string, body: string) => {
-    if (!isGmailAvailable) {
-      toast({
-        title: "Gmail not available",
-        description: "Please sign in with Google to send emails.",
-        variant: "destructive",
-      });
-      return false;
-    }
-
-    try {
-      const { data, error } = await supabase.functions.invoke('gmail', {
-        method: 'POST',
-        body: {
-          to,
-          subject,
-          body,
-          action: 'send'
-        },
-      });
-
-      if (error) {
-        throw new Error(error.message || 'Failed to send email');
-      }
-
-      toast({
-        title: "Email sent",
-        description: "Your email has been sent successfully.",
-      });
-      return true;
-    } catch (error: any) {
-      console.error('Error sending email:', error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to send email. Please try again.",
-        variant: "destructive",
-      });
-      return false;
-    }
+    console.warn('Send email functionality is disabled - readonly Gmail access only');
+    toast({
+      title: "Feature not available",
+      description: "This app has readonly Gmail access only.",
+      variant: "destructive",
+    });
+    return false;
   };
 
   const getEmailSubject = (message: GmailMessage): string => {
@@ -128,7 +97,6 @@ export function useGmail() {
     isLoading,
     isGmailAvailable,
     fetchMessages,
-    sendEmail,
     getEmailSubject,
     getEmailSender,
     getEmailDate,

@@ -43,50 +43,38 @@ serve(async (req) => {
       throw new Error('Unauthorized');
     }
 
-    // Get request parameters
+    // Get request parameters (readonly only)
     let maxResults = 10;
     let query = '';
-    let action = 'list';
-    let emailData = null;
 
     if (req.method === 'GET') {
       const { searchParams } = new URL(req.url);
       maxResults = parseInt(searchParams.get('maxResults') || '10');
       query = searchParams.get('q') || '';
-      action = searchParams.get('action') || 'list';
     } else if (req.method === 'POST') {
       const body = await req.json();
       maxResults = body.maxResults || 10;
       query = body.query || '';
-      action = body.action || 'send';
-      emailData = body;
     }
 
-    console.log(`Gmail API request - Method: ${req.method}, Action: ${action}, MaxResults: ${maxResults}, Query: ${query}, User: ${user.id}`);
+    console.log(`Gmail API request - Method: ${req.method}, MaxResults: ${maxResults}, Query: ${query}, User: ${user.id}`);
 
-    // Get user's Google access token from Supabase session
-    const { data: session } = await supabase.auth.getSession();
-    const googleAccessToken = session?.session?.provider_token;
+    // Get Google access token from user session
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    
+    if (sessionError || !sessionData.session) {
+      throw new Error('No active session found. User needs to sign in.');
+    }
+
+    // For Google OAuth, the provider token should be available in the session
+    const googleAccessToken = sessionData.session.provider_token;
 
     if (!googleAccessToken) {
-      throw new Error('No Google access token found. User needs to sign in with Google.');
+      throw new Error('No Google access token found. Please sign out and sign in again with Google.');
     }
 
-    let result;
-    
-    switch (action) {
-      case 'list':
-        result = await fetchMessages(googleAccessToken, maxResults, query);
-        break;
-      case 'send':
-        if (!emailData) {
-          throw new Error('Email data is required for send action');
-        }
-        result = await sendEmail(googleAccessToken, emailData.to, emailData.subject, emailData.body);
-        break;
-      default:
-        throw new Error('Invalid action. Supported actions: list, send');
-    }
+    // Only support readonly operations
+    const result = await fetchMessages(googleAccessToken, maxResults, query);
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -158,50 +146,6 @@ async function fetchMessages(accessToken: string, maxResults: number, query: str
 
   } catch (error) {
     console.error('Error fetching Gmail messages:', error);
-    throw error;
-  }
-}
-
-async function sendEmail(accessToken: string, to: string, subject: string, body: string): Promise<{ success: boolean; messageId?: string }> {
-  try {
-    // Create the email content
-    const emailContent = [
-      `To: ${to}`,
-      `Subject: ${subject}`,
-      '',
-      body
-    ].join('\n');
-
-    // Encode the email in base64url format
-    const encodedEmail = btoa(emailContent)
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '');
-
-    const response = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        raw: encodedEmail,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Gmail send API error:', response.status, errorText);
-      throw new Error(`Failed to send email: ${response.status} - ${errorText}`);
-    }
-
-    const data = await response.json();
-    console.log(`Successfully sent email with message ID: ${data.id}`);
-    
-    return { success: true, messageId: data.id };
-
-  } catch (error) {
-    console.error('Error sending Gmail message:', error);
     throw error;
   }
 }
