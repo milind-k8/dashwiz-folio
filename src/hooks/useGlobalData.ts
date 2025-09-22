@@ -43,7 +43,7 @@ export const useGlobalData = () => {
 
       setBanks(banksData || []);
 
-      // Fetch transactions for last 3 months with merchant category
+      // Fetch transactions for last 3 months
       const threeMonthsAgo = new Date();
       threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
       
@@ -75,18 +75,21 @@ export const useGlobalData = () => {
         return;
       }
 
-      // Fetch merchant categories separately
+      // Fetch merchant categories for existing merchants only
       const merchantNames = [...new Set(transactionsData?.map(t => t.merchant).filter(Boolean))];
-      const { data: merchantsData } = await supabase
-        .from('merchants')
-        .select('merchant_name, category')
-        .in('merchant_name', merchantNames);
-
-      // Create merchant category lookup
-      const merchantCategories = merchantsData?.reduce((acc, merchant) => {
-        acc[merchant.merchant_name] = merchant.category;
-        return acc;
-      }, {} as Record<string, string>) || {};
+      let merchantCategories: Record<string, string> = {};
+      
+      if (merchantNames.length > 0) {
+        const { data: merchantsData } = await supabase
+          .from('merchants')
+          .select('merchant_name, category')
+          .in('merchant_name', merchantNames);
+        
+        merchantCategories = merchantsData?.reduce((acc, merchant) => {
+          acc[merchant.merchant_name] = merchant.category;
+          return acc;
+        }, {} as Record<string, string>) || {};
+      }
 
       // Process transactions to include category
       const processedTransactions = (transactionsData || []).map(transaction => ({

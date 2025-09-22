@@ -26,7 +26,7 @@ export const TransactionsContent = () => {
   const { loading } = useGlobalData();
   const { banks, transactions } = useGlobalStore();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBankId, setSelectedBankId] = useState<string>('');
+  const [selectedBankId, setSelectedBankId] = useState<string>('all');
 
   // Get bank name by ID
   const getBankName = (bankId: string) => {
@@ -43,7 +43,7 @@ export const TransactionsContent = () => {
         transaction.transaction_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (transaction.category && transaction.category.toLowerCase().includes(searchTerm.toLowerCase()));
       
-      const matchesBank = selectedBankId === '' || transaction.bank_id === selectedBankId;
+      const matchesBank = selectedBankId === 'all' || transaction.bank_id === selectedBankId;
       
       return matchesSearch && matchesBank;
     });
@@ -94,7 +94,7 @@ export const TransactionsContent = () => {
               <SelectValue placeholder="All Banks" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Banks</SelectItem>
+              <SelectItem value="all">All Banks</SelectItem>
               {banks.map((bank) => (
                 <SelectItem key={bank.id} value={bank.id}>
                   {bank.bank_name.toUpperCase()}
