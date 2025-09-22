@@ -48,10 +48,22 @@ serve(async (req) => {
       });
     }
 
+    // Get user's session to access Google token
+    const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+    
+    if (sessionError || !session?.provider_token) {
+      return new Response(JSON.stringify({ 
+        error: 'Google authentication required. Please sign out and sign in with Google.' 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const { bankName, month }: ProcessTransactionsRequest = await req.json();
 
-    // Start background processing
-    EdgeRuntime.waitUntil(processTransactionsBackground(user.id, bankName, month));
+    // Start background processing with Google token
+    EdgeRuntime.waitUntil(processTransactionsBackground(user.id, bankName, month, session.provider_token));
 
     return new Response(JSON.stringify({ 
       success: true, 
@@ -69,7 +81,7 @@ serve(async (req) => {
   }
 });
 
-async function processTransactionsBackground(userId: string, bankName: string, month: string) {
+async function processTransactionsBackground(userId: string, bankName: string, month: string, googleAccessToken: string) {
   try {
     console.log(`Processing transactions for user ${userId}, bank ${bankName}, month ${month}`);
     
@@ -132,14 +144,8 @@ async function processTransactionsBackground(userId: string, bankName: string, m
 
     console.log('Gmail query:', gmailQuery);
 
-    // Step 4: Get user's Google access token and fetch emails
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session?.provider_token) {
-      console.error('No Google access token available');
-      return;
-    }
-
-    const emails = await fetchGmailMessages(session.provider_token, gmailQuery);
+    // Step 4: Fetch emails using the provided Google access token
+    const emails = await fetchGmailMessages(googleAccessToken, gmailQuery);
     console.log(`Found ${emails.length} emails to process`);
 
     if (emails.length === 0) {
