@@ -14,6 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
+      merchants: {
+        Row: {
+          category: string | null
+          created_at: string
+          merchant_name: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          merchant_name: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          merchant_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount: number
+          bank_id: string
+          created_at: string
+          id: string
+          mail_id: string
+          mail_time: string
+          merchant: string | null
+          snippet: string | null
+          transaction_type: Database["public"]["Enums"]["transaction_type"]
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          bank_id: string
+          created_at?: string
+          id?: string
+          mail_id: string
+          mail_time: string
+          merchant?: string | null
+          snippet?: string | null
+          transaction_type: Database["public"]["Enums"]["transaction_type"]
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          bank_id?: string
+          created_at?: string
+          id?: string
+          mail_id?: string
+          mail_time?: string
+          merchant?: string | null
+          snippet?: string | null
+          transaction_type?: Database["public"]["Enums"]["transaction_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_transactions_bank"
+            columns: ["bank_id"]
+            isOneToOne: false
+            referencedRelation: "user_banks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_banks: {
         Row: {
           bank_account_no: string
@@ -49,7 +117,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      transaction_type: "debit" | "credit" | "balance"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -176,6 +244,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      transaction_type: ["debit", "credit", "balance"],
+    },
   },
 } as const
