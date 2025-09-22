@@ -7,13 +7,12 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Initialize Supabase client for database operations (needs service role for RLS bypass)
+// Initialize Supabase clients
 const supabaseAdmin = createClient(
   Deno.env.get('SUPABASE_URL') ?? '',
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 );
 
-// Initialize regular client for auth
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL') ?? '',
   Deno.env.get('SUPABASE_ANON_KEY') ?? ''
@@ -24,28 +23,26 @@ interface BankVerificationRequest {
   googleAccessToken: string;
 }
 
+interface BankEmailResult {
+  success: boolean;
+  messages?: any[];
+  error?: string;
+}
+
+interface CardExtractionResult {
+  success: boolean;
+  cardNumber?: string;
+  error?: string;
+}
+
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Get authorization header
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      throw new Error('No authorization header');
-    }
-
-    // Verify the JWT token and get user
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
-    if (authError || !user) {
-      throw new Error('Unauthorized');
-    }
-
-    const { bankName, googleAccessToken }: BankVerificationRequest = await req.json();
+    const user = await authenticateUser(req);
+    const { bankName, googleAccessToken } = await req.json() as BankVerificationRequest;
 
     console.log(`Bank verification request - Bank: ${bankName}, User: ${user.id}`);
 
@@ -53,79 +50,40 @@ serve(async (req) => {
       throw new Error('Google access token is required. Please sign in with Google.');
     }
 
-    // Search for bank emails based on bank name
-    let searchQuery = '';
+    const searchQuery = getBankSearchQuery(bankName);
+    const emailResult = await fetchBankEmails(googleAccessToken, searchQuery);
     
-    if (bankName.toLowerCase() === 'hdfc') {
-      searchQuery = 'from:alerts@hdfcbank.net available balance';
-    } else {
-      throw new Error(`Bank ${bankName} is not supported yet`);
+    if (!emailResult.success) {
+      return createErrorResponse(emailResult.error || 'Failed to fetch emails');
     }
 
-    // Fetch Gmail messages
-    const gmailResult = await fetchBankEmails(googleAccessToken, searchQuery);
+    if (!emailResult.messages || emailResult.messages.length === 0) {
+      return createErrorResponse(
+        `No transaction emails found from ${bankName}. Please enable email alerts/notifications for your ${bankName} account and ensure you have recent transaction emails, then try again.`,
+        false
+      );
+    }
+
+    const cardResult = extractCardNumber(emailResult.messages[0], bankName);
     
-    if (!gmailResult.messages || gmailResult.messages.length === 0) {
-      return new Response(JSON.stringify({ 
-        success: false, 
-        message: `No emails found from ${bankName}. Please make sure you have balance alerts enabled.` 
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+    if (!cardResult.success || !cardResult.cardNumber) {
+      return createErrorResponse(
+        `Could not extract card number from ${bankName} email. Please ensure your email notifications are properly configured and contain transaction details, then try again.`,
+        false
+      );
     }
 
-    // Extract card number from the first email
-    const cardNumber = extractCardNumber(gmailResult.messages[0], bankName);
-    
-    if (!cardNumber) {
-      return new Response(JSON.stringify({ 
-        success: false, 
-        message: `Could not extract card number from ${bankName} email.` 
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Check if bank already exists for user (using admin client to bypass RLS)
-    const { data: existingBank, error: checkError } = await supabaseAdmin
-      .from('user_banks')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('bank_name', bankName.toUpperCase())
-      .eq('card_number', cardNumber)
-      .maybeSingle();
-
-    if (checkError) {
-      console.error('Error checking existing bank:', checkError);
-      throw new Error('Failed to check existing bank records');
-    }
-
+    const existingBank = await checkExistingBank(user.id, bankName, cardResult.cardNumber);
     if (existingBank) {
-      return new Response(JSON.stringify({ 
-        success: false, 
-        message: `${bankName.toUpperCase()} bank with card number ${cardNumber} is already added.` 
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return createErrorResponse(
+        `${bankName.toUpperCase()} bank with card number ${cardResult.cardNumber} is already added.`,
+        false
+      );
     }
 
-    // Save bank to database (using admin client to bypass RLS)
-    const { data: savedBank, error: saveError } = await supabaseAdmin
-      .from('user_banks')
-      .insert({
-        user_id: user.id,
-        bank_name: bankName.toUpperCase(),
-        card_number: cardNumber
-      })
-      .select()
-      .single();
-
-    if (saveError) {
-      console.error('Error saving bank:', saveError);
-      throw new Error('Failed to save bank information');
-    }
-
-    console.log(`Bank verified and saved successfully: ${bankName} - ${cardNumber}`);
+    const savedBank = await saveBankToDatabase(user.id, bankName, cardResult.cardNumber);
+    
+    console.log(`Bank verified and saved successfully: ${bankName} - ${cardResult.cardNumber}`);
 
     return new Response(JSON.stringify({ 
       success: true, 
@@ -137,17 +95,86 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in verify-bank function:', error);
-    return new Response(JSON.stringify({ 
-      success: false, 
-      error: error.message 
-    }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return createErrorResponse(error.message);
   }
 });
 
-async function fetchBankEmails(accessToken: string, query: string) {
+// Helper Functions
+
+async function authenticateUser(req: Request) {
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader) {
+    throw new Error('No authorization header');
+  }
+
+  const token = authHeader.replace('Bearer ', '');
+  const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+
+  if (authError || !user) {
+    throw new Error('Unauthorized');
+  }
+
+  return user;
+}
+
+function getBankSearchQuery(bankName: string): string {
+  const normalizedBankName = bankName.toLowerCase();
+  
+  switch (normalizedBankName) {
+    case 'hdfc':
+      return 'from:alerts@hdfcbank.net available balance';
+    default:
+      throw new Error(`Bank ${bankName} is not supported yet`);
+  }
+}
+
+function createErrorResponse(message: string, isServerError: boolean = true): Response {
+  return new Response(JSON.stringify({ 
+    success: false, 
+    error: message 
+  }), {
+    status: isServerError ? 500 : 400,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
+}
+
+async function checkExistingBank(userId: string, bankName: string, cardNumber: string): Promise<boolean> {
+  const { data: existingBank, error: checkError } = await supabaseAdmin
+    .from('user_banks')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('bank_name', bankName.toUpperCase())
+    .eq('card_number', cardNumber)
+    .maybeSingle();
+
+  if (checkError) {
+    console.error('Error checking existing bank:', checkError);
+    throw new Error('Failed to check existing bank records');
+  }
+
+  return !!existingBank;
+}
+
+async function saveBankToDatabase(userId: string, bankName: string, cardNumber: string) {
+  const { data: savedBank, error: saveError } = await supabaseAdmin
+    .from('user_banks')
+    .insert({
+      user_id: userId,
+      bank_name: bankName.toUpperCase(),
+      card_number: cardNumber
+    })
+    .select()
+    .single();
+
+  if (saveError) {
+    console.error('Error saving bank:', saveError);
+    throw new Error('Failed to save bank information');
+  }
+
+  return savedBank;
+}
+
+async function fetchBankEmails(accessToken: string, query: string): Promise<BankEmailResult> {
   try {
     const params = new URLSearchParams({
       maxResults: '1',
@@ -164,13 +191,19 @@ async function fetchBankEmails(accessToken: string, query: string) {
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Gmail API error:', response.status, errorText);
-      throw new Error(`Gmail API error: ${response.status} - ${errorText}`);
+      return {
+        success: false,
+        error: `Gmail API error: ${response.status} - ${errorText}`
+      };
     }
 
     const data = await response.json();
     
     if (!data.messages || data.messages.length === 0) {
-      return { messages: [] };
+      return {
+        success: true,
+        messages: []
+      };
     }
 
     // Fetch detailed message data for the first message
@@ -183,21 +216,30 @@ async function fetchBankEmails(accessToken: string, query: string) {
 
     if (!messageResponse.ok) {
       console.error('Failed to fetch message details:', data.messages[0].id);
-      return { messages: [] };
+      return {
+        success: false,
+        error: 'Failed to fetch message details'
+      };
     }
 
     const messageData = await messageResponse.json();
     console.log(`Successfully fetched bank email for verification`);
     
-    return { messages: [messageData] };
+    return {
+      success: true,
+      messages: [messageData]
+    };
 
   } catch (error) {
     console.error('Error fetching bank emails:', error);
-    throw error;
+    return {
+      success: false,
+      error: error.message
+    };
   }
 }
 
-function extractCardNumber(message: any, bankName: string): string | null {
+function extractCardNumber(message: any, bankName: string): CardExtractionResult {
   try {
     // Get email content from snippet or payload
     let emailContent = message.snippet || '';
@@ -233,12 +275,18 @@ function extractCardNumber(message: any, bankName: string): string | null {
           const match = matches[0];
           // Format as XX**** where **** are the last 4 digits
           if (match.includes('****')) {
-            return match;
+            return {
+              success: true,
+              cardNumber: match
+            };
           } else {
             // Extract last 4 digits and format as XX****
             const digits = match.replace(/X/g, '').replace(/\*/g, '');
             if (digits.length >= 4) {
-              return `XX${digits.slice(-4)}`;
+              return {
+                success: true,
+                cardNumber: `XX${digits.slice(-4)}`
+              };
             }
           }
         }
@@ -246,9 +294,15 @@ function extractCardNumber(message: any, bankName: string): string | null {
     }
 
     console.log(`No card number pattern found for ${bankName}`);
-    return null;
+    return {
+      success: false,
+      error: `No card number pattern found for ${bankName}`
+    };
   } catch (error) {
     console.error('Error extracting card number:', error);
-    return null;
+    return {
+      success: false,
+      error: error.message
+    };
   }
 }
