@@ -7,7 +7,13 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Initialize Supabase client
+// Initialize Supabase client for database operations (needs service role for RLS bypass)
+const supabaseAdmin = createClient(
+  Deno.env.get('SUPABASE_URL') ?? '',
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+);
+
+// Initialize regular client for auth
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL') ?? '',
   Deno.env.get('SUPABASE_ANON_KEY') ?? ''
@@ -80,8 +86,8 @@ serve(async (req) => {
       });
     }
 
-    // Check if bank already exists for user
-    const { data: existingBank, error: checkError } = await supabase
+    // Check if bank already exists for user (using admin client to bypass RLS)
+    const { data: existingBank, error: checkError } = await supabaseAdmin
       .from('user_banks')
       .select('*')
       .eq('user_id', user.id)
@@ -103,8 +109,8 @@ serve(async (req) => {
       });
     }
 
-    // Save bank to database
-    const { data: savedBank, error: saveError } = await supabase
+    // Save bank to database (using admin client to bypass RLS)
+    const { data: savedBank, error: saveError } = await supabaseAdmin
       .from('user_banks')
       .insert({
         user_id: user.id,
