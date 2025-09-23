@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
 import { CategoryCard } from './CategoryCard';
 
