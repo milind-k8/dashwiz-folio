@@ -65,9 +65,7 @@ const AVAILABLE_BANKS = [
 export const BanksContent = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [showAddBankDialog, setShowAddBankDialog] = useState(false);
-  const [showProcessDialog, setShowProcessDialog] = useState(false);
-  const [selectedBank, setSelectedBank] = useState<UserBank | null>(null);
-  const [selectedMonth, setSelectedMonth] = useState<string>('');
+  const [selectedMonths, setSelectedMonths] = useState<Record<string, string>>({});
   const [processingBanks, setProcessingBanks] = useState<Set<string>>(new Set());
   const { session } = useAuth();
   const { toast } = useToast();
@@ -157,17 +155,12 @@ export const BanksContent = () => {
     }
   };
 
-  const openProcessDialog = (bank: UserBank) => {
-    setSelectedBank(bank);
-    setSelectedMonth('');
-    setShowProcessDialog(true);
-  };
-
-  const handleProcessTransactions = async () => {
-    if (!selectedBank || !selectedMonth) return;
+  const handleProcessTransactions = async (bank: UserBank) => {
+    const selectedMonth = selectedMonths[bank.id];
+    if (!selectedMonth) return;
 
     try {
-      setProcessingBanks(prev => new Set([...prev, selectedBank.bank_name]));
+      setProcessingBanks(prev => new Set([...prev, bank.bank_name]));
       
       // Get user session to access Google token
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -180,7 +173,7 @@ export const BanksContent = () => {
         });
         setProcessingBanks(prev => {
           const newSet = new Set(prev);
-          newSet.delete(selectedBank.bank_name);
+          newSet.delete(bank.bank_name);
           return newSet;
         });
         return;
@@ -188,7 +181,7 @@ export const BanksContent = () => {
       
       const { data, error } = await supabase.functions.invoke('process-transactions', {
         body: { 
-          bankName: selectedBank.bank_name.toLowerCase(),
+          bankName: bank.bank_name.toLowerCase(),
           month: selectedMonth,
           googleAccessToken: session.provider_token
         }
@@ -201,9 +194,8 @@ export const BanksContent = () => {
       if (data.success) {
         toast({
           title: "Processing Started",
-          description: `Transaction processing for ${selectedBank.bank_name} (${selectedMonth}) has been initiated.`,
+          description: `Transaction processing for ${bank.bank_name} (${selectedMonth}) has been initiated.`,
         });
-        setShowProcessDialog(false);
       } else {
         toast({
           title: "Processing Failed",
@@ -221,7 +213,7 @@ export const BanksContent = () => {
     } finally {
       setProcessingBanks(prev => {
         const newSet = new Set(prev);
-        newSet.delete(selectedBank.bank_name);
+        newSet.delete(bank.bank_name);
         return newSet;
       });
     }
@@ -239,6 +231,25 @@ export const BanksContent = () => {
       { value: currentMonth, label: `Current Month (${currentMonth})` },
       { value: previousMonth, label: `Previous Month (${previousMonth})` }
     ];
+  };
+
+  // Get current month as default
+  const getCurrentMonth = () => {
+    const now = new Date();
+    return `${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
+  };
+
+  // Set default month for bank if not set
+  const getSelectedMonth = (bankId: string) => {
+    if (!selectedMonths[bankId]) {
+      setSelectedMonths(prev => ({ ...prev, [bankId]: getCurrentMonth() }));
+      return getCurrentMonth();
+    }
+    return selectedMonths[bankId];
+  };
+
+  const handleMonthChange = (bankId: string, month: string) => {
+    setSelectedMonths(prev => ({ ...prev, [bankId]: month }));
   };
 
   if (!session?.user) {
@@ -319,58 +330,6 @@ export const BanksContent = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Process Transactions Dialog */}
-        <Dialog open={showProcessDialog} onOpenChange={setShowProcessDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Scan Bank Transactions</DialogTitle>
-              <DialogDescription>
-                Select a month to scan and process transactions from {selectedBank?.bank_name} Bank.
-              </DialogDescription>
-            </DialogHeader>
-            
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Select Month</label>
-                <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose month to scan" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {getMonthOptions().map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowProcessDialog(false)}>
-                Cancel
-              </Button>
-              <Button 
-                onClick={handleProcessTransactions}
-                disabled={!selectedMonth || (selectedBank && processingBanks.has(selectedBank.bank_name))}
-                className="flex items-center gap-2"
-              >
-                {selectedBank && processingBanks.has(selectedBank.bank_name) ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Starting Scan...
-                  </>
-                ) : (
-                  <>
-                    <Download className="h-4 w-4" />
-                    Start Scanning
-                  </>
-                )}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </div>
 
       {/* Connected Banks List */}
@@ -463,12 +422,33 @@ export const BanksContent = () => {
                     </div>
                   </div>
                   
-                  {/* Actions */}
-                  <div className="pt-2">
+                  {/* Month Selection and Actions */}
+                  <div className="pt-2 space-y-3">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        Select Month to Scan
+                      </label>
+                      <Select 
+                        value={getSelectedMonth(bank.id)} 
+                        onValueChange={(value) => handleMonthChange(bank.id, value)}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {getMonthOptions().map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
                     <Button 
-                      onClick={() => openProcessDialog(bank)}
-                      disabled={processingBanks.has(bank.bank_name)}
-                      className="w-full sm:w-auto flex items-center gap-2"
+                      onClick={() => handleProcessTransactions(bank)}
+                      disabled={processingBanks.has(bank.bank_name) || !getSelectedMonth(bank.id)}
+                      className="w-full flex items-center gap-2"
                       size="sm"
                     >
                       {processingBanks.has(bank.bank_name) ? (
