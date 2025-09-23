@@ -14,7 +14,9 @@ const AuthPage = lazy(() => import('./pages/AuthPage'));
 import { RootLayout } from '@/components/RootLayout';
 import NotFound from "./pages/NotFound";
 
-const App = () => (
+const App = () => {
+  console.log("App component rendered");
+  return (
   <ThemeProvider defaultTheme="system" storageKey="dashboard-theme">
       <AuthProvider>
         <TooltipProvider>
@@ -34,6 +36,7 @@ const App = () => (
         </TooltipProvider>
       </AuthProvider>
     </ThemeProvider>
-);
+  );
+};
 
 export default App;
