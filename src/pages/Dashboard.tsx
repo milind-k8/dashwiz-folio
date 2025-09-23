@@ -17,14 +17,14 @@ export function Dashboard() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Get filter values from URL params
-  const selectedBanks = searchParams.get('banks')?.split(',').filter(Boolean) || [];
+  const selectedBank = searchParams.get('bank') || '';
   const selectedDuration = searchParams.get('duration') || 'current-month';
 
-  const handleFiltersChange = useCallback((banks: string[], duration: string) => {
+  const handleFiltersChange = useCallback((bank: string, duration: string) => {
     setSearchParams(prev => {
       const newParams = new URLSearchParams();
-      if (banks.length > 0) {
-        newParams.set('banks', banks.join(','));
+      if (bank) {
+        newParams.set('bank', bank);
       }
       newParams.set('duration', duration);
       return newParams;
@@ -33,12 +33,12 @@ export function Dashboard() {
 
   // Memoize the expensive data calculation
   const data = useMemo(() => {
-    return getFilteredData(selectedBanks, selectedDuration);
-  }, [getFilteredData, selectedBanks, selectedDuration]);
+    return getFilteredData(selectedBank ? [selectedBank] : [], selectedDuration);
+  }, [getFilteredData, selectedBank, selectedDuration]);
 
   // Calculate trends by comparing current period with previous period
   const trendsData = useMemo(() => {
-    const currentData = getFilteredData(selectedBanks, selectedDuration);
+    const currentData = getFilteredData(selectedBank ? [selectedBank] : [], selectedDuration);
     
     // Get previous period data for comparison
     let previousDuration = '';
@@ -60,7 +60,7 @@ export function Dashboard() {
         previousDuration = 'previous-month';
     }
     
-    const previousData = getFilteredData(selectedBanks, previousDuration);
+    const previousData = getFilteredData(selectedBank ? [selectedBank] : [], previousDuration);
     
     const calculateTrend = (current: number, previous: number) => {
       if (previous === 0) return null;
@@ -73,7 +73,7 @@ export function Dashboard() {
       expenses: calculateTrend(currentData.expenses, previousData.expenses),
       savings: calculateTrend(currentData.savings, previousData.savings),
     };
-  }, [getFilteredData, selectedBanks, selectedDuration]);
+  }, [getFilteredData, selectedBank, selectedDuration]);
 
   if (isLoading) {
     return (
