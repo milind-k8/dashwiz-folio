@@ -116,11 +116,8 @@ export const useFinancialData = () => {
   };
 
   // Extract expense categories processing logic
-  const processExpenseCategories = (bank_id: string | undefined) => {
-    // Filter debit transactions for the current month only
-    const currentDate = new Date();
-    const currentMonthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const currentMonthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+  const processExpenseCategories = (bank_id: string | undefined, startDate: Date, endDate: Date) => {
+    // Use the provided date range instead of hardcoded current month
     
     const expenseTransactions = transactions.filter(t => {
       // Only debit transactions
@@ -129,9 +126,9 @@ export const useFinancialData = () => {
       // Filter by selected bank
       if (bank_id !== t.bank_id) return false;
       
-      // Filter by current month
+      // Filter by the provided date range
       const transactionDate = new Date(t.mail_time);
-      return transactionDate >= currentMonthStart && transactionDate <= currentMonthEnd;
+      return transactionDate >= startDate && transactionDate <= endDate;
     });
     
     // Create category map with proper aggregation
@@ -253,7 +250,7 @@ export const useFinancialData = () => {
     })).sort((a, b) => b.balance - a.balance);
 
     // Process expense categories
-    const { expenseCategoryTotals, expenseCategoriesList } = processExpenseCategories(bank_id);
+    const { expenseCategoryTotals, expenseCategoriesList } = processExpenseCategories(bank_id, startDate, endDate);
 
     return {
       transactions: filteredTransactions,
