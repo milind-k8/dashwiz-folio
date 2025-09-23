@@ -199,9 +199,9 @@ export const useFinancialData = () => {
         const categoryData = expenseCategoryData[category];
         const merchants = categoryData?.merchants ? Array.from(categoryData.merchants.entries()) : [];
         
-        // Generate simple tags from merchant names for display purposes
+        // Generate tags from all merchant names for display purposes
         const allMerchantNames = merchants.map(([name]) => name);
-        const tags = [...new Set(allMerchantNames.slice(0, 5))]; // Show top 5 merchant names as tags
+        const tags = [...new Set(allMerchantNames)]; // Show all unique merchant names as tags
         
         return {
           category: toTitleCase(category),
