@@ -18,13 +18,12 @@ import {
   Calendar,
   Tag
 } from 'lucide-react';
-import { useGlobalData } from '@/hooks/useGlobalData';
+
 import { useGlobalStore } from '@/store/globalStore';
 import { TableLoader } from '@/components/ui/loader';
 
 export const TransactionsContent = () => {
-  const { loading } = useGlobalData();
-  const { banks, transactions } = useGlobalStore();
+  const { banks, transactions, loading } = useGlobalStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBankId, setSelectedBankId] = useState<string>('');
 

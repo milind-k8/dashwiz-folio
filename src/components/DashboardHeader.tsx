@@ -1,7 +1,7 @@
 import { IndianRupee } from 'lucide-react';
 import { NavUser } from '@/components/NavUser';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useGlobalData } from '@/hooks/useGlobalData';
+import { useGlobalStore } from '@/store/globalStore';
 
 interface DashboardHeaderProps {
   pageTitle?: string;
@@ -9,20 +9,16 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProps) {
   const isMobile = useIsMobile();
-  const { refetch } = useGlobalData();
 
   return (
     <header className="sticky top-0 z-50 flex items-center gap-3 px-3 sm:px-4 h-16 bg-card/95 backdrop-blur-lg border-b border-border shadow-sm">        
       {isMobile && (
-        <button 
-          onClick={refetch}
-          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-        >
+        <div className="flex items-center gap-2">
           <div className="w-6 h-6 bg-gradient-primary rounded-lg flex items-center justify-center">
             <IndianRupee className="w-4 h-4 text-white" />
           </div>
           <span className="text-lg font-bold text-foreground">PisaWise</span>
-        </button>
+        </div>
       )}
       
       <div className="flex-1">
