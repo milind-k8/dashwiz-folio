@@ -21,6 +21,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useNavigate } from 'react-router-dom';
+import { useGlobalStore } from '@/store/globalStore';
 
 const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -37,6 +38,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
   const { open, setOpen } = useSidebar();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const { refreshData, refreshing } = useGlobalStore();
 
   const tabToPath = (tab: string): string => {
     switch (tab) {
@@ -57,14 +59,18 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
       <SidebarContent>
         <div className="p-4">
           <div className={`flex items-center ${open || isMobile ? 'justify-between' : 'justify-center'}`}>
-            <div className="flex items-center gap-3">
+            <button 
+              onClick={refreshData}
+              disabled={refreshing}
+              className="flex items-center gap-3 hover:opacity-80 transition-opacity disabled:opacity-50"
+            >
               <div className={`${open || isMobile ? 'w-8 h-8' : 'w-6 h-6'} bg-gradient-primary rounded-lg flex items-center justify-center`}>
                 <IndianRupee className={`${open || isMobile ? 'w-5 h-5' : 'w-4 h-4'} text-white`} />
               </div>
               {(open || isMobile) && (
                 <span className="text-xl font-bold text-foreground">PisaWise</span>
               )}
-            </div>
+            </button>
             {!isMobile && (open || isMobile) && (
               <Button
                 variant="ghost"
