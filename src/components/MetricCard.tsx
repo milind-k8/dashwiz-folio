@@ -1,5 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { LucideIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface MetricCardProps {
   title: string;
@@ -20,49 +21,56 @@ export function MetricCard({
 }: MetricCardProps) {
   return (
     <Card 
-      className={`p-3 sm:p-4 transition-all duration-300 hover:shadow-elevated ${
+      className={cn(
+        "p-4 transition-all duration-300 hover:shadow-elevated",
         isHighlighted 
-          ? 'bg-gradient-card text-white border-0 shadow-card' 
-          : 'bg-card border-border shadow-card hover:shadow-elevated'
-      } ${onClick ? 'cursor-pointer hover:scale-[1.02]' : ''}`}
+          ? 'bg-gradient-primary text-primary-foreground border-0 shadow-card' 
+          : 'bg-card border shadow-card hover:shadow-elevated',
+        onClick && 'cursor-pointer hover:scale-[1.02]'
+      )}
       onClick={onClick}
     >
-      <div className="flex items-center justify-between mb-3 sm:mb-4">
-        <div className={`p-2 rounded-lg ${
+      <div className="flex items-center justify-between mb-4">
+        <div className={cn(
+          "p-2 rounded-lg",
           isHighlighted 
             ? 'bg-white/20' 
             : 'bg-primary/10'
-        }`}>
-          <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${
+        )}>
+          <Icon className={cn(
+            "w-5 h-5",
             isHighlighted 
               ? 'text-white' 
               : 'text-primary'
-          }`} />
+          )} />
         </div>
         {trend && (
-          <span className={`text-xs sm:text-sm font-medium ${
+          <span className={cn(
+            "text-sm font-medium",
             isHighlighted 
               ? 'text-white/80' 
               : 'text-success'
-          }`}>
+          )}>
             {trend}
           </span>
         )}
       </div>
       
       <div>
-        <p className={`text-sm font-medium mb-1 sm:mb-2 ${
+        <p className={cn(
+          "text-sm font-medium mb-2",
           isHighlighted 
             ? 'text-white/80' 
             : 'text-muted-foreground'
-        }`}>
+        )}>
           {title}
         </p>
-        <p className={`text-xl sm:text-2xl font-bold ${
+        <p className={cn(
+          "text-2xl font-bold",
           isHighlighted 
             ? 'text-white' 
             : 'text-foreground'
-        }`}>
+        )}>
           {value}
         </p>
       </div>

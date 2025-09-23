@@ -8,45 +8,75 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 224 15% 20%;
+    /* Base colors - Industry standard neutral palette */
+    --background: 0 0% 98%;
+    --foreground: 222 47% 11%;
 
+    /* Card system - Clean white with subtle borders */
     --card: 0 0% 100%;
-    --card-foreground: 224 15% 20%;
+    --card-foreground: 222 47% 11%;
+    --card-subtle: 210 40% 98%;
+    --card-elevated: 0 0% 100%;
 
+    /* Interactive elements */
     --popover: 0 0% 100%;
-    --popover-foreground: 224 15% 20%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 234 89% 56%;
+    /* Brand colors - Professional blue palette */
+    --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
+    --primary-subtle: 221 83% 97%;
 
-    --secondary: 240 6% 96%;
-    --secondary-foreground: 224 15% 20%;
+    /* Secondary system */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 240 6% 96%;
-    --muted-foreground: 224 15% 60%;
+    /* Muted elements */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 25% 27%;
 
-    --accent: 234 89% 56%;
+    /* Accent colors */
+    --accent: 221 83% 53%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
+    /* Status colors - Industry standard */
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
+    --destructive-subtle: 0 72% 97%;
 
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 234 89% 56%;
-
-    --success: 142 76% 36%;
+    --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
+    --success-subtle: 142 71% 97%;
 
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
+    --warning-subtle: 38 92% 97%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(234 89% 56%), hsl(234 89% 66%));
-    --gradient-card: linear-gradient(135deg, hsl(234 89% 56%), hsl(234 89% 46%));
+    /* Form elements */
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
+
+    /* Metric card variants */
+    --metric-balance: 221 83% 53%;
+    --metric-balance-foreground: 0 0% 100%;
+    --metric-income: 142 71% 45%;
+    --metric-income-foreground: 0 0% 100%;
+    --metric-expense: 0 72% 51%;
+    --metric-expense-foreground: 0 0% 100%;
+
+    /* Gradients - Subtle and professional */
+    --gradient-primary: linear-gradient(135deg, hsl(221 83% 53%), hsl(221 83% 63%));
+    --gradient-balance: linear-gradient(135deg, hsl(221 83% 53%), hsl(221 83% 63%));
+    --gradient-income: linear-gradient(135deg, hsl(142 71% 45%), hsl(142 71% 55%));
+    --gradient-expense: linear-gradient(135deg, hsl(0 72% 51%), hsl(0 72% 61%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(210 40% 98%));
     
-    --shadow-card: 0 4px 20px -2px hsl(234 89% 56% / 0.1);
-    --shadow-elevated: 0 10px 40px -10px hsl(234 89% 56% / 0.15);
+    /* Shadows - Clean and modern */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
+    --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow-elevated: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
+    --shadow-large: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -4px hsl(0 0% 0% / 0.1);
 
     --radius: 0.5rem;
 
@@ -68,45 +98,76 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 224 20% 8%;
-    --foreground: 220 20% 95%;
+    /* Base colors - Dark theme */
+    --background: 222 47% 5%;
+    --foreground: 210 40% 95%;
 
-    --card: 224 20% 10%;
-    --card-foreground: 220 20% 95%;
+    /* Card system */
+    --card: 222 47% 8%;
+    --card-foreground: 210 40% 95%;
+    --card-subtle: 222 47% 11%;
+    --card-elevated: 222 47% 10%;
 
-    --popover: 224 20% 10%;
-    --popover-foreground: 220 20% 95%;
+    /* Interactive elements */
+    --popover: 222 47% 8%;
+    --popover-foreground: 210 40% 95%;
 
-    --primary: 234 89% 66%;
-    --primary-foreground: 224 20% 8%;
+    /* Brand colors */
+    --primary: 221 83% 63%;
+    --primary-foreground: 222 47% 5%;
+    --primary-subtle: 221 83% 15%;
 
-    --secondary: 224 20% 15%;
-    --secondary-foreground: 220 20% 95%;
+    /* Secondary system */
+    --secondary: 222 47% 15%;
+    --secondary-foreground: 210 40% 95%;
 
-    --muted: 224 20% 15%;
-    --muted-foreground: 220 20% 70%;
+    /* Muted elements */
+    --muted: 222 47% 15%;
+    --muted-foreground: 215 25% 70%;
 
-    --accent: 234 89% 66%;
-    --accent-foreground: 224 20% 8%;
+    /* Accent colors */
+    --accent: 221 83% 63%;
+    --accent-foreground: 222 47% 5%;
 
-    --destructive: 0 84% 60%;
+    /* Status colors */
+    --destructive: 0 72% 61%;
     --destructive-foreground: 0 0% 100%;
+    --destructive-subtle: 0 72% 15%;
 
-    --border: 224 20% 20%;
-    --input: 224 20% 20%;
-    --ring: 234 89% 66%;
-
-    --success: 142 76% 46%;
+    --success: 142 71% 55%;
     --success-foreground: 0 0% 100%;
+    --success-subtle: 142 71% 15%;
 
     --warning: 38 92% 60%;
     --warning-foreground: 0 0% 100%;
+    --warning-subtle: 38 92% 15%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(234 89% 66%), hsl(234 89% 76%));
-    --gradient-card: linear-gradient(135deg, hsl(234 89% 66%), hsl(234 89% 56%));
+    /* Form elements */
+    --border: 222 47% 20%;
+    --input: 222 47% 20%;
+    --ring: 221 83% 63%;
+
+    /* Metric card variants */
+    --metric-balance: 221 83% 63%;
+    --metric-balance-foreground: 0 0% 100%;
+    --metric-income: 142 71% 55%;
+    --metric-income-foreground: 0 0% 100%;
+    --metric-expense: 0 72% 61%;
+    --metric-expense-foreground: 0 0% 100%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(221 83% 63%), hsl(221 83% 73%));
+    --gradient-balance: linear-gradient(135deg, hsl(221 83% 63%), hsl(221 83% 73%));
+    --gradient-income: linear-gradient(135deg, hsl(142 71% 55%), hsl(142 71% 65%));
+    --gradient-expense: linear-gradient(135deg, hsl(0 72% 61%), hsl(0 72% 71%));
+    --gradient-card: linear-gradient(135deg, hsl(222 47% 8%), hsl(222 47% 11%));
     
-    --shadow-card: 0 4px 20px -2px hsl(234 89% 66% / 0.2);
-    --shadow-elevated: 0 10px 40px -10px hsl(234 89% 66% / 0.25);
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.2);
+    --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.3), 0 1px 2px -1px hsl(0 0% 0% / 0.3);
+    --shadow-elevated: 0 4px 6px -1px hsl(0 0% 0% / 0.3), 0 2px 4px -2px hsl(0 0% 0% / 0.3);
+    --shadow-large: 0 10px 15px -3px hsl(0 0% 0% / 0.3), 0 4px 6px -4px hsl(0 0% 0% / 0.3);
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -149,5 +210,28 @@ All colors MUST be HSL.
   /* iOS PWA specific bottom spacing */
   .ios-pwa-bottom {
     padding-bottom: max(env(safe-area-inset-bottom), 0.5rem);
+  }
+}
+
+/* Design System Component Classes */
+@layer components {
+  .metric-card-balance {
+    @apply bg-gradient-balance text-metric-balance-foreground border-0 shadow-card;
+  }
+  
+  .metric-card-income {
+    @apply bg-gradient-income text-metric-income-foreground border-0 shadow-card;
+  }
+  
+  .metric-card-expense {
+    @apply bg-gradient-expense text-metric-expense-foreground border-0 shadow-card;
+  }
+  
+  .card-minimal {
+    @apply bg-card border shadow-card hover:shadow-elevated transition-all duration-300;
+  }
+  
+  .card-elevated {
+    @apply bg-card-elevated shadow-elevated border-0;
   }
 }

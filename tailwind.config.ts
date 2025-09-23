@@ -22,6 +22,7 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          subtle: "hsl(var(--primary-subtle))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -30,6 +31,7 @@ export default {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+          subtle: "hsl(var(--destructive-subtle))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -46,14 +48,26 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+          subtle: "hsl(var(--card-subtle))",
+          elevated: "hsl(var(--card-elevated))",
         },
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
+          subtle: "hsl(var(--success-subtle))",
         },
         warning: {
           DEFAULT: "hsl(var(--warning))",
           foreground: "hsl(var(--warning-foreground))",
+          subtle: "hsl(var(--warning-subtle))",
+        },
+        metric: {
+          balance: "hsl(var(--metric-balance))",
+          "balance-foreground": "hsl(var(--metric-balance-foreground))",
+          income: "hsl(var(--metric-income))",
+          "income-foreground": "hsl(var(--metric-income-foreground))",
+          expense: "hsl(var(--metric-expense))",
+          "expense-foreground": "hsl(var(--metric-expense-foreground))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -74,10 +88,15 @@ export default {
       backgroundImage: {
         'gradient-primary': 'var(--gradient-primary)',
         'gradient-card': 'var(--gradient-card)',
+        'gradient-balance': 'var(--gradient-balance)',
+        'gradient-income': 'var(--gradient-income)',
+        'gradient-expense': 'var(--gradient-expense)',
       },
       boxShadow: {
+        'sm': 'var(--shadow-sm)',
         'card': 'var(--shadow-card)',
         'elevated': 'var(--shadow-elevated)',
+        'large': 'var(--shadow-large)',
       },
       keyframes: {
         "accordion-down": {
