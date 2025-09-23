@@ -4,57 +4,17 @@ import { useGlobalStore } from '@/store/globalStore';
 export const useFinancialData = () => {
   const { banks, transactions, loading } = useGlobalStore();
 
-  // Function to normalize merchant names for better grouping
-  const normalizeMerchantName = (merchant: string): string => {
-    if (!merchant) return 'others';
-    
-    // Convert to lowercase and trim
-    let normalized = merchant.toLowerCase().trim();
-    
-    // Remove common suffixes and prefixes that don't affect merchant identity
-    normalized = normalized
-      .replace(/\b(ltd|limited|pvt|private|llp|inc|corp|corporation|co|company)\b/g, '')
-      .replace(/\b(restaurant|hotel|sweet|farsan|food|store|shop|market|mall|center|centre)\b/g, '')
-      .replace(/\b(and|&|the|of|in|at|on|for|with|by)\b/g, '')
-      .replace(/[^\w\s]/g, '') // Remove special characters
-      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-      .trim();
-    
-    // Extract key words (first 2-3 meaningful words)
-    const words = normalized.split(' ').filter(word => word.length > 2);
-    if (words.length >= 2) {
-      return words.slice(0, 2).join(' ');
-    }
-    
-    return normalized || 'others';
+  // Helper function to convert string to title case
+  const toTitleCase = (value: string) => {
+    if (!value) return value;
+    return value
+      .toLowerCase()
+      .replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
-  // Debug function to test merchant normalization
-  const testMerchantNormalization = () => {
-    const testMerchants = [
-      'Radhas Madhur Mahal Sweet Farsan and Restaurant',
-      'RADHAS MADHUR MAHAL SWEET FARSAN AND RESTAURANT',
-      'radhas madhur mahal sweet farsan and restaurant',
-      'Radhas Madhur Mahal',
-      'Madhur Mahal Sweet Farsan'
-    ];
-    
-    console.log('Merchant Normalization Test:');
-    testMerchants.forEach(merchant => {
-      console.log(`Original: "${merchant}" -> Normalized: "${normalizeMerchantName(merchant)}"`);
-    });
-  };
-
-  const getFilteredData = useCallback((selectedBank: string, monthFilter: string) => {
-    const toTitleCase = (value: string) => {
-      if (!value) return value;
-      return value
-        .toLowerCase()
-        .replace(/\b\w/g, (char) => char.toUpperCase());
-    };
-
+  // Extract date filtering logic
+  const getDateRange = (monthFilter: string) => {
     const now = new Date();
-    const bank_id = banks.find(b => b.bank_name === selectedBank)?.id;
     let startDate: Date;
     let endDate: Date = new Date(now.getFullYear(), now.getMonth() + 1, 0); // End of current month
 
@@ -74,8 +34,12 @@ export const useFinancialData = () => {
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
     }
 
-    // Filter transactions by selected banks and date range
-    let filteredTransactions = transactions.filter(t => {
+    return { startDate, endDate };
+  };
+
+  // Extract transaction filtering logic
+  const filterTransactions = (bank_id: string | undefined, startDate: Date, endDate: Date) => {
+    return transactions.filter(t => {
       // Exclude balance transactions for calculations
       if (t.transaction_type === 'balance') return false;
       
@@ -88,8 +52,10 @@ export const useFinancialData = () => {
       const transactionDate = new Date(t.mail_time);
       return transactionDate >= startDate && transactionDate <= endDate;
     });
-    
-    // Calculate metrics by bank
+  };
+
+  // Extract bank metrics calculation logic
+  const calculateBankMetrics = (filteredTransactions: any[], startDate: Date, endDate: Date) => {
     const bankMetrics = new Map<string, { balance: number; income: number; expenses: number }>();
     
     // Get latest balance for each bank using improved calculation
@@ -146,26 +112,11 @@ export const useFinancialData = () => {
       }
     });
 
-    // Calculate totals
-    const income = filteredTransactions
-      .filter(t => t.transaction_type === 'credit')
-      .reduce((sum, t) => sum + t.amount, 0);
-    
-    const expenses = filteredTransactions
-      .filter(t => t.transaction_type === 'debit')
-      .reduce((sum, t) => sum + t.amount, 0);
-    
-    const totalBalance = Array.from(bankMetrics.values()).reduce((sum, metrics) => sum + metrics.balance, 0);
-    const savings = income - expenses;
+    return bankMetrics;
+  };
 
-    // Convert bank metrics to array format
-    const bankBreakdown = Array.from(bankMetrics.entries()).map(([bankName, metrics]) => ({
-      bank: bankName,
-      balance: metrics.balance,
-      income: metrics.income,
-      expenses: metrics.expenses
-    })).sort((a, b) => b.balance - a.balance);
-
+  // Extract expense categories processing logic
+  const processExpenseCategories = (bank_id: string | undefined) => {
     // Filter debit transactions for the current month only
     const currentDate = new Date();
     const currentMonthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -212,8 +163,7 @@ export const useFinancialData = () => {
       
       // Track merchant frequency and amounts
       if (t.merchant) {
-        const originalMerchant = t.merchant.trim();
-        const normalizedMerchant = normalizeMerchantName(originalMerchant);
+        const normalizedMerchant = t.merchant;
         
         if (!acc[category].merchants.has(normalizedMerchant)) {
           acc[category].merchants.set(normalizedMerchant, { 
@@ -225,7 +175,7 @@ export const useFinancialData = () => {
         const merchantData = acc[category].merchants.get(normalizedMerchant)!;
         merchantData.count += 1;
         merchantData.totalAmount += t.amount;
-        merchantData.originalNames.add(originalMerchant);
+        merchantData.originalNames.add(normalizedMerchant);
         
         // Collect tags from normalized merchant names
         const merchantWords = normalizedMerchant.split(/\s+/).filter(word => word.length > 2);
@@ -274,6 +224,41 @@ export const useFinancialData = () => {
         };
       });
 
+    return { expenseCategoryTotals, expenseCategoriesList };
+  };
+
+  const getFilteredData = useCallback((selectedBank: string, monthFilter: string) => {
+    const bank_id = banks.find(b => b.bank_name === selectedBank)?.id;
+    const { startDate, endDate } = getDateRange(monthFilter);
+
+    // Filter transactions by selected banks and date range
+    const filteredTransactions = filterTransactions(bank_id, startDate, endDate);
+    
+    // Calculate metrics by bank
+    const bankMetrics = calculateBankMetrics(filteredTransactions, startDate, endDate);
+
+    // Calculate totals
+    const income = filteredTransactions
+      .filter(t => t.transaction_type === 'credit')
+      .reduce((sum, t) => sum + t.amount, 0);
+    
+    const expenses = filteredTransactions
+      .filter(t => t.transaction_type === 'debit')
+      .reduce((sum, t) => sum + t.amount, 0);
+    
+    const totalBalance = Array.from(bankMetrics.values()).reduce((sum, metrics) => sum + metrics.balance, 0);
+    const savings = income - expenses;
+
+    // Convert bank metrics to array format
+    const bankBreakdown = Array.from(bankMetrics.entries()).map(([bankName, metrics]) => ({
+      bank: bankName,
+      balance: metrics.balance,
+      income: metrics.income,
+      expenses: metrics.expenses
+    })).sort((a, b) => b.balance - a.balance);
+
+    // Process expense categories
+    const { expenseCategoryTotals, expenseCategoriesList } = processExpenseCategories(bank_id);
 
     return {
       transactions: filteredTransactions,
