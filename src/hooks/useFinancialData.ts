@@ -143,8 +143,7 @@ export const useFinancialData = () => {
           total: 0,
           transactionCount: 0,
           transactions: [],
-          tags: new Set<string>(),
-          merchants: new Map<string, { count: number; totalAmount: number; originalNames: Set<string> }>()
+          merchants: new Map<string, { count: number; totalAmount: number }>()
         };
       }
       
@@ -161,25 +160,19 @@ export const useFinancialData = () => {
         snippet: t.snippet
       });
       
-      // Track merchant frequency and amounts
+      // Track merchant frequency and amounts - use merchant name exactly as-is
       if (t.merchant) {
-        const normalizedMerchant = t.merchant;
+        const merchantName = t.merchant.trim(); // Only trim whitespace, don't normalize
         
-        if (!acc[category].merchants.has(normalizedMerchant)) {
-          acc[category].merchants.set(normalizedMerchant, { 
+        if (!acc[category].merchants.has(merchantName)) {
+          acc[category].merchants.set(merchantName, { 
             count: 0, 
-            totalAmount: 0,
-            originalNames: new Set<string>()
+            totalAmount: 0
           });
         }
-        const merchantData = acc[category].merchants.get(normalizedMerchant)!;
+        const merchantData = acc[category].merchants.get(merchantName)!;
         merchantData.count += 1;
         merchantData.totalAmount += t.amount;
-        merchantData.originalNames.add(normalizedMerchant);
-        
-        // Collect tags from normalized merchant names
-        const merchantWords = normalizedMerchant.split(/\s+/).filter(word => word.length > 2);
-        merchantWords.forEach(word => acc[category].tags.add(toTitleCase(word)));
       }
       
       return acc;
@@ -187,8 +180,7 @@ export const useFinancialData = () => {
       total: number; 
       transactionCount: number;
       transactions: any[]; 
-      tags: Set<string>;
-      merchants: Map<string, { count: number; totalAmount: number; originalNames: Set<string> }>;
+      merchants: Map<string, { count: number; totalAmount: number }>;
     }>);
 
     // Extract totals and tags for backward compatibility
@@ -207,19 +199,22 @@ export const useFinancialData = () => {
         const categoryData = expenseCategoryData[category];
         const merchants = categoryData?.merchants ? Array.from(categoryData.merchants.entries()) : [];
         
+        // Generate simple tags from merchant names for display purposes
+        const allMerchantNames = merchants.map(([name]) => name);
+        const tags = [...new Set(allMerchantNames.slice(0, 5))]; // Show top 5 merchant names as tags
+        
         return {
           category: toTitleCase(category),
           amount,
           percentage: totalExpenses > 0 ? Math.round((amount / totalExpenses) * 100) : 0,
           color: colorPalette[idx % colorPalette.length],
-          tags: Array.from(categoryData?.tags || new Set<string>()),
+          tags,
           transactions: categoryData?.transactions || [],
           transactionCount: categoryData?.transactionCount || 0,
           merchants: merchants.map(([merchant, data]) => ({
             name: merchant,
             count: data.count,
-            totalAmount: data.totalAmount,
-            originalNames: Array.from(data.originalNames)
+            totalAmount: data.totalAmount
           }))
         };
       });
