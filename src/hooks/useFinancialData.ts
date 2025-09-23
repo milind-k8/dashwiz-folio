@@ -24,11 +24,9 @@ export const useFinancialData = () => {
         startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
         endDate = new Date(now.getFullYear(), now.getMonth(), 0);
         break;
-      case 'previous-3-months':
-        startDate = new Date(now.getFullYear(), now.getMonth() - 3, 1);
-        break;
-      case 'previous-6-months':
-        startDate = new Date(now.getFullYear(), now.getMonth() - 6, 1);
+      case 'month-before-previous':
+        startDate = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+        endDate = new Date(now.getFullYear(), now.getMonth() - 1, 0);
         break;
       default:
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);

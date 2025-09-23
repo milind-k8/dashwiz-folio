@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/select';
 import { useFinancialData } from '@/hooks/useFinancialData';
 import { Loader } from '@/components/ui/loader';
+import { format, subMonths, startOfMonth } from 'date-fns';
 
 interface InlineFiltersProps {
   onFiltersChange?: (bank: string, duration: string) => void;
@@ -38,12 +39,28 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
     label: getBankLabel(bank)
   }));
 
-  const durationOptions = [
-    { value: 'current-month', label: 'Current Month' },
-    { value: 'previous-month', label: 'Previous Month' },
-    { value: 'previous-3-months', label: 'Previous 3 Months' },
-    { value: 'previous-6-months', label: 'Previous 6 Months' }
-  ];
+  // Generate duration options for last 3 months
+  const durationOptions = (() => {
+    const now = new Date();
+    const currentMonth = startOfMonth(now);
+    const previousMonth = startOfMonth(subMonths(now, 1));
+    const monthBeforePrevious = startOfMonth(subMonths(now, 2));
+
+    return [
+      { 
+        value: 'current-month', 
+        label: `${format(currentMonth, 'MMMM yyyy')} (Current)` 
+      },
+      { 
+        value: 'previous-month', 
+        label: format(previousMonth, 'MMMM yyyy') 
+      },
+      { 
+        value: 'month-before-previous', 
+        label: format(monthBeforePrevious, 'MMMM yyyy') 
+      }
+    ];
+  })();
 
   const handleBankChange = (value: string) => {
     if (onFiltersChange) {

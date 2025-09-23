@@ -47,13 +47,10 @@ export function Dashboard() {
         previousDuration = 'previous-month';
         break;
       case 'previous-month':
-        previousDuration = 'previous-3-months';
+        previousDuration = 'month-before-previous';
         break;
-      case 'previous-3-months':
-        previousDuration = 'previous-6-months';
-        break;
-      case 'previous-6-months':
-        // For 6 months, compare with current month to show overall trend
+      case 'month-before-previous':
+        // For the oldest month, compare with current month to show overall trend
         previousDuration = 'current-month';
         break;
       default:
