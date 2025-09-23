@@ -21,8 +21,6 @@ export const useGlobalData = () => {
   const fetchData = async () => {
     if (!user) return;
     
-    console.log('fetchData called for user:', user.id);
-    
     try {
       setLoading(true);
       
@@ -91,18 +89,14 @@ export const useGlobalData = () => {
 
   // Initialize data when user logs in
   useEffect(() => {
-    console.log('useGlobalData useEffect triggered:', { user: !!user, authLoading, initialized });
-    
     if (authLoading) return;
     
-    if (user && !initialized) {
-      console.log('Calling fetchData because user exists and not initialized');
+    if (user && !initialized && !loading) {
       fetchData();
     } else if (!user) {
-      console.log('Resetting data because no user');
       reset();
     }
-  }, [user, authLoading, initialized]);
+  }, [user, authLoading, initialized, loading]);
 
   return {
     banks,
