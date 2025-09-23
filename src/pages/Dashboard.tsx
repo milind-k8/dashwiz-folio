@@ -7,13 +7,13 @@ import { TransactionList } from '@/components/TransactionList';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
 import { DashboardSkeleton } from '@/components/DashboardSkeleton';
-import { useBankData } from '@/hooks/useBankData';
+import { useFinancialData } from '@/hooks/useFinancialData';
 import { Wallet, CreditCard as CreditCardIcon, ArrowDownRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
 export function Dashboard() {
-  const { getFilteredData, isLoading } = useBankData();
+  const { getFilteredData, isLoading } = useFinancialData();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Get filter values from URL params

@@ -8,7 +8,7 @@ import {
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { getTransactionsForBanksSync, isDbReady } from '@/lib/lokiDb';
+import { useGlobalStore } from '@/store/globalStore';
 
 interface BankDataModalProps {
   isOpen: boolean;
@@ -29,16 +29,10 @@ export function BankDataModal({
   selectedDuration,
   metricType
 }: BankDataModalProps) {
-  const getBankLabel = (bankCode: string) => {
-    const labels: Record<string, string> = {
-      'hdfc': 'HDFC Bank',
-      'chase': 'Chase Bank',
-      'bofa': 'Bank of America',
-      'wells': 'Wells Fargo',
-      'citi': 'Citibank',
-      'capital': 'Capital One'
-    };
-    return labels[bankCode] || bankCode.toUpperCase();
+  const { banks, transactions } = useGlobalStore();
+
+  const getBankLabel = (bankName: string) => {
+    return bankName.toUpperCase();
   };
 
   const getBankWiseData = () => {
@@ -64,41 +58,41 @@ export function BankDataModal({
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
     }
 
-    // Get all transactions first, then filter by bank
-    const banksToQuery = selectedBanks.length === 0 ? ['all-banks'] : selectedBanks;
-    let allTransactions = getTransactionsForBanksSync(banksToQuery);
-    
-    if (!isDbReady() || allTransactions.length === 0) {
-      return [];
-    }
-
-    // Filter transactions by date range
-    if (startDate && endDate) {
-      allTransactions = allTransactions.filter(transaction => {
-        const transactionDate = new Date(transaction.date);
-        return transactionDate >= startDate && transactionDate <= endDate;
-      });
-    }
+    // Filter transactions by selected banks and date range
+    let filteredTransactions = transactions.filter(t => {
+      // Exclude balance transactions for calculations
+      if (t.transaction_type === 'balance') return false;
+      
+      // Filter by banks
+      if (selectedBanks.length > 0 && !selectedBanks.includes(t.bank_id)) {
+        return false;
+      }
+      
+      // Filter by date
+      const transactionDate = new Date(t.mail_time);
+      return transactionDate >= startDate && transactionDate <= endDate;
+    });
 
     // Group by bank and calculate metrics
-    const bankGroups = allTransactions.reduce((acc, transaction) => {
-      if (!acc[transaction.bank]) {
-        acc[transaction.bank] = [];
-      }
-      acc[transaction.bank].push(transaction);
-      return acc;
-    }, {} as Record<string, typeof allTransactions>);
-
-    return Object.entries(bankGroups).map(([bank, transactions]) => {
-      const income = transactions
-        .filter(t => t.type === 'deposit')
+    const bankGroups = banks.reduce((acc, bank) => {
+      const bankTransactions = filteredTransactions.filter(t => t.bank_id === bank.id);
+      
+      if (bankTransactions.length === 0) return acc;
+      
+      const income = bankTransactions
+        .filter(t => t.transaction_type === 'credit')
         .reduce((sum, t) => sum + t.amount, 0);
       
-      const expenses = transactions
-        .filter(t => t.type === 'withdrawl')
+      const expenses = bankTransactions
+        .filter(t => t.transaction_type === 'debit')
         .reduce((sum, t) => sum + t.amount, 0);
       
-      const balance = transactions.length > 0 ? transactions[0].closingBy : 0;
+      // Get latest balance for this bank
+      const balanceTransactions = transactions
+        .filter(t => t.bank_id === bank.id && t.transaction_type === 'balance')
+        .sort((a, b) => new Date(b.mail_time).getTime() - new Date(a.mail_time).getTime());
+      
+      const balance = balanceTransactions[0]?.amount || 0;
       const savings = income - expenses;
 
       let value = 0;
@@ -117,13 +111,19 @@ export function BankDataModal({
           break;
       }
 
-      return {
-        bank,
-        label: getBankLabel(bank),
-        value,
-        percentage: totalValue > 0 ? Math.round((value / totalValue) * 100) : 0
-      };
-    }).filter(item => item.value > 0).sort((a, b) => b.value - a.value);
+      if (value > 0) {
+        acc.push({
+          bank: bank.bank_name,
+          label: getBankLabel(bank.bank_name),
+          value,
+          percentage: totalValue > 0 ? Math.round((value / totalValue) * 100) : 0
+        });
+      }
+
+      return acc;
+    }, [] as Array<{ bank: string; label: string; value: number; percentage: number }>);
+
+    return bankGroups.sort((a, b) => b.value - a.value);
   };
 
   const bankData = getBankWiseData();

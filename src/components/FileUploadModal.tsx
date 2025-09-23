@@ -11,7 +11,6 @@ import { Card } from '@/components/ui/card';
 import { Upload, FileText, X, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ButtonLoader } from '@/components/ui/loader';
-import { bankDataService } from '@/services/bankDataService';
 
 interface FileUploadModalProps {
   isOpen: boolean;
@@ -199,11 +198,12 @@ export function FileUploadModal({ isOpen, onClose }: FileUploadModalProps) {
       // Simulate file processing
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // Persist into service (which saves to localStorage)
-      const parsed = JSON.parse(content);
-      if (validation.bankName) {
-        bankDataService.addOrReplaceBank(validation.bankName, parsed);
-      }
+      // File processing completed - data now comes from Supabase
+      toast({
+        title: "Feature Notice",
+        description: "File upload feature has been replaced with direct Supabase integration",
+        variant: "default",
+      });
 
       toast({
         title: "Upload Successful",

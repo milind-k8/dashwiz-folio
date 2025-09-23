@@ -1,37 +1,8 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { bankDataService } from '@/services/bankDataService';
-import { getTransactionsForBanksSync, isDbReady } from '@/lib/lokiDb';
+import { useMemo, useCallback } from 'react';
+import { useGlobalStore } from '@/store/globalStore';
 
-interface Transaction {
-  date: string;
-  refId: string;
-  amount: number;
-  type: 'deposit' | 'withdrawl';
-  closingBy: number;
-  category: string;
-  tags: string;
-}
-
-export const useBankData = () => {
-  const [availableBanks, setAvailableBanks] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadData = async () => {
-      setIsLoading(true);
-      await bankDataService.loadBankData();
-      setAvailableBanks(bankDataService.getAvailableBanks());
-      setIsLoading(false);
-    };
-
-    loadData();
-
-    const handleChange = () => {
-      setAvailableBanks(bankDataService.getAvailableBanks());
-    };
-    bankDataService.onChange(handleChange);
-    return () => bankDataService.offChange(handleChange);
-  }, []);
+export const useFinancialData = () => {
+  const { banks, transactions, loading } = useGlobalStore();
 
   const getFilteredData = useCallback((selectedBanks: string[], monthFilter: string) => {
     const toTitleCase = (value: string) => {
@@ -63,46 +34,62 @@ export const useBankData = () => {
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
     }
 
-    // Handle "All Banks" selection - when no banks are selected, get data for all banks
-    const banksToQuery = selectedBanks.length === 0 ? ['all-banks'] : selectedBanks;
-    let transactions = getTransactionsForBanksSync(banksToQuery);
-    if (!isDbReady()) {
-      transactions = [];
-    }
-    if (startDate && endDate) {
-      transactions = transactions.filter(transaction => {
-        const transactionDate = new Date(transaction.date);
-        return transactionDate >= startDate && transactionDate <= endDate;
-      });
-    }
+    // Filter transactions by selected banks and date range
+    let filteredTransactions = transactions.filter(t => {
+      // Exclude balance transactions for calculations
+      if (t.transaction_type === 'balance') return false;
+      
+      // Filter by banks
+      if (selectedBanks.length > 0 && !selectedBanks.includes(t.bank_id)) {
+        return false;
+      }
+      
+      // Filter by date
+      const transactionDate = new Date(t.mail_time);
+      return transactionDate >= startDate && transactionDate <= endDate;
+    });
     
     // Calculate metrics by bank
     const bankMetrics = new Map<string, { balance: number; income: number; expenses: number }>();
     
-    transactions.forEach(t => {
-      const bankName = toTitleCase(t.bank);
+    // Get latest balance for each bank
+    banks.forEach(bank => {
+      const balanceTransactions = transactions
+        .filter(t => t.bank_id === bank.id && t.transaction_type === 'balance')
+        .sort((a, b) => new Date(b.mail_time).getTime() - new Date(a.mail_time).getTime());
+      
+      const latestBalance = balanceTransactions[0]?.amount || 0;
+      
+      if (!bankMetrics.has(bank.bank_name)) {
+        bankMetrics.set(bank.bank_name, { balance: latestBalance, income: 0, expenses: 0 });
+      }
+    });
+    
+    // Calculate income and expenses for each bank
+    filteredTransactions.forEach(t => {
+      const bank = banks.find(b => b.id === t.bank_id);
+      if (!bank) return;
+      
+      const bankName = toTitleCase(bank.bank_name);
       if (!bankMetrics.has(bankName)) {
         bankMetrics.set(bankName, { balance: 0, income: 0, expenses: 0 });
       }
       const metrics = bankMetrics.get(bankName)!;
       
-      if (t.type === 'deposit') {
+      if (t.transaction_type === 'credit') {
         metrics.income += t.amount;
-      } else if (t.type === 'withdrawl') {
+      } else if (t.transaction_type === 'debit') {
         metrics.expenses += t.amount;
       }
-      
-      // Use latest closing balance for each bank
-      metrics.balance = t.closingBy;
     });
 
     // Calculate totals
-    const income = transactions
-      .filter(t => t.type === 'deposit')
+    const income = filteredTransactions
+      .filter(t => t.transaction_type === 'credit')
       .reduce((sum, t) => sum + t.amount, 0);
     
-    const expenses = transactions
-      .filter(t => t.type === 'withdrawl')
+    const expenses = filteredTransactions
+      .filter(t => t.transaction_type === 'debit')
       .reduce((sum, t) => sum + t.amount, 0);
     
     const totalBalance = Array.from(bankMetrics.values()).reduce((sum, metrics) => sum + metrics.balance, 0);
@@ -116,8 +103,8 @@ export const useBankData = () => {
       expenses: metrics.expenses
     })).sort((a, b) => b.balance - a.balance);
 
-    // Group expenses by category and collect tags with improved logic
-    const expenseTransactions = transactions.filter(t => t.type === 'withdrawl');
+    // Group expenses by category and collect tags
+    const expenseTransactions = filteredTransactions.filter(t => t.transaction_type === 'debit');
     
     const expenseCategoryData = expenseTransactions.reduce((acc, t) => {
       const category = t.category || 'Uncategorized';
@@ -134,12 +121,18 @@ export const useBankData = () => {
       acc[category].total += t.amount;
       
       // Store transaction for detailed breakdown
-      acc[category].transactions.push(t);
+      acc[category].transactions.push({
+        merchant: t.merchant,
+        amount: t.amount,
+        date: t.mail_time,
+        bank: banks.find(b => b.id === t.bank_id)?.bank_name || 'Unknown',
+        snippet: t.snippet
+      });
       
-      // Collect tags
-      if (t.tags) {
-        const tagList = t.tags.split(',').map(s => s.trim()).filter(Boolean);
-        tagList.forEach(tag => acc[category].tags.add(tag));
+      // Collect tags from merchant names (simple tag extraction)
+      if (t.merchant) {
+        const merchantWords = t.merchant.toLowerCase().split(/\s+/).filter(word => word.length > 3);
+        merchantWords.forEach(word => acc[category].tags.add(toTitleCase(word)));
       }
       
       return acc;
@@ -149,15 +142,12 @@ export const useBankData = () => {
     const expenseCategoryTotals = Object.fromEntries(
       Object.entries(expenseCategoryData).map(([category, data]) => [category, data.total])
     );
-    
-    const expenseCategoryTags = Object.fromEntries(
-      Object.entries(expenseCategoryData).map(([category, data]) => [category, data.tags])
-    );
 
     const totalExpenses = Object.values(expenseCategoryTotals).reduce((s, v) => s + v, 0);
     const colorPalette = [
       '#4F46E5', '#06B6D4', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#14B8A6', '#3B82F6', '#F472B6', '#FB7185'
     ];
+    
     const expenseCategoriesList = Object.entries(expenseCategoryTotals)
       .sort((a, b) => b[1] - a[1])
       .map(([category, amount], idx) => ({
@@ -165,7 +155,7 @@ export const useBankData = () => {
         amount,
         percentage: totalExpenses > 0 ? Math.round((amount / totalExpenses) * 100) : 0,
         color: colorPalette[idx % colorPalette.length],
-        tags: Array.from(expenseCategoryTags[category] || new Set<string>()).map(toTitleCase),
+        tags: Array.from(expenseCategoryData[category]?.tags || new Set<string>()),
         transactions: expenseCategoryData[category]?.transactions || []
       }));
 
@@ -184,13 +174,13 @@ export const useBankData = () => {
       cursor.setMonth(cursor.getMonth() + 1);
     }
 
-    for (const t of transactions) {
-      const d = new Date(t.date);
+    for (const t of filteredTransactions) {
+      const d = new Date(t.mail_time);
       const key = `${d.getFullYear()}-${d.getMonth()}`;
       const bucket = monthlyMap.get(key) || { income: 0, expenses: 0 };
-      if (t.type === 'deposit') {
+      if (t.transaction_type === 'credit') {
         bucket.income += t.amount;
-      } else if (t.type === 'withdrawl') {
+      } else if (t.transaction_type === 'debit') {
         bucket.expenses += t.amount;
       }
       monthlyMap.set(key, bucket);
@@ -215,7 +205,7 @@ export const useBankData = () => {
       });
 
     return {
-      transactions,
+      transactions: filteredTransactions,
       balance: totalBalance,
       income,
       expenses,
@@ -225,11 +215,15 @@ export const useBankData = () => {
       monthlyData,
       bankBreakdown,
     };
-  }, []);
+  }, [banks, transactions]);
+
+  const availableBanks = useMemo(() => {
+    return banks.map(bank => bank.bank_name);
+  }, [banks]);
 
   return {
     availableBanks,
-    isLoading,
+    isLoading: loading,
     getFilteredData
   };
 };

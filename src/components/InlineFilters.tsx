@@ -13,7 +13,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useBankData } from '@/hooks/useBankData';
+import { useFinancialData } from '@/hooks/useFinancialData';
 import { Loader } from '@/components/ui/loader';
 
 interface InlineFiltersProps {
@@ -22,7 +22,7 @@ interface InlineFiltersProps {
 
 export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
   const [searchParams] = useSearchParams();
-  const { availableBanks, isLoading } = useBankData();
+  const { availableBanks, isLoading } = useFinancialData();
 
   // Get filter values from URL params
   const selectedBanks = searchParams.get('banks')?.split(',').filter(Boolean) || [];
