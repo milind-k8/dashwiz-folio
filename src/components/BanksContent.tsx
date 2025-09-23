@@ -385,119 +385,129 @@ export const BanksContent = () => {
           </div>
         </div>
         
-        <div className="rounded-lg border border-border/50 overflow-hidden">
-          <Table>
-            <TableHeader className="bg-muted/30">
-              <TableRow>
-                <TableHead className="font-semibold">Bank Name</TableHead>
-                <TableHead className="font-semibold">Account Number</TableHead>
-                <TableHead className="font-semibold">Added On</TableHead>
-                <TableHead className="font-semibold">Process Transactions</TableHead>
-                <TableHead className="font-semibold w-20">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8">
-                    <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
-                    <p className="text-muted-foreground">Loading your banks...</p>
-                  </TableCell>
-                </TableRow>
-              ) : userBanks.length > 0 ? (
-                userBanks.map((bank) => (
-                  <TableRow key={bank.id} className="hover:bg-muted/20 transition-colors">
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="p-1.5 bg-primary/10 rounded-md">
-                          <CreditCard className="h-4 w-4 text-primary" />
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin mb-4 text-primary" />
+            <p className="text-muted-foreground">Loading your banks...</p>
+          </div>
+        ) : userBanks.length > 0 ? (
+          <div className="space-y-4">
+            {userBanks.map((bank) => (
+              <Card key={bank.id} className="p-4 border border-border/50 hover:shadow-md transition-all duration-200 hover:border-primary/20">
+                <div className="flex flex-col space-y-4">
+                  {/* Bank Header */}
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <CreditCard className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">{bank.bank_name} Bank</h3>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant="secondary" className="font-mono text-xs">
+                            {bank.bank_account_no}
+                          </Badge>
                         </div>
-                        <span className="font-medium">{bank.bank_name} Bank</span>
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary" className="font-mono">
-                        {bank.bank_account_no}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-sm text-muted-foreground">
-                        {new Date(bank.created_at).toLocaleDateString()}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => openProcessDialog(bank)}
-                          disabled={processingBanks.has(bank.bank_name)}
-                          className="flex items-center gap-2"
-                        >
-                          {processingBanks.has(bank.bank_name) ? (
-                            <>
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                              Processing...
-                            </>
-                          ) : (
-                            <>
-                              <Download className="h-4 w-4" />
-                              Scan Transactions
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Remove {bank.bank_name} Bank?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This will remove the bank account from your connected banks. This action cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction 
-                              onClick={() => handleDeleteBank(bank.id, bank.bank_name)}
-                              className="bg-destructive hover:bg-destructive/90"
-                            >
-                              Remove
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8">
-                    <div className="flex flex-col items-center gap-2">
-                      <Building className="h-8 w-8 text-muted-foreground/50" />
-                      <p className="text-muted-foreground">No banks connected yet</p>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => setShowAddBankDialog(true)}
-                        className="mt-2"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Your First Bank
-                      </Button>
                     </div>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                    
+                    {/* Delete Button */}
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10 p-2"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Remove {bank.bank_name} Bank?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will remove the bank account from your connected banks. This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction 
+                            onClick={() => handleDeleteBank(bank.id, bank.bank_name)}
+                            className="bg-destructive hover:bg-destructive/90"
+                          >
+                            Remove
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                  
+                  {/* Bank Details */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-3 border-t border-border/30">
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Added On</p>
+                      <p className="text-sm font-medium">
+                        {new Date(bank.created_at).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Status</p>
+                      <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-100">
+                        <CheckCircle className="h-3 w-3 mr-1" />
+                        Connected
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  {/* Actions */}
+                  <div className="pt-2">
+                    <Button 
+                      onClick={() => openProcessDialog(bank)}
+                      disabled={processingBanks.has(bank.bank_name)}
+                      className="w-full sm:w-auto flex items-center gap-2"
+                      size="sm"
+                    >
+                      {processingBanks.has(bank.bank_name) ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          <Download className="h-4 w-4" />
+                          Scan Transactions
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <div className="flex flex-col items-center gap-4">
+              <div className="p-4 bg-muted/20 rounded-full">
+                <Building className="h-8 w-8 text-muted-foreground/50" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-lg font-medium text-muted-foreground">No banks connected yet</p>
+                <p className="text-sm text-muted-foreground/70">Add your first bank to start tracking transactions</p>
+              </div>
+              <Button 
+                onClick={() => setShowAddBankDialog(true)}
+                className="mt-2"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Your First Bank
+              </Button>
+            </div>
+          </div>
+        )}
       </Card>
     </div>
   );
