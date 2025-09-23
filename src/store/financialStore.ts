@@ -16,12 +16,6 @@ export interface FinancialData {
   income: number;
   savings: number;
   expenses: number;
-  monthlyData: Array<{
-    month: string;
-    income: number;
-    expenses: number;
-    savings: number;
-  }>;
   expenseCategories: Array<{
     category: string;
     amount: number;
@@ -70,14 +64,6 @@ const mockTransactions: Transaction[] = [
   }
 ];
 
-const mockMonthlyData = [
-  { month: 'Jan', income: 2800, expenses: 1800, savings: 1000 },
-  { month: 'Feb', income: 3200, expenses: 2100, savings: 1100 },
-  { month: 'Mar', income: 2900, expenses: 1900, savings: 1000 },
-  { month: 'Apr', income: 3400, expenses: 2200, savings: 1200 },
-  { month: 'May', income: 3100, expenses: 2000, savings: 1100 },
-  { month: 'Jun', income: 3300, expenses: 2100, savings: 1200 },
-];
 
 const mockExpenseCategories = [
   { category: 'Shopping', amount: 890, percentage: 35, color: '#4F46E5' },
@@ -93,7 +79,6 @@ export const useFinancialStore = create<FinancialStore>((set) => ({
     income: 3100.00,
     savings: 1875.10,
     expenses: 1224.90,
-    monthlyData: mockMonthlyData,
     expenseCategories: mockExpenseCategories,
     transactions: mockTransactions,
   },

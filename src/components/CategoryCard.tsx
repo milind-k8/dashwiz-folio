@@ -13,6 +13,7 @@ interface CategoryCardProps {
   tagCounts?: Record<string, number>;
   shouldExpand?: boolean;
   searchTerm?: string;
+  transactionCount?: number;
 }
 
 export function CategoryCard({
@@ -23,7 +24,8 @@ export function CategoryCard({
   tagSpending,
   tagCounts = {},
   shouldExpand = false,
-  searchTerm = ''
+  searchTerm = '',
+  transactionCount = 0
 }: CategoryCardProps) {
   const [isExpanded, setIsExpanded] = useState(shouldExpand);
 
@@ -71,9 +73,16 @@ export function CategoryCard({
                     {formatCurrency(amount)}
                   </div>
                 </div>
-                <span className="text-xs text-muted-foreground mt-0.5">
-                  {percentage}%
-                </span>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-xs text-muted-foreground">
+                    {percentage}%
+                  </span>
+                  {transactionCount > 0 && (
+                    <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                      {transactionCount} transaction{transactionCount !== 1 ? 's' : ''}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </div>

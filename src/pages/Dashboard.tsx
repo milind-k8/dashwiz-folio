@@ -1,6 +1,5 @@
 import { useMemo, useCallback } from 'react';
 import { EnhancedMetricCard } from '@/components/EnhancedMetricCard';
-import { FinanceChart } from '@/components/FinanceChart';
 import { ExpenseChart } from '@/components/ExpenseChart';
 import { TransactionList } from '@/components/TransactionList';
 import { InlineFilters } from '@/components/InlineFilters';
@@ -21,7 +20,7 @@ export function Dashboard() {
 
   // Memoize the expensive data calculation
   const data = useMemo(() => {
-    return getFilteredData(selectedBank ? [selectedBank] : [], selectedDuration);
+    return getFilteredData(selectedBank, selectedDuration);
   }, [getFilteredData, selectedBank, selectedDuration]);
 
   if (isLoading) {
@@ -57,24 +56,20 @@ export function Dashboard() {
         />
       </div>
 
-      {/* Transaction Summary */}
-      <div className="mb-8">
-        <TransactionList expenseCategories={data.expenseCategoriesList} />
-      </div>
-
-      {/* Charts Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <Card className="shadow-card">
-          <CardContent className="p-6">
-            <FinanceChart data={data.monthlyData} />
-          </CardContent>
-        </Card>
+      {/* Expense Chart */}
+      <div className="grid grid-cols-1 gap-6">
         <Card className="shadow-card">
           <CardContent className="p-6">
             <ExpenseChart data={data.expenseCategoriesList as any} />
           </CardContent>
         </Card>
       </div>
+
+      {/* Transaction Summary */}
+      <div className="mb-8">
+        <TransactionList expenseCategories={data.expenseCategoriesList} />
+      </div>
+
     </PageContent>
   );
 }

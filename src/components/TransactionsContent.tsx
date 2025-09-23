@@ -49,9 +49,9 @@ export const TransactionsContent = () => {
     
     return transactions.filter(transaction => {
       // Exclude balance transactions
-      if (transaction.transaction_type === 'balance') {
-        return false;
-      }
+      // if (transaction.transaction_type === 'balance') {
+      //   return false;
+      // }
       
       const matchesSearch = searchTerm === '' || 
         (transaction.merchant && transaction.merchant.toLowerCase().includes(searchTerm.toLowerCase())) ||

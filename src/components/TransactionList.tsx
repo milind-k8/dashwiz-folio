@@ -11,6 +11,13 @@ interface ExpenseCategory {
   percentage: number;
   tags: string[];
   transactions?: any[];
+  transactionCount?: number;
+  merchants?: Array<{
+    name: string;
+    count: number;
+    totalAmount: number;
+    originalNames?: string[];
+  }>;
 }
 
 interface TransactionListProps {
@@ -20,13 +27,13 @@ interface TransactionListProps {
 export function TransactionList({ expenseCategories = [] }: TransactionListProps) {
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Calculate tag spending and counts from actual transaction data
-  const getTagSpendingAndCounts = (category: string, tags: string[], totalAmount: number, transactions: any[] = []) => {
+  // Calculate tag spending and counts from merchant data
+  const getTagSpendingAndCounts = (category: string, tags: string[], totalAmount: number, merchants: Array<{name: string; count: number; totalAmount: number; originalNames?: string[]}> = []) => {
     const tagSpending: Record<string, number> = {};
     const tagCounts: Record<string, number> = {};
     
-    if (transactions.length === 0) {
-      // Fallback: distribute evenly if no transaction data
+    if (merchants.length === 0) {
+      // Fallback: distribute evenly if no merchant data
       if (tags.length === 1) {
         tagSpending[tags[0]] = totalAmount;
         tagCounts[tags[0]] = 1;
@@ -46,32 +53,46 @@ export function TransactionList({ expenseCategories = [] }: TransactionListProps
         });
       }
     } else {
-      // Calculate from actual transaction data
-      transactions.forEach(transaction => {
-        if (transaction.tags) {
-          const transactionTags = transaction.tags.split(',').map((t: string) => t.trim()).filter(Boolean);
-          const amountPerTag = transaction.amount / transactionTags.length;
-          
-          transactionTags.forEach((tag: string) => {
-            const formattedTag = tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase();
-            if (tags.includes(formattedTag)) {
-              tagSpending[formattedTag] = (tagSpending[formattedTag] || 0) + amountPerTag;
-              tagCounts[formattedTag] = (tagCounts[formattedTag] || 0) + 1;
-            }
+      // Calculate from merchant data - match merchants to tags
+      merchants.forEach(merchant => {
+        // Find matching tags for this merchant (check both normalized and original names)
+        const allNames = [merchant.name, ...(merchant.originalNames || [])];
+        const matchingTags = tags.filter(tag => 
+          allNames.some(name => 
+            name.toLowerCase().includes(tag.toLowerCase()) ||
+            tag.toLowerCase().includes(name.toLowerCase())
+          )
+        );
+        
+        if (matchingTags.length > 0) {
+          const amountPerTag = merchant.totalAmount / matchingTags.length;
+          matchingTags.forEach(tag => {
+            tagSpending[tag] = (tagSpending[tag] || 0) + amountPerTag;
+            tagCounts[tag] = (tagCounts[tag] || 0) + merchant.count;
           });
         }
       });
       
-      // If no tags were found in transactions, fall back to even distribution
+      // If no tags were matched, distribute based on merchant count
       if (Object.keys(tagSpending).length === 0) {
+        const totalMerchantCount = merchants.reduce((sum, m) => sum + m.count, 0);
+        const totalMerchantAmount = merchants.reduce((sum, m) => sum + m.totalAmount, 0);
+        
         if (tags.length === 1) {
-          tagSpending[tags[0]] = totalAmount;
-          tagCounts[tags[0]] = 1;
+          tagSpending[tags[0]] = totalMerchantAmount;
+          tagCounts[tags[0]] = totalMerchantCount;
         } else {
-          const baseAmount = totalAmount / tags.length;
-          tags.forEach(tag => {
-            tagSpending[tag] = baseAmount;
-            tagCounts[tag] = 1;
+          const baseAmount = totalMerchantAmount / tags.length;
+          const baseCount = Math.max(1, Math.round(totalMerchantCount / tags.length));
+          
+          tags.forEach((tag, index) => {
+            if (index === tags.length - 1) {
+              tagSpending[tag] = totalMerchantAmount - Object.values(tagSpending).reduce((sum, val) => sum + val, 0);
+              tagCounts[tag] = totalMerchantCount - Object.values(tagCounts).reduce((sum, val) => sum + val, 0);
+            } else {
+              tagSpending[tag] = baseAmount;
+              tagCounts[tag] = baseCount;
+            }
           });
         }
       }
@@ -148,7 +169,7 @@ export function TransactionList({ expenseCategories = [] }: TransactionListProps
               tag.toLowerCase().includes(searchTerm.toLowerCase())
             );
             
-            const { tagSpending, tagCounts } = getTagSpendingAndCounts(category.category, category.tags, category.amount, category.transactions);
+            const { tagSpending, tagCounts } = getTagSpendingAndCounts(category.category, category.tags, category.amount, category.merchants || []);
             
             return (
               <CategoryCard
@@ -161,6 +182,7 @@ export function TransactionList({ expenseCategories = [] }: TransactionListProps
                 tagCounts={tagCounts}
                 shouldExpand={shouldExpand}
                 searchTerm={searchTerm}
+                transactionCount={category.transactionCount || 0}
               />
             );
           })
