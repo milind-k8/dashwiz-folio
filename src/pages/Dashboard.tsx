@@ -1,5 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useMemo, useCallback } from 'react';
 import { EnhancedMetricCard } from '@/components/EnhancedMetricCard';
 import { FinanceChart } from '@/components/FinanceChart';
 import { ExpenseChart } from '@/components/ExpenseChart';
@@ -8,28 +7,17 @@ import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
 import { DashboardSkeleton } from '@/components/DashboardSkeleton';
 import { useFinancialData } from '@/hooks/useFinancialData';
-import { Wallet, CreditCard as CreditCardIcon, ArrowDownRight } from 'lucide-react';
+import { useFilterStore } from '@/store/filterStore';
+import { Wallet, CreditCard as CreditCardIcon } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 
 export function Dashboard() {
   const { getFilteredData, isLoading } = useFinancialData();
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  // Get filter values from URL params
-  const selectedBank = searchParams.get('bank') || '';
-  const selectedDuration = searchParams.get('duration') || 'current-month';
+  const { selectedBank, selectedDuration, setFilters } = useFilterStore();
 
   const handleFiltersChange = useCallback((bank: string, duration: string) => {
-    setSearchParams(prev => {
-      const newParams = new URLSearchParams();
-      if (bank) {
-        newParams.set('bank', bank);
-      }
-      newParams.set('duration', duration);
-      return newParams;
-    }, { replace: true });
-  }, [setSearchParams]);
+    setFilters(bank, duration);
+  }, [setFilters]);
 
   // Memoize the expensive data calculation
   const data = useMemo(() => {

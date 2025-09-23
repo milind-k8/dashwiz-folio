@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
 import { 
   Select,
   SelectContent,
@@ -7,6 +7,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useFinancialData } from '@/hooks/useFinancialData';
+import { useFilterStore } from '@/store/filterStore';
 import { Loader } from '@/components/ui/loader';
 import { format, subMonths, startOfMonth } from 'date-fns';
 
@@ -15,12 +16,31 @@ interface InlineFiltersProps {
 }
 
 export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
-  const [searchParams] = useSearchParams();
   const { availableBanks, isLoading } = useFinancialData();
+  const { 
+    selectedBank, 
+    selectedDuration, 
+    setSelectedBank, 
+    setSelectedDuration 
+  } = useFilterStore();
 
-  // Get filter values from URL params
-  const selectedBank = searchParams.get('bank') || '';
-  const selectedDuration = searchParams.get('duration') || 'current-month';
+  // Auto-select first bank if none is selected and banks are available
+  useEffect(() => {
+    if (!selectedBank && availableBanks.length > 0) {
+      const firstBank = availableBanks[0];
+      setSelectedBank(firstBank);
+      if (onFiltersChange) {
+        onFiltersChange(firstBank, selectedDuration);
+      }
+    }
+  }, [availableBanks, selectedBank, selectedDuration, setSelectedBank, onFiltersChange]);
+
+  // Notify parent of current filters on mount or change
+  useEffect(() => {
+    if (selectedBank && onFiltersChange) {
+      onFiltersChange(selectedBank, selectedDuration);
+    }
+  }, [selectedBank, selectedDuration, onFiltersChange]);
 
   const getBankLabel = (bankCode: string) => {
     const labels: Record<string, string> = {
@@ -63,12 +83,14 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
   })();
 
   const handleBankChange = (value: string) => {
+    setSelectedBank(value);
     if (onFiltersChange) {
       onFiltersChange(value, selectedDuration);
     }
   };
 
   const handleDurationChange = (value: string) => {
+    setSelectedDuration(value);
     if (onFiltersChange) {
       onFiltersChange(selectedBank, value);
     }
@@ -85,15 +107,15 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
       {/* Bank Filter - 50% width on mobile */}
       <div className="flex-1 min-w-0">
         <Select value={selectedBank} onValueChange={handleBankChange}>
-          <SelectTrigger className="w-full h-9 bg-card/50 border border-border/50 hover:bg-muted/50 transition-all duration-200 font-medium text-sm focus:ring-0 focus:ring-offset-0 backdrop-blur-sm">
+          <SelectTrigger className="w-full h-9 bg-card border border-border hover:bg-muted/50 transition-all duration-200 font-medium text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary">
             <SelectValue placeholder="Select Bank" />
           </SelectTrigger>
-          <SelectContent className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-xl z-50">
+          <SelectContent className="bg-popover border border-border shadow-elevated z-[100] min-w-[200px]">
             {bankOptions.map((option) => (
               <SelectItem 
                 key={option.value} 
                 value={option.value}
-                className="hover:bg-muted/50 cursor-pointer text-sm"
+                className="hover:bg-accent hover:text-accent-foreground cursor-pointer text-sm py-2 px-3"
               >
                 {option.label}
               </SelectItem>
@@ -105,15 +127,15 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
       {/* Duration Filter - 50% width on mobile */}
       <div className="flex-1 min-w-0">
         <Select value={selectedDuration} onValueChange={handleDurationChange}>
-          <SelectTrigger className="w-full h-9 bg-card/50 border border-border/50 hover:bg-muted/50 transition-all duration-200 font-medium text-sm focus:ring-0 focus:ring-offset-0 backdrop-blur-sm">
+          <SelectTrigger className="w-full h-9 bg-card border border-border hover:bg-muted/50 transition-all duration-200 font-medium text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className="bg-card/95 backdrop-blur-sm border border-border/50 shadow-xl z-50">
+          <SelectContent className="bg-popover border border-border shadow-elevated z-[100] min-w-[200px]">
             {durationOptions.map((option) => (
               <SelectItem 
                 key={option.value} 
                 value={option.value}
-                className="hover:bg-muted/50 cursor-pointer text-sm"
+                className="hover:bg-accent hover:text-accent-foreground cursor-pointer text-sm py-2 px-3"
               >
                 {option.label}
               </SelectItem>
