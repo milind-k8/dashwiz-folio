@@ -55,6 +55,9 @@ serve(async (req) => {
     // Refresh the Google access token
     const newTokens = await refreshGoogleAccessToken(refreshToken);
 
+    // Update the session with the new access token
+    await updateSessionWithNewToken(supabase, sessionData.session, newTokens.access_token);
+
     return new Response(JSON.stringify({
       success: true,
       access_token: newTokens.access_token,
@@ -115,4 +118,24 @@ async function refreshGoogleAccessToken(refreshToken: string): Promise<TokenRefr
   }
 
   return tokenData;
+}
+
+async function updateSessionWithNewToken(supabase: any, session: any, newAccessToken: string) {
+  try {
+    // Update the session with new provider token
+    const { error } = await supabase.auth.updateUser({
+      data: {
+        provider_token: newAccessToken,
+        token_updated_at: new Date().toISOString()
+      }
+    });
+
+    if (error) {
+      console.error('Failed to update session with new token:', error);
+    } else {
+      console.log('Successfully updated session with new access token');
+    }
+  } catch (error) {
+    console.error('Error updating session:', error);
+  }
 }

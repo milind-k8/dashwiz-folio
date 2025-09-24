@@ -183,20 +183,30 @@ async function fetchMessages(accessToken: string, maxResults: number, query: str
 
 async function refreshAccessToken(): Promise<string | null> {
   try {
+    // Use the user's session token for authorization
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session?.access_token) {
+      console.error('No session token available for refresh');
+      return null;
+    }
+
     const refreshResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/refresh-google-token`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`,
+        'Authorization': `Bearer ${sessionData.session.access_token}`,
         'Content-Type': 'application/json',
       },
     });
 
     if (refreshResponse.ok) {
       const refreshData = await refreshResponse.json();
+      console.log('Successfully refreshed Google access token');
       return refreshData.access_token;
+    } else {
+      const errorData = await refreshResponse.json();
+      console.error('Token refresh failed:', errorData);
+      return null;
     }
-
-    return null;
   } catch (error) {
     console.error('Error refreshing access token:', error);
     return null;

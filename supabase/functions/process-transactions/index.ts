@@ -517,20 +517,35 @@ async function storeMerchants(merchantCategories: Record<string, string>) {
 
 async function refreshAccessTokenForProcessing(): Promise<string | null> {
   try {
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    );
+    
+    // Get the current session to use the user's JWT
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session?.access_token) {
+      console.error('No session token available for refresh');
+      return null;
+    }
+
     const refreshResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/refresh-google-token`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`,
+        'Authorization': `Bearer ${sessionData.session.access_token}`,
         'Content-Type': 'application/json',
       },
     });
 
     if (refreshResponse.ok) {
       const refreshData = await refreshResponse.json();
+      console.log('Successfully refreshed Google access token for processing');
       return refreshData.access_token;
+    } else {
+      const errorData = await refreshResponse.json();
+      console.error('Token refresh failed during processing:', errorData);
+      return null;
     }
-
-    return null;
   } catch (error) {
     console.error('Error refreshing access token during processing:', error);
     return null;
