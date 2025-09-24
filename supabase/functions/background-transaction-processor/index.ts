@@ -240,18 +240,7 @@ serve(async (req) => {
 
 async function getUserAccessToken(supabase: any, userId: string): Promise<string | null> {
   try {
-    // Try to get from profiles table first
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('provider_token')
-      .eq('user_id', userId)
-      .single();
-
-    if (profile?.provider_token) {
-      return profile.provider_token;
-    }
-
-    // Fallback: try to get from auth user metadata
+    // Get from auth user metadata directly
     const { data: authUser, error: userError } = await supabase.auth.admin.getUserById(userId);
     if (userError || !authUser.user?.user_metadata?.provider_token) {
       console.error('No access token available for user:', userId);

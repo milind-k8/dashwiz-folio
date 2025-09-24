@@ -68,38 +68,25 @@ serve(async (req) => {
       details: { historyId, emailAddress, monitorId }
     });
 
-    // Get user's Google access token
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('provider_token')
-      .eq('user_id', userId)
-      .single();
-
-    let accessToken: string;
-    if (profileError || !profile?.provider_token) {
-      console.log('No provider token found, attempting to get from auth user metadata');
+    // Get user's Google access token from auth user metadata
+    const { data: authUser, error: userError } = await supabase.auth.admin.getUserById(userId);
+    if (userError || !authUser.user?.user_metadata?.provider_token) {
+      console.error('No access token available for user:', userId);
       
-      // Fallback: try to get from auth user metadata
-      const { data: authUser, error: userError } = await supabase.auth.admin.getUserById(userId);
-      if (userError || !authUser.user?.user_metadata?.provider_token) {
-        console.error('No access token available for user:', userId);
-        
-        await supabase.from('processing_logs').insert({
-          user_id: userId,
-          log_level: 'error',
-          message: 'No Google access token available',
-          details: { profileError, userError }
-        });
-        
-        return new Response(
-          JSON.stringify({ error: 'No Google access token available' }),
-          { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-        );
-      }
-      accessToken = authUser.user.user_metadata.provider_token;
-    } else {
-      accessToken = profile.provider_token;
+      await supabase.from('processing_logs').insert({
+        user_id: userId,
+        log_level: 'error',
+        message: 'No Google access token available',
+        details: { userError }
+      });
+      
+      return new Response(
+        JSON.stringify({ error: 'No Google access token available' }),
+        { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      );
     }
+    
+    const accessToken = authUser.user.user_metadata.provider_token;
 
     // Get Gmail history to find new messages
     const historyUrl = `https://gmail.googleapis.com/gmail/v1/users/me/history?startHistoryId=${historyId}&maxResults=100`;
