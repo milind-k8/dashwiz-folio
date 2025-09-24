@@ -122,17 +122,64 @@ serve(async (req) => {
     }
 
     const messageData = await messageResponse.json();
-    const emailContent = messageData.snippet || '';
-
-    // Extract account number from email content using regex
-    const accountNumberRegex = /(?:acc?(?:ount)?[\s\-:]*(?:no|number)?[\s\-:]*|a\/c[\s\-:]*(?:no|number)?[\s\-:]*|account[\s\-:]*|a\/c[\s\-:]*)[^\d]*(\d{9,18})/i;
-    const accountMatch = emailContent.match(accountNumberRegex);
     
-    if (!accountMatch || !accountMatch[1]) {
+    // Get email content from multiple sources
+    const emailSnippet = messageData.snippet || '';
+    const emailSubject = messageData.payload?.headers?.find((h: any) => h.name === 'Subject')?.value || '';
+    
+    // Combine snippet and subject for better account number detection
+    const emailContent = `${emailSubject} ${emailSnippet}`;
+    
+    console.log('Email content for account extraction:', emailContent);
+
+    // Enhanced regex patterns for different account number formats
+    const accountNumberPatterns = [
+      // Standard account number patterns
+      /(?:acc?(?:ount)?[\s\-:]*(?:no|number)?[\s\-:]*|a\/c[\s\-:]*(?:no|number)?[\s\-:]*|account[\s\-:]*|a\/c[\s\-:]*)[^\d]*(\d{9,18})/i,
+      // Direct 9-18 digit sequences (common in bank emails)
+      /\b(\d{9,18})\b/,
+      // Account with X's (like XX1234)
+      /[X*]{2,}(\d{4,6})/i,
+      // HDFC specific patterns
+      /(?:ending|with|no\.?\s*)(\d{4,6})/i,
+      // Balance/transaction patterns
+      /(?:balance|available).*?(\d{9,18})/i
+    ];
+    
+    let accountNumber = '';
+    let foundPattern = '';
+    
+    for (const pattern of accountNumberPatterns) {
+      const match = emailContent.match(pattern);
+      if (match && match[1]) {
+        // For the general digit pattern, find all matches and pick the longest
+        if (pattern.source === '\\b(\\d{9,18})\\b') {
+          const allMatches = emailContent.match(/\b\d{9,18}\b/g) || [];
+          if (allMatches.length > 0) {
+            // Sort by length and pick the longest (most likely account number)
+            const longestMatch = allMatches.sort((a, b) => b.length - a.length)[0];
+            if (longestMatch) {
+              accountNumber = longestMatch;
+              foundPattern = pattern.toString();
+              break;
+            }
+          }
+        } else {
+          accountNumber = match[1];
+          foundPattern = pattern.toString();
+          break;
+        }
+      }
+    }
+    
+    console.log('Found account number:', accountNumber, 'using pattern:', foundPattern);
+    
+    if (!accountNumber || accountNumber.length < 9) {
+      console.log('No valid account number found. Email content:', emailContent);
       return new Response(
         JSON.stringify({ 
           valid: false, 
-          message: 'Could not find a valid account number in the recent email. Please ensure you have recent bank emails with account details.' 
+          message: `Could not find a valid account number in the recent email. Email content: "${emailContent.substring(0, 200)}...". Please ensure you have recent bank emails with complete account details.` 
         }),
         { 
           headers: { 
@@ -142,8 +189,6 @@ serve(async (req) => {
         }
       );
     }
-    
-    const accountNumber = accountMatch[1];
 
     // Basic account number validation (length and numeric check)
     const isValidAccountNumber = /^[0-9]{9,18}$/.test(accountNumber.replace(/\s/g, ''));
