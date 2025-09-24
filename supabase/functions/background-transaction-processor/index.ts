@@ -280,6 +280,73 @@ async function getUserAccessToken(supabase: any, userId: string): Promise<string
   }
 }
 
+async function refreshAccessToken(supabase: any, userId: string): Promise<string | null> {
+  try {
+    // Get user's auth data to find refresh token
+    const { data: authUser, error: userError } = await supabase.auth.admin.getUserById(userId);
+    
+    if (userError || !authUser.user) {
+      console.error('Failed to get user for token refresh:', userError);
+      return null;
+    }
+
+    // Look for refresh token in user metadata or identities
+    let refreshToken: string | null = null;
+    
+    if (authUser.user.user_metadata?.provider_refresh_token) {
+      refreshToken = authUser.user.user_metadata.provider_refresh_token;
+    } else if (authUser.user.identities) {
+      const googleIdentity = authUser.user.identities.find(i => i.provider === 'google');
+      if (googleIdentity?.identity_data?.provider_refresh_token) {
+        refreshToken = googleIdentity.identity_data.provider_refresh_token;
+      }
+    }
+
+    if (!refreshToken) {
+      console.error('No refresh token found for user:', userId);
+      return null;
+    }
+
+    console.log('Found refresh token, attempting to refresh access token...');
+
+    // Use Google's token refresh endpoint
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: Deno.env.get('GOOGLE_CLIENT_ID') || '',
+        client_secret: Deno.env.get('GOOGLE_CLIENT_SECRET') || '',
+        refresh_token: refreshToken,
+        grant_type: 'refresh_token',
+      }),
+    });
+
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text();
+      console.error('Failed to refresh token:', errorText);
+      return null;
+    }
+
+    const tokenData = await tokenResponse.json();
+    console.log('Successfully refreshed access token');
+    
+    // Update user metadata with new access token
+    await supabase.auth.admin.updateUserById(userId, {
+      user_metadata: {
+        ...authUser.user.user_metadata,
+        provider_token: tokenData.access_token,
+      }
+    });
+
+    return tokenData.access_token;
+  } catch (error) {
+    console.error('Error refreshing access token:', error);
+    return null;
+  }
+}
+
 async function getUserJWT(supabase: any, userId: string): Promise<string | null> {
   try {
     // Generate a JWT for the user to authenticate with other functions

@@ -80,7 +80,7 @@ serve(async (req) => {
       identities: authUser.user?.identities?.map(i => ({ provider: i.provider, identity_data: i.identity_data }))
     }, null, 2));
     
-    // Try multiple ways to get the access token
+    // Try to get access token or refresh it
     let accessToken: string | null = null;
     
     // Method 1: From user_metadata.provider_token
@@ -96,10 +96,14 @@ serve(async (req) => {
         console.log('Found token in Google identity data');
       }
     }
-    // Method 3: From session (if available)
-    else if (authUser.user?.user_metadata?.provider_refresh_token) {
-      console.log('Found refresh token, will need to refresh access token');
-      // We'll handle refresh token logic later
+    
+    // Method 3: Try to refresh the token using refresh token
+    if (!accessToken) {
+      console.log('No access token found, attempting to refresh...');
+      accessToken = await refreshAccessToken(supabase, userId);
+      if (accessToken) {
+        console.log('Successfully refreshed access token');
+      }
     }
     
     if (!accessToken) {
@@ -379,18 +383,67 @@ serve(async (req) => {
 
 async function refreshAccessToken(supabase: any, userId: string): Promise<string | null> {
   try {
-    const { data, error } = await supabase.functions.invoke('refresh-google-token', {
-      body: { userId }
-    });
-
-    if (error) {
-      console.error('Token refresh error:', error);
+    // Get user's auth data to find refresh token
+    const { data: authUser, error: userError } = await supabase.auth.admin.getUserById(userId);
+    
+    if (userError || !authUser.user) {
+      console.error('Failed to get user for token refresh:', userError);
       return null;
     }
 
-    return data.access_token;
+    // Look for refresh token in user metadata or identities
+    let refreshToken: string | null = null;
+    
+    if (authUser.user.user_metadata?.provider_refresh_token) {
+      refreshToken = authUser.user.user_metadata.provider_refresh_token;
+    } else if (authUser.user.identities) {
+      const googleIdentity = authUser.user.identities.find(i => i.provider === 'google');
+      if (googleIdentity?.identity_data?.provider_refresh_token) {
+        refreshToken = googleIdentity.identity_data.provider_refresh_token;
+      }
+    }
+
+    if (!refreshToken) {
+      console.error('No refresh token found for user:', userId);
+      return null;
+    }
+
+    console.log('Found refresh token, attempting to refresh access token...');
+
+    // Use Google's token refresh endpoint
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: Deno.env.get('GOOGLE_CLIENT_ID') || '',
+        client_secret: Deno.env.get('GOOGLE_CLIENT_SECRET') || '',
+        refresh_token: refreshToken,
+        grant_type: 'refresh_token',
+      }),
+    });
+
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text();
+      console.error('Failed to refresh token:', errorText);
+      return null;
+    }
+
+    const tokenData = await tokenResponse.json();
+    console.log('Successfully refreshed access token');
+    
+    // Update user metadata with new access token
+    await supabase.auth.admin.updateUserById(userId, {
+      user_metadata: {
+        ...authUser.user.user_metadata,
+        provider_token: tokenData.access_token,
+      }
+    });
+
+    return tokenData.access_token;
   } catch (error) {
-    console.error('Error calling refresh token function:', error);
+    console.error('Error refreshing access token:', error);
     return null;
   }
 }
