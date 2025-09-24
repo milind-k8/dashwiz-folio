@@ -70,14 +70,51 @@ serve(async (req) => {
 
     // Get user's Google access token from auth user metadata
     const { data: authUser, error: userError } = await supabase.auth.admin.getUserById(userId);
-    if (userError || !authUser.user?.user_metadata?.provider_token) {
-      console.error('No access token available for user:', userId);
+    
+    // Debug logging to see what we have
+    console.log('Auth user data:', JSON.stringify({
+      userId,
+      userError,
+      hasUser: !!authUser.user,
+      userMetadata: authUser.user?.user_metadata,
+      identities: authUser.user?.identities?.map(i => ({ provider: i.provider, identity_data: i.identity_data }))
+    }, null, 2));
+    
+    // Try multiple ways to get the access token
+    let accessToken: string | null = null;
+    
+    // Method 1: From user_metadata.provider_token
+    if (authUser.user?.user_metadata?.provider_token) {
+      accessToken = authUser.user.user_metadata.provider_token;
+      console.log('Found token in user_metadata.provider_token');
+    }
+    // Method 2: From identities (Google provider)
+    else if (authUser.user?.identities) {
+      const googleIdentity = authUser.user.identities.find(i => i.provider === 'google');
+      if (googleIdentity?.identity_data?.provider_token) {
+        accessToken = googleIdentity.identity_data.provider_token;
+        console.log('Found token in Google identity data');
+      }
+    }
+    // Method 3: From session (if available)
+    else if (authUser.user?.user_metadata?.provider_refresh_token) {
+      console.log('Found refresh token, will need to refresh access token');
+      // We'll handle refresh token logic later
+    }
+    
+    if (!accessToken) {
+      console.error('No access token found for user:', userId);
       
       await supabase.from('processing_logs').insert({
         user_id: userId,
         log_level: 'error',
         message: 'No Google access token available',
-        details: { userError }
+        details: { 
+          userError, 
+          hasUserMetadata: !!authUser.user?.user_metadata,
+          hasIdentities: !!authUser.user?.identities,
+          identityProviders: authUser.user?.identities?.map(i => i.provider) || []
+        }
       });
       
       return new Response(
@@ -85,8 +122,6 @@ serve(async (req) => {
         { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
     }
-    
-    const accessToken = authUser.user.user_metadata.provider_token;
 
     // Get Gmail history to find new messages
     const historyUrl = `https://gmail.googleapis.com/gmail/v1/users/me/history?startHistoryId=${historyId}&maxResults=100`;

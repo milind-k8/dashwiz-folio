@@ -5,6 +5,7 @@ import { TransactionList } from '@/components/TransactionList';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
 import { DashboardSkeleton } from '@/components/DashboardSkeleton';
+import { DebugAuthInfo } from '@/components/DebugAuthInfo';
 import { useFinancialData } from '@/hooks/useFinancialData';
 import { useFilterStore } from '@/store/filterStore';
 import { Wallet, CreditCard as CreditCardIcon } from 'lucide-react';
@@ -71,6 +72,8 @@ export function Dashboard() {
         <TransactionList expenseCategories={data.expenseCategoriesList} />
       </div>
 
+      {/* Debug Auth Info - Only show for development/debugging */}
+      <DebugAuthInfo />
 
     </PageContent>
   );

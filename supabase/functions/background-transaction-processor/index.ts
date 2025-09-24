@@ -242,12 +242,38 @@ async function getUserAccessToken(supabase: any, userId: string): Promise<string
   try {
     // Get from auth user metadata directly
     const { data: authUser, error: userError } = await supabase.auth.admin.getUserById(userId);
-    if (userError || !authUser.user?.user_metadata?.provider_token) {
-      console.error('No access token available for user:', userId);
+    
+    // Debug logging
+    console.log('Getting access token for user:', userId);
+    console.log('User auth data:', JSON.stringify({
+      userError,
+      hasUser: !!authUser.user,
+      userMetadata: authUser.user?.user_metadata,
+      identities: authUser.user?.identities?.map(i => ({ provider: i.provider, hasToken: !!i.identity_data?.provider_token }))
+    }, null, 2));
+    
+    if (userError) {
+      console.error('Error getting user:', userError);
       return null;
     }
 
-    return authUser.user.user_metadata.provider_token;
+    // Try multiple methods to get access token
+    if (authUser.user?.user_metadata?.provider_token) {
+      console.log('Found token in user_metadata.provider_token');
+      return authUser.user.user_metadata.provider_token;
+    }
+    
+    // Try from identities
+    if (authUser.user?.identities) {
+      const googleIdentity = authUser.user.identities.find(i => i.provider === 'google');
+      if (googleIdentity?.identity_data?.provider_token) {
+        console.log('Found token in Google identity data');
+        return googleIdentity.identity_data.provider_token;
+      }
+    }
+
+    console.error('No access token found in any location for user:', userId);
+    return null;
   } catch (error) {
     console.error('Error getting user access token:', error);
     return null;

@@ -23,3 +23,6 @@ verify_jwt = false
 
 [functions.email-monitor-health-check]
 verify_jwt = false
+
+[functions.debug-user-auth]
+verify_jwt = true
