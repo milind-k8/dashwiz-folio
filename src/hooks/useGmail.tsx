@@ -1,8 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { useToast } from './use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { useEmailMonitoring } from './useEmailMonitoring';
 
 export interface GmailMessage {
   id: string;
@@ -19,7 +18,6 @@ export function useGmail() {
   const [isGmailAvailable, setIsGmailAvailable] = useState(false);
   const { session } = useAuth();
   const { toast } = useToast();
-  const { setupEmailMonitoring } = useEmailMonitoring();
 
   useEffect(() => {
     // Check if Gmail access is available when session changes
@@ -110,27 +108,6 @@ export function useGmail() {
     return dateHeader?.value || '';
   };
 
-  const enableAutomaticMonitoring = async () => {
-    if (!isGmailAvailable) {
-      toast({
-        title: "Gmail not available",
-        description: "Please sign in with Google to enable automatic monitoring.",
-        variant: "destructive",
-      });
-      return false;
-    }
-
-    // Set up email monitoring with default patterns
-    const success = await setupEmailMonitoring(['hdfc', 'icici', 'sbi', 'axis', 'kotak']);
-    if (success) {
-      toast({
-        title: "Automatic monitoring enabled",
-        description: "Your Gmail will now be monitored for bank emails automatically.",
-      });
-    }
-    return success;
-  };
-
   return {
     messages,
     isLoading,
@@ -139,6 +116,5 @@ export function useGmail() {
     getEmailSubject,
     getEmailSender,
     getEmailDate,
-    enableAutomaticMonitoring,
   };
 }

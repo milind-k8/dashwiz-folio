@@ -14,87 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      email_monitors: {
-        Row: {
-          bank_patterns: Json
-          created_at: string
-          email_address: string
-          gmail_history_id: string | null
-          id: string
-          last_processed_timestamp: string | null
-          monitoring_enabled: boolean
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          bank_patterns?: Json
-          created_at?: string
-          email_address: string
-          gmail_history_id?: string | null
-          id?: string
-          last_processed_timestamp?: string | null
-          monitoring_enabled?: boolean
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          bank_patterns?: Json
-          created_at?: string
-          email_address?: string
-          gmail_history_id?: string | null
-          id?: string
-          last_processed_timestamp?: string | null
-          monitoring_enabled?: boolean
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      email_processing_queue: {
-        Row: {
-          created_at: string
-          email_id: string
-          error_message: string | null
-          gmail_message_id: string
-          id: string
-          max_retries: number
-          processed_at: string | null
-          retry_count: number
-          scheduled_at: string | null
-          status: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          email_id: string
-          error_message?: string | null
-          gmail_message_id: string
-          id?: string
-          max_retries?: number
-          processed_at?: string | null
-          retry_count?: number
-          scheduled_at?: string | null
-          status?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          email_id?: string
-          error_message?: string | null
-          gmail_message_id?: string
-          id?: string
-          max_retries?: number
-          processed_at?: string | null
-          retry_count?: number
-          scheduled_at?: string | null
-          status?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       merchants: {
         Row: {
           category: string | null
@@ -113,36 +32,6 @@ export type Database = {
           created_at?: string
           merchant_name?: string
           updated_at?: string
-        }
-        Relationships: []
-      }
-      processing_logs: {
-        Row: {
-          created_at: string
-          details: Json | null
-          id: string
-          log_level: string
-          message: string
-          queue_id: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          details?: Json | null
-          id?: string
-          log_level?: string
-          message: string
-          queue_id?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          details?: Json | null
-          id?: string
-          log_level?: string
-          message?: string
-          queue_id?: string | null
-          user_id?: string
         }
         Relationships: []
       }
