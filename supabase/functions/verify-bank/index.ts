@@ -134,16 +134,18 @@ serve(async (req) => {
 
     // Enhanced regex patterns for different account number formats
     const accountNumberPatterns = [
+      // HDFC masked format like XX1234, XX6661
+      /XX(\d{4})/i,
+      // Full masked account like XX6661 (capture entire string)
+      /(XX\d{4})/i,
       // Standard account number patterns
       /(?:acc?(?:ount)?[\s\-:]*(?:no|number)?[\s\-:]*|a\/c[\s\-:]*(?:no|number)?[\s\-:]*|account[\s\-:]*|a\/c[\s\-:]*)[^\d]*(\d{9,18})/i,
       // Direct 9-18 digit sequences (common in bank emails)
       /\b(\d{9,18})\b/,
-      // Account with X's (like XX1234)
-      /[X*]{2,}(\d{4,6})/i,
-      // HDFC specific patterns
-      /(?:ending|with|no\.?\s*)(\d{4,6})/i,
-      // Balance/transaction patterns
-      /(?:balance|available).*?(\d{9,18})/i
+      // Account with X's (like XX1234) - ending pattern
+      /ending[\s\-:]*([XX]*\d{4,6})/i,
+      // HDFC specific patterns for ending
+      /(?:ending|with|no\.?\s*)([XX]*\d{4,6})/i
     ];
     
     let accountNumber = '';
@@ -152,8 +154,14 @@ serve(async (req) => {
     for (const pattern of accountNumberPatterns) {
       const match = emailContent.match(pattern);
       if (match && match[1]) {
+        // For masked account numbers like XX6661, use the full match
+        if (match[1].startsWith('XX') || (match[0] && match[0].includes('XX'))) {
+          accountNumber = match[1];
+          foundPattern = pattern.toString();
+          break;
+        }
         // For the general digit pattern, find all matches and pick the longest
-        if (pattern.source === '\\b(\\d{9,18})\\b') {
+        else if (pattern.source === '\\b(\\d{9,18})\\b') {
           const allMatches = emailContent.match(/\b\d{9,18}\b/g) || [];
           if (allMatches.length > 0) {
             // Sort by length and pick the longest (most likely account number)
@@ -174,7 +182,8 @@ serve(async (req) => {
     
     console.log('Found account number:', accountNumber, 'using pattern:', foundPattern);
     
-    if (!accountNumber || accountNumber.length < 9) {
+    // Accept both full account numbers and masked formats like XX6661
+    if (!accountNumber || (accountNumber.length < 4)) {
       console.log('No valid account number found. Email content:', emailContent);
       return new Response(
         JSON.stringify({ 
@@ -190,14 +199,16 @@ serve(async (req) => {
       );
     }
 
-    // Basic account number validation (length and numeric check)
-    const isValidAccountNumber = /^[0-9]{9,18}$/.test(accountNumber.replace(/\s/g, ''));
+    // Basic account number validation (accept both full numbers and masked formats)
+    const isValidAccountNumber = accountNumber.startsWith('XX') ? 
+      /^XX\d{4,6}$/.test(accountNumber) : 
+      /^[0-9]{9,18}$/.test(accountNumber.replace(/\s/g, ''));
 
     if (!isValidAccountNumber) {
       return new Response(
         JSON.stringify({ 
           valid: false, 
-          message: 'Invalid account number format. Account number should be 9-18 digits.' 
+          message: `Invalid account number format. Found: "${accountNumber}". Expected either full account number (9-18 digits) or masked format (XX followed by 4-6 digits).` 
         }),
         { 
           headers: { 
