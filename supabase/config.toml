@@ -8,3 +8,6 @@ verify_jwt = true
 
 [functions.process-transactions]
 verify_jwt = true
+
+[functions.refresh-google-token]
+verify_jwt = true

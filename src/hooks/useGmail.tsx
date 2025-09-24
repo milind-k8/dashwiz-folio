@@ -41,7 +41,23 @@ export function useGmail() {
       });
 
       if (error) {
-        throw new Error(error.message || 'Failed to fetch messages');
+        // Check if it's a token expiration issue
+        if (error.message?.includes('access token expired') || 
+            error.message?.includes('sign in again') ||
+            error.message?.includes('Gmail access token expired')) {
+          toast({
+            title: "Gmail Access Expired",
+            description: "Please sign out and sign in again with Google to refresh your Gmail access.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: error.message || "Failed to fetch Gmail messages. Please try again.",
+            variant: "destructive",
+          });
+        }
+        return;
       }
 
       setMessages(data.messages || []);

@@ -202,13 +202,29 @@ function formatDateForGmail(date: Date): string {
 
 async function fetchGmailMessages(accessToken: string, query: string): Promise<GmailMessage[]> {
   try {
-    const response = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}&maxResults=100`, {
+    let currentAccessToken = accessToken;
+    let response = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}&maxResults=100`, {
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
+        'Authorization': `Bearer ${currentAccessToken}`,
       },
     });
 
+    // If token expired, try to refresh it
+    if (response.status === 401) {
+      console.log('Access token expired during transaction processing, attempting refresh...');
+      const refreshedToken = await refreshAccessTokenForProcessing();
+      if (refreshedToken) {
+        currentAccessToken = refreshedToken;
+        response = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}&maxResults=100`, {
+          headers: {
+            'Authorization': `Bearer ${currentAccessToken}`,
+          },
+        });
+      }
+    }
+
     if (!response.ok) {
+      console.error('Gmail API error:', response.status, await response.text());
       throw new Error(`Gmail API error: ${response.status}`);
     }
 
@@ -217,11 +233,20 @@ async function fetchGmailMessages(accessToken: string, query: string): Promise<G
 
     const messages: GmailMessage[] = [];
     for (const msg of messageIds) {
-      const messageResponse = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}`, {
+      let messageResponse = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}`, {
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
+          'Authorization': `Bearer ${currentAccessToken}`,
         },
       });
+
+      // Retry with refreshed token if needed
+      if (messageResponse.status === 401 && currentAccessToken !== accessToken) {
+        messageResponse = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}`, {
+          headers: {
+            'Authorization': `Bearer ${currentAccessToken}`,
+          },
+        });
+      }
 
       if (messageResponse.ok) {
         const messageData = await messageResponse.json();
@@ -487,5 +512,27 @@ async function storeMerchants(merchantCategories: Record<string, string>) {
     }
   } catch (error) {
     console.error('Error in storeMerchants:', error);
+  }
+}
+
+async function refreshAccessTokenForProcessing(): Promise<string | null> {
+  try {
+    const refreshResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/refresh-google-token`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (refreshResponse.ok) {
+      const refreshData = await refreshResponse.json();
+      return refreshData.access_token;
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error refreshing access token during processing:', error);
+    return null;
   }
 }
