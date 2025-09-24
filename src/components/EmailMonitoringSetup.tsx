@@ -24,7 +24,7 @@ export function EmailMonitoringSetup() {
   } = useEmailMonitoring();
 
   const [bankPatterns, setBankPatterns] = useState<string[]>(
-    emailMonitor?.bank_patterns || ['hdfc', 'icici', 'sbi', 'axis', 'kotak']
+    emailMonitor?.bank_patterns || ['alerts@hdfcbank.net', 'alerts@icicibank.com', 'customercare@sbi.co.in', 'sms@axisbank.com', 'noreply@kotak.com']
   );
   const [newPattern, setNewPattern] = useState('');
 
@@ -111,15 +111,15 @@ export function EmailMonitoringSetup() {
           {/* Bank Patterns Configuration */}
           <div className="space-y-4">
             <div>
-              <Label>Bank Email Patterns</Label>
+              <Label>Bank Email Addresses</Label>
               <p className="text-sm text-muted-foreground">
-                Keywords to identify bank emails (e.g., bank names, domains)
+                Specific email addresses that send bank notifications (e.g., alerts@hdfcbank.net)
               </p>
             </div>
 
             <div className="flex gap-2">
               <Input
-                placeholder="Enter bank name or email pattern"
+                placeholder="Enter bank email address (e.g., alerts@bankname.com)"
                 value={newPattern}
                 onChange={(e) => setNewPattern(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleAddPattern()}

@@ -226,18 +226,16 @@ serve(async (req) => {
         
         console.log(`Message ${messageId} - From: ${fromEmail}, Subject: ${subject}`);
 
-        // Check if this email matches any bank patterns
+        // Check if this email matches any bank email addresses
         let isBankEmail = false;
         for (const pattern of bankPatterns) {
           if (typeof pattern === 'string') {
-            if (fromEmail.toLowerCase().includes(pattern.toLowerCase()) ||
-                subject.toLowerCase().includes(pattern.toLowerCase())) {
+            // Check if the fromEmail matches the pattern exactly or contains it
+            if (fromEmail.toLowerCase().includes(pattern.toLowerCase())) {
               isBankEmail = true;
+              console.log(`Message ${messageId} matched pattern: ${pattern}`);
               break;
             }
-          } else if (pattern.domain && fromEmail.toLowerCase().includes(pattern.domain.toLowerCase())) {
-            isBankEmail = true;
-            break;
           }
         }
 
