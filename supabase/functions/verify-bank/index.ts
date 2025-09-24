@@ -12,10 +12,10 @@ serve(async (req) => {
   }
 
   try {
-    const { bankName, accountNumber } = await req.json();
+    const { bankName, searchQuery } = await req.json();
     
-    if (!bankName || !accountNumber) {
-      throw new Error('Bank name and account number are required');
+    if (!bankName || !searchQuery) {
+      throw new Error('Bank name and search query are required');
     }
 
     const authHeader = req.headers.get('Authorization');
@@ -57,6 +57,27 @@ serve(async (req) => {
         }
       );
     }
+
+    // Extract account number from search query using regex
+    const accountNumberRegex = /(?:acc?(?:ount)?[\s\-:]*(?:no|number)?[\s\-:]*|a\/c[\s\-:]*(?:no|number)?[\s\-:]*|account[\s\-:]*|a\/c[\s\-:]*)[^\d]*(\d{9,18})/i;
+    const accountMatch = searchQuery.match(accountNumberRegex);
+    
+    if (!accountMatch || !accountMatch[1]) {
+      return new Response(
+        JSON.stringify({ 
+          valid: false, 
+          message: 'Could not find a valid account number in the search query.' 
+        }),
+        { 
+          headers: { 
+            ...corsHeaders,
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
+    }
+    
+    const accountNumber = accountMatch[1];
 
     // Basic account number validation (length and numeric check)
     const isValidAccountNumber = /^[0-9]{9,18}$/.test(accountNumber.replace(/\s/g, ''));
