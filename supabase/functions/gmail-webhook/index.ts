@@ -67,20 +67,11 @@ serve(async (req) => {
         return new Response('OK', { status: 200, headers: corsHeaders });
       }
 
-      // Find users with this email address and active monitoring
-      // First, find the user with this email address
-      const { data: user, error: userError } = await supabase.auth.admin.getUserByEmail(emailAddress);
-      
-      if (userError || !user) {
-        console.log(`No user found for email address: ${emailAddress}`);
-        return new Response('OK', { status: 200, headers: corsHeaders });
-      }
-
-      // Then find their active email monitor
+      // Find active email monitors for this email address
       const { data: monitors, error: monitorsError } = await supabase
         .from('email_monitors')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('email_address', emailAddress)
         .eq('monitoring_enabled', true);
 
       if (monitorsError) {
