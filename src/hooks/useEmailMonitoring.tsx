@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 export interface EmailMonitor {
   id: string;
   user_id: string;
+  email_address: string;
   bank_patterns: any;
   last_processed_timestamp: string;
   monitoring_enabled: boolean;
@@ -139,6 +140,7 @@ export function useEmailMonitoring() {
 
       const monitorData = {
         user_id: session.user.id,
+        email_address: session.user.email || '',
         bank_patterns: allPatterns,
         monitoring_enabled: true,
         last_processed_timestamp: new Date().toISOString()

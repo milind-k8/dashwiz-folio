@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           bank_patterns: Json
           created_at: string
+          email_address: string
           gmail_history_id: string | null
           id: string
           last_processed_timestamp: string | null
@@ -28,6 +29,7 @@ export type Database = {
         Insert: {
           bank_patterns?: Json
           created_at?: string
+          email_address: string
           gmail_history_id?: string | null
           id?: string
           last_processed_timestamp?: string | null
@@ -38,6 +40,7 @@ export type Database = {
         Update: {
           bank_patterns?: Json
           created_at?: string
+          email_address?: string
           gmail_history_id?: string | null
           id?: string
           last_processed_timestamp?: string | null
