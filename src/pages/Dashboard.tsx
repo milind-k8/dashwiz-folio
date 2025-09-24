@@ -9,6 +9,7 @@ import { useFinancialData } from '@/hooks/useFinancialData';
 import { useFilterStore } from '@/store/filterStore';
 import { Wallet, CreditCard as CreditCardIcon } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { EmailMonitoringSetup } from '@/components/EmailMonitoringSetup';
 
 export function Dashboard() {
   const { getFilteredData, isLoading } = useFinancialData();
@@ -68,6 +69,11 @@ export function Dashboard() {
       {/* Transaction Summary */}
       <div className="mb-8">
         <TransactionList expenseCategories={data.expenseCategoriesList} />
+      </div>
+
+      {/* Email Monitoring Setup */}
+      <div className="mb-8">
+        <EmailMonitoringSetup />
       </div>
 
     </PageContent>
