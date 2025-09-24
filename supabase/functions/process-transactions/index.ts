@@ -135,11 +135,11 @@ serve(async (req) => {
       bankRecord = newBank;
     }
 
-    // Build Gmail API query for the specific bank and month
+    // Build Gmail API query for the specific bank
     const bankEmailMap: { [key: string]: string[] } = {
-      'HDFC': ['noreply@hdfcbank.com', 'alerts@hdfcbank.com'],
-      'ICICI': ['noreply@icicibank.com', 'alerts@icicibank.com'],
-      'SBI': ['noreply@sbi.co.in', 'alerts@sbi.co.in']
+      'HDFC': ['alerts@hdfcbank.com'],
+      'ICICI': ['alerts@icicibank.com'],
+      'SBI': ['alerts@sbi.co.in']
     };
 
     const bankEmails = bankEmailMap[bankName.toUpperCase()] || [];
@@ -171,16 +171,12 @@ serve(async (req) => {
       startDate = `${currentYear}/${String(currentMonth).padStart(2, '0')}/01`;
     }
     
-    // End at the end of current month
-    const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1;
-    const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear;
-    endDate = `${nextYear}/${String(nextMonth).padStart(2, '0')}/01`;
+    // End at the last day of current month  
+    const lastDayOfMonth = new Date(currentYear, currentMonth, 0).getDate();
+    endDate = `${currentYear}/${String(currentMonth).padStart(2, '0')}/${String(lastDayOfMonth).padStart(2, '0')}`;
     
     const fromQuery = bankEmails.map(email => `from:${email}`).join(' OR ');
-    let gmailQuery = `(${fromQuery})`;
-    gmailQuery += ` after:${startDate} before:${endDate}`;
-    
-    gmailQuery += ` after:${startDate} before:${endDate}`;
+    const gmailQuery = `(${fromQuery}) after:${startDate} before:${endDate}`;
 
     console.log('Gmail query:', gmailQuery);
 
