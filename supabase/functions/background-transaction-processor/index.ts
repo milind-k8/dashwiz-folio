@@ -85,9 +85,39 @@ serve(async (req) => {
         });
 
         // Get user's Google access token
-        const accessToken = await getUserAccessToken(supabase, queueItem.user_id);
+        let accessToken = await getUserAccessToken(supabase, queueItem.user_id);
+        
+        // If no token found, try to refresh it
         if (!accessToken) {
-          throw new Error('No access token available for user');
+          console.log(`No access token found for user ${queueItem.user_id}, attempting refresh...`);
+          accessToken = await refreshAccessToken(supabase, queueItem.user_id);
+        }
+        
+        if (!accessToken) {
+          console.error(`No Google access token available for user ${queueItem.user_id}`);
+          
+          await supabase.from('processing_logs').insert({
+            user_id: queueItem.user_id,
+            queue_id: queueItem.id,
+            log_level: 'error',
+            message: 'No Google access token available - user needs to re-authenticate',
+            details: { 
+              suggestion: 'User should sign out and sign in again with Google to refresh tokens',
+              emailId: queueItem.gmail_message_id
+            }
+          });
+          
+          // Mark as failed but don't retry - this is a user auth issue
+          await supabase
+            .from('email_processing_queue')
+            .update({ 
+              status: 'failed',
+              error_message: 'No Google access token available - user needs to re-authenticate',
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', queueItem.id);
+            
+          continue; // Skip to next queue item
         }
 
         // Fetch the full email content
