@@ -210,7 +210,7 @@ serve(async (req) => {
       .select('id')
       .eq('user_id', user.id)
       .eq('bank_account_no', accountNumber)
-      .single();
+      .maybeSingle();
 
     if (existingBank) {
       return new Response(
@@ -227,12 +227,40 @@ serve(async (req) => {
       );
     }
 
+    // Insert the new bank record
+    const { data: newBank, error: insertError } = await supabase
+      .from('user_banks')
+      .insert([{
+        user_id: user.id,
+        bank_name: supportedBank,
+        bank_account_no: accountNumber
+      }])
+      .select()
+      .single();
+
+    if (insertError) {
+      console.error('Error inserting bank:', insertError);
+      return new Response(
+        JSON.stringify({ 
+          valid: false, 
+          message: `Failed to add bank account: ${insertError.message}` 
+        }),
+        { 
+          headers: { 
+            ...corsHeaders,
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
+    }
+
     return new Response(
       JSON.stringify({ 
         valid: true, 
-        message: 'Bank details are valid and can be added.',
+        message: 'Bank account successfully added to your profile!',
         accountNumber: accountNumber,
-        bankName: supportedBank
+        bankName: supportedBank,
+        bankId: newBank.id
       }),
       { 
         headers: { 
