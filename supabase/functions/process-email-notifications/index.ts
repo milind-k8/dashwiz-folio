@@ -226,14 +226,36 @@ serve(async (req) => {
         
         console.log(`Message ${messageId} - From: ${fromEmail}, Subject: ${subject}`);
 
-        // Check if this email matches any bank email addresses
+        // Check if this email matches any bank email addresses (prioritize exact email matches)
         let isBankEmail = false;
+        let matchedPattern = '';
+        
         for (const pattern of bankPatterns) {
           if (typeof pattern === 'string') {
-            // Check if the fromEmail matches the pattern exactly or contains it
-            if (fromEmail.toLowerCase().includes(pattern.toLowerCase())) {
+            const patternLower = pattern.toLowerCase();
+            const fromEmailLower = fromEmail.toLowerCase();
+            
+            // Priority 1: Exact domain match (e.g., alerts@hdfcbank.net)
+            if (patternLower.includes('@') && fromEmailLower === patternLower) {
               isBankEmail = true;
-              console.log(`Message ${messageId} matched pattern: ${pattern}`);
+              matchedPattern = pattern;
+              console.log(`Message ${messageId} matched exact email: ${pattern}`);
+              break;
+            }
+            
+            // Priority 2: Domain contains pattern (e.g., any email from hdfcbank.net)
+            if (patternLower.includes('@') && fromEmailLower.includes(patternLower.split('@')[1])) {
+              isBankEmail = true;
+              matchedPattern = pattern;
+              console.log(`Message ${messageId} matched domain: ${pattern}`);
+              break;
+            }
+            
+            // Priority 3: Sender email contains bank name (e.g., hdfc in the email)
+            if (!patternLower.includes('@') && fromEmailLower.includes(patternLower)) {
+              isBankEmail = true;
+              matchedPattern = pattern;
+              console.log(`Message ${messageId} matched sender pattern: ${pattern}`);
               break;
             }
           }
@@ -244,7 +266,7 @@ serve(async (req) => {
           continue;
         }
 
-        console.log(`Message ${messageId} matches bank patterns, queuing for processing`);
+        console.log(`Message ${messageId} matches bank email pattern: ${matchedPattern}, queuing for processing`);
 
         // Add to processing queue
         const { error: queueError } = await supabase

@@ -314,13 +314,16 @@ async function fetchEmailContent(accessToken: string, messageId: string): Promis
 
 async function determineBankFromEmail(supabase: any, userId: string, emailContent: any): Promise<{bank_name: string} | null> {
   try {
-    // Get user's banks
-    const { data: banks } = await supabase
-      .from('user_banks')
-      .select('bank_name')
-      .eq('user_id', userId);
+    // Get user's banks and email monitor patterns
+    const [banksResult, monitorResult] = await Promise.all([
+      supabase.from('user_banks').select('bank_name').eq('user_id', userId),
+      supabase.from('email_monitors').select('bank_patterns').eq('user_id', userId).single()
+    ]);
 
-    if (!banks || banks.length === 0) {
+    const banks = banksResult.data || [];
+    const bankPatterns = monitorResult.data?.bank_patterns || [];
+
+    if (banks.length === 0) {
       return null;
     }
 
@@ -334,11 +337,32 @@ async function determineBankFromEmail(supabase: any, userId: string, emailConten
 
     console.log(`Analyzing email - From: ${fromEmail}, Subject: ${subject}`);
 
-    // Try to match email content with user's banks
+    // Priority 1: Check exact email address patterns from bank_patterns
+    for (const pattern of bankPatterns) {
+      if (typeof pattern === 'string' && pattern.includes('@')) {
+        if (fromEmail.toLowerCase().includes(pattern.toLowerCase())) {
+          // Find matching bank for this email pattern
+          const bankName = pattern.includes('hdfc') ? 'HDFC' : 
+                           pattern.includes('icici') ? 'ICICI' :
+                           pattern.includes('sbi') ? 'SBI' :
+                           pattern.includes('axis') ? 'Axis' :
+                           pattern.includes('kotak') ? 'Kotak' : null;
+          
+          const matchingBank = banks.find(b => 
+            bankName && b.bank_name.toLowerCase().includes(bankName.toLowerCase())
+          );
+          
+          if (matchingBank) {
+            console.log(`Matched bank via email pattern: ${matchingBank.bank_name} (${pattern})`);
+            return { bank_name: matchingBank.bank_name };
+          }
+        }
+      }
+    }
+
+    // Priority 2: Check user's actual bank names in email sender
     for (const bank of banks) {
       const bankName = bank.bank_name.toLowerCase();
-      
-      // Check various patterns
       const patterns = [
         bankName,
         bankName.replace(' ', ''),
@@ -346,18 +370,16 @@ async function determineBankFromEmail(supabase: any, userId: string, emailConten
       ];
 
       for (const pattern of patterns) {
-        if (pattern.length < 3) continue; // Skip very short patterns
+        if (pattern.length < 3) continue;
         
-        if (fromEmail.toLowerCase().includes(pattern) ||
-            subject.toLowerCase().includes(pattern) ||
-            snippet.toLowerCase().includes(pattern)) {
-          console.log(`Matched bank: ${bank.bank_name} with pattern: ${pattern}`);
+        if (fromEmail.toLowerCase().includes(pattern)) {
+          console.log(`Matched bank via sender: ${bank.bank_name} with pattern: ${pattern}`);
           return { bank_name: bank.bank_name };
         }
       }
     }
 
-    // If no direct match, try common bank email patterns
+    // Priority 3: Check common bank email patterns
     const bankEmailPatterns = [
       { pattern: 'hdfc', name: 'HDFC' },
       { pattern: 'icici', name: 'ICICI' },
@@ -369,22 +391,29 @@ async function determineBankFromEmail(supabase: any, userId: string, emailConten
     ];
 
     for (const bankPattern of bankEmailPatterns) {
-      if (fromEmail.toLowerCase().includes(bankPattern.pattern) ||
-          subject.toLowerCase().includes(bankPattern.pattern)) {
-        
-        // Check if user has this bank
+      if (fromEmail.toLowerCase().includes(bankPattern.pattern)) {
         const matchingBank = banks.find(b => 
           b.bank_name.toLowerCase().includes(bankPattern.name.toLowerCase())
         );
         
         if (matchingBank) {
-          console.log(`Matched bank via pattern: ${matchingBank.bank_name}`);
+          console.log(`Matched bank via email domain: ${matchingBank.bank_name}`);
           return { bank_name: matchingBank.bank_name };
         }
       }
     }
 
-    console.log('Could not determine bank from email content');
+    console.log('Could not determine bank from email sender - checking subject/content as fallback');
+    
+    // Fallback: Check subject and snippet only as last resort
+    for (const bank of banks) {
+      const bankName = bank.bank_name.toLowerCase();
+      if (subject.toLowerCase().includes(bankName) || snippet.toLowerCase().includes(bankName)) {
+        console.log(`Matched bank via content fallback: ${bank.bank_name}`);
+        return { bank_name: bank.bank_name };
+      }
+    }
+
     return null;
   } catch (error) {
     console.error('Error determining bank from email:', error);
