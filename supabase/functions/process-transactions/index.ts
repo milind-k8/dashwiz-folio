@@ -82,10 +82,10 @@ serve(async (req) => {
   }
 
   try {
-    const { bankName, month, googleAccessToken } = await req.json();
+    const { bankName, googleAccessToken } = await req.json();
     
-    if (!bankName || !month || !googleAccessToken) {
-      throw new Error('Missing required parameters: bankName, month, googleAccessToken');
+    if (!bankName || !googleAccessToken) {
+      throw new Error('Missing required parameters: bankName, googleAccessToken');
     }
 
     const authHeader = req.headers.get('Authorization');
@@ -147,15 +147,38 @@ serve(async (req) => {
       throw new Error('Unsupported bank');
     }
 
+    // Find the last transaction for this bank to determine starting point
+    const { data: lastTransaction } = await supabase
+      .from('transactions')
+      .select('mail_time')
+      .eq('bank_id', bankRecord.id)
+      .order('mail_time', { ascending: false })
+      .limit(1)
+      .single();
+
+    let startDate, endDate;
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1; // getMonth() returns 0-11
+    const currentYear = now.getFullYear();
+    
+    if (lastTransaction) {
+      // Start from the day after the last transaction
+      const lastTransactionDate = new Date(lastTransaction.mail_time);
+      lastTransactionDate.setDate(lastTransactionDate.getDate() + 1);
+      startDate = `${lastTransactionDate.getFullYear()}/${String(lastTransactionDate.getMonth() + 1).padStart(2, '0')}/${String(lastTransactionDate.getDate()).padStart(2, '0')}`;
+    } else {
+      // If no transactions, start from beginning of current month
+      startDate = `${currentYear}/${String(currentMonth).padStart(2, '0')}/01`;
+    }
+    
+    // End at the end of current month
+    const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1;
+    const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear;
+    endDate = `${nextYear}/${String(nextMonth).padStart(2, '0')}/01`;
+    
     const fromQuery = bankEmails.map(email => `from:${email}`).join(' OR ');
     let gmailQuery = `(${fromQuery})`;
-    
-    // Add date filter for the specific month
-    const [monthStr, yearStr] = month.split('/');
-    const startDate = `${yearStr}/${monthStr}/01`;
-    const nextMonth = parseInt(monthStr) === 12 ? '01' : String(parseInt(monthStr) + 1).padStart(2, '0');
-    const nextYear = parseInt(monthStr) === 12 ? String(parseInt(yearStr) + 1) : yearStr;
-    const endDate = `${nextYear}/${nextMonth}/01`;
+    gmailQuery += ` after:${startDate} before:${endDate}`;
     
     gmailQuery += ` after:${startDate} before:${endDate}`;
 
