@@ -3,6 +3,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useGlobalStore } from '@/store/globalStore';
+import { useEmailMonitoring } from '@/hooks/useEmailMonitoring';
+import { Switch } from '@/components/ui/switch';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -34,22 +36,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { 
   CreditCard, 
   Trash2,
   Building,
   Plus,
   CheckCircle,
-  Loader2,
-  Download
+  Loader2
 } from 'lucide-react';
+import { AutoFetchToggle } from '@/components/AutoFetchToggle';
 
 interface UserBank {
   id: string;
@@ -65,8 +60,6 @@ const AVAILABLE_BANKS = [
 export const BanksContent = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [showAddBankDialog, setShowAddBankDialog] = useState(false);
-  const [selectedMonths, setSelectedMonths] = useState<Record<string, string>>({});
-  const [processingBanks, setProcessingBanks] = useState<Set<string>>(new Set());
   const { session } = useAuth();
   const { toast } = useToast();
   
@@ -153,103 +146,6 @@ export const BanksContent = () => {
         variant: "destructive",
       });
     }
-  };
-
-  const handleProcessTransactions = async (bank: UserBank) => {
-    const selectedMonth = selectedMonths[bank.id];
-    if (!selectedMonth) return;
-
-    try {
-      setProcessingBanks(prev => new Set([...prev, bank.bank_name]));
-      
-      // Get user session to access Google token
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError || !session?.provider_token) {
-        toast({
-          title: "Authentication Required",
-          description: "Google authentication required. Please sign out and sign in with Google.",
-          variant: "destructive"
-        });
-        setProcessingBanks(prev => {
-          const newSet = new Set(prev);
-          newSet.delete(bank.bank_name);
-          return newSet;
-        });
-        return;
-      }
-      
-      const { data, error } = await supabase.functions.invoke('process-transactions', {
-        body: { 
-          bankName: bank.bank_name.toLowerCase(),
-          month: selectedMonth,
-          googleAccessToken: session.provider_token
-        }
-      });
-
-      if (error) {
-        throw new Error(error.message || 'Failed to process transactions');
-      }
-
-      if (data.success) {
-        toast({
-          title: "Processing Started",
-          description: `Transaction processing for ${bank.bank_name} (${selectedMonth}) has been initiated.`,
-        });
-      } else {
-        toast({
-          title: "Processing Failed",
-          description: data.message || "Could not start transaction processing.",
-          variant: "destructive",
-        });
-      }
-    } catch (error: any) {
-      console.error('Error processing transactions:', error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to process transactions. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setProcessingBanks(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(bank.bank_name);
-        return newSet;
-      });
-    }
-  };
-
-  // Get current and previous month options
-  const getMonthOptions = () => {
-    const now = new Date();
-    const currentMonth = `${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
-    
-    const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1);
-    const previousMonth = `${(prevMonth.getMonth() + 1).toString().padStart(2, '0')}/${prevMonth.getFullYear()}`;
-    
-    return [
-      { value: currentMonth, label: `Current Month (${currentMonth})` },
-      { value: previousMonth, label: `Previous Month (${previousMonth})` }
-    ];
-  };
-
-  // Get current month as default
-  const getCurrentMonth = () => {
-    const now = new Date();
-    return `${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
-  };
-
-  // Set default month for bank if not set
-  const getSelectedMonth = (bankId: string) => {
-    if (!selectedMonths[bankId]) {
-      setSelectedMonths(prev => ({ ...prev, [bankId]: getCurrentMonth() }));
-      return getCurrentMonth();
-    }
-    return selectedMonths[bankId];
-  };
-
-  const handleMonthChange = (bankId: string, month: string) => {
-    setSelectedMonths(prev => ({ ...prev, [bankId]: month }));
   };
 
   if (!session?.user) {
@@ -422,47 +318,17 @@ export const BanksContent = () => {
                     </div>
                   </div>
                   
-                  {/* Month Selection and Actions */}
-                  <div className="pt-2 space-y-3">
-                    <div className="space-y-2">
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        Select Month to Scan
-                      </label>
-                      <Select 
-                        value={getSelectedMonth(bank.id)} 
-                        onValueChange={(value) => handleMonthChange(bank.id, value)}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {getMonthOptions().map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                   {/* Auto-fetch Toggle */}
+                  <div className="pt-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <label className="text-sm font-medium">Auto-fetch Data</label>
+                        <p className="text-xs text-muted-foreground">
+                          Automatically monitor emails for transactions
+                        </p>
+                      </div>
+                      <AutoFetchToggle bankName={bank.bank_name} />
                     </div>
-                    
-                    <Button 
-                      onClick={() => handleProcessTransactions(bank)}
-                      disabled={processingBanks.has(bank.bank_name) || !getSelectedMonth(bank.id)}
-                      className="w-full flex items-center gap-2"
-                      size="sm"
-                    >
-                      {processingBanks.has(bank.bank_name) ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          Processing...
-                        </>
-                      ) : (
-                        <>
-                          <Download className="h-4 w-4" />
-                          Scan Transactions
-                        </>
-                      )}
-                    </Button>
                   </div>
                 </div>
               </Card>
