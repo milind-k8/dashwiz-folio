@@ -12,10 +12,10 @@ serve(async (req) => {
   }
 
   try {
-    const { bankName, searchQuery } = await req.json();
+    const { bankName, googleAccessToken } = await req.json();
     
-    if (!bankName || !searchQuery) {
-      throw new Error('Bank name and search query are required');
+    if (!bankName || !googleAccessToken) {
+      throw new Error('Bank name and Google access token are required');
     }
 
     const authHeader = req.headers.get('Authorization');
@@ -36,14 +36,20 @@ serve(async (req) => {
       throw new Error('Invalid user token');
     }
 
-    // For now, we'll do basic validation
-    // In a real implementation, you might want to integrate with bank APIs
-    const supportedBanks = ['HDFC Bank', 'ICICI Bank', 'State Bank of India', 'SBI'];
-    const isValidBank = supportedBanks.some(bank => 
-      bankName.toLowerCase().includes(bank.toLowerCase())
-    );
-
-    if (!isValidBank) {
+    // Generate Gmail search query based on bank name
+    let gmailQuery = '';
+    let supportedBank = '';
+    
+    if (bankName.toLowerCase().includes('hdfc')) {
+      gmailQuery = 'from:(alerts@hdfcbank.net) balance';
+      supportedBank = 'HDFC Bank';
+    } else if (bankName.toLowerCase().includes('icici')) {
+      gmailQuery = 'from:(imobile@icicibank.com) balance';
+      supportedBank = 'ICICI Bank';
+    } else if (bankName.toLowerCase().includes('sbi') || bankName.toLowerCase().includes('state bank')) {
+      gmailQuery = 'from:(sbi.card@sbi.co.in) balance';
+      supportedBank = 'State Bank of India';
+    } else {
       return new Response(
         JSON.stringify({ 
           valid: false, 
@@ -58,15 +64,75 @@ serve(async (req) => {
       );
     }
 
-    // Extract account number from search query using regex
+    // Get user email for the query
+    const userEmail = user.email;
+    if (!userEmail) {
+      throw new Error('User email not found');
+    }
+
+    // Construct final Gmail query with user email
+    const finalQuery = `${gmailQuery} to:(${userEmail})`;
+
+    // Fetch messages from Gmail
+    const gmailResponse = await fetch(
+      `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(finalQuery)}&maxResults=1`,
+      {
+        headers: {
+          'Authorization': `Bearer ${googleAccessToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!gmailResponse.ok) {
+      throw new Error(`Gmail API error: ${gmailResponse.status}`);
+    }
+
+    const gmailData = await gmailResponse.json();
+    
+    if (!gmailData.messages || gmailData.messages.length === 0) {
+      return new Response(
+        JSON.stringify({ 
+          valid: false, 
+          message: 'No recent balance emails found from this bank. Please check if you have recent transaction emails.' 
+        }),
+        { 
+          headers: { 
+            ...corsHeaders,
+            'Content-Type': 'application/json' 
+          } 
+        }
+      );
+    }
+
+    // Get the latest message details
+    const messageId = gmailData.messages[0].id;
+    const messageResponse = await fetch(
+      `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${googleAccessToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!messageResponse.ok) {
+      throw new Error(`Gmail message API error: ${messageResponse.status}`);
+    }
+
+    const messageData = await messageResponse.json();
+    const emailContent = messageData.snippet || '';
+
+    // Extract account number from email content using regex
     const accountNumberRegex = /(?:acc?(?:ount)?[\s\-:]*(?:no|number)?[\s\-:]*|a\/c[\s\-:]*(?:no|number)?[\s\-:]*|account[\s\-:]*|a\/c[\s\-:]*)[^\d]*(\d{9,18})/i;
-    const accountMatch = searchQuery.match(accountNumberRegex);
+    const accountMatch = emailContent.match(accountNumberRegex);
     
     if (!accountMatch || !accountMatch[1]) {
       return new Response(
         JSON.stringify({ 
           valid: false, 
-          message: 'Could not find a valid account number in the search query.' 
+          message: 'Could not find a valid account number in the recent email. Please ensure you have recent bank emails with account details.' 
         }),
         { 
           headers: { 
@@ -123,7 +189,9 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         valid: true, 
-        message: 'Bank details are valid and can be added.' 
+        message: 'Bank details are valid and can be added.',
+        accountNumber: accountNumber,
+        bankName: supportedBank
       }),
       { 
         headers: { 
