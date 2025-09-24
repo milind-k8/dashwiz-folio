@@ -44,7 +44,7 @@ export default function AuthPage() {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          scopes: 'https://www.googleapis.com/auth/gmail.readonly',
+          scopes: 'https://www.googleapis.com/auth/gmail.modify',
           queryParams: {
             access_type: 'offline',
             prompt: 'select_account',
@@ -79,7 +79,10 @@ export default function AuthPage() {
       if (isSignUp) {
         const { error } = await supabase.auth.signUp({
           email,
-          password
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/`
+          }
         });
 
         if (error) {

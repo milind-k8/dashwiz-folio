@@ -70,10 +70,7 @@ serve(async (req) => {
       // Find users with this email address and active monitoring
       const { data: monitors, error: monitorsError } = await supabase
         .from('email_monitors')
-        .select(`
-          *,
-          user_banks!inner(user_id, bank_name)
-        `)
+        .select('*')
         .eq('monitoring_enabled', true);
 
       if (monitorsError) {
@@ -93,16 +90,16 @@ serve(async (req) => {
         const lastProcessedId = parseInt(monitor.gmail_history_id || '0');
 
         if (currentHistoryId <= lastProcessedId) {
-          console.log(`Skipping already processed history ID ${historyId} for user ${monitor.user_banks.user_id}`);
+          console.log(`Skipping already processed history ID ${historyId} for user ${monitor.user_id}`);
           continue;
         }
 
         // Trigger email processing for this user
-        console.log(`Triggering email processing for user ${monitor.user_banks.user_id}, historyId: ${historyId}`);
+        console.log(`Triggering email processing for user ${monitor.user_id}, historyId: ${historyId}`);
         
         const { error: processError } = await supabase.functions.invoke('process-email-notifications', {
           body: {
-            userId: monitor.user_banks.user_id,
+            userId: monitor.user_id,
             emailAddress,
             historyId,
             monitorId: monitor.id
@@ -110,11 +107,11 @@ serve(async (req) => {
         });
 
         if (processError) {
-          console.error(`Error triggering email processing for user ${monitor.user_banks.user_id}:`, processError);
+          console.error(`Error triggering email processing for user ${monitor.user_id}:`, processError);
           
           // Log the error to processing_logs
           await supabase.from('processing_logs').insert({
-            user_id: monitor.user_banks.user_id,
+            user_id: monitor.user_id,
             log_level: 'error',
             message: 'Failed to trigger email processing',
             details: { error: processError.message, historyId, emailAddress }
