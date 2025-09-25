@@ -88,6 +88,10 @@ serve(async (req) => {
       throw new Error('Missing required parameters: bankName, googleAccessToken');
     }
 
+    // Normalize bank name to uppercase early
+    const normalizedBankName = bankName.toUpperCase();
+    console.log('Processing transactions for bank:', normalizedBankName);
+
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       throw new Error('No authorization header');
@@ -112,7 +116,7 @@ serve(async (req) => {
       .from('user_banks')
       .select('*')
       .eq('user_id', user.id)
-      .eq('bank_name', bankName.toUpperCase())
+      .eq('bank_name', normalizedBankName)
       .single();
 
     if (existingBank) {
@@ -123,7 +127,7 @@ serve(async (req) => {
         .from('user_banks')
         .insert({
           user_id: user.id,
-          bank_name: bankName.toUpperCase(),
+          bank_name: normalizedBankName,
           bank_account_no: 'Unknown' // Will be updated when we get more info
         })
         .select()
@@ -141,10 +145,11 @@ serve(async (req) => {
       'ICICI': ['alerts@icicibank.com'],
       'SBI': ['alerts@sbi.co.in']
     };
-
-    const bankEmails = bankEmailMap[bankName.toUpperCase()] || [];
+    
+    const bankEmails = bankEmailMap[normalizedBankName] || [];
     if (bankEmails.length === 0) {
-      throw new Error('Unsupported bank');
+      console.error('Unsupported bank:', normalizedBankName, 'Available banks:', Object.keys(bankEmailMap));
+      throw new Error(`Unsupported bank: ${normalizedBankName}. Supported banks: ${Object.keys(bankEmailMap).join(', ')}`);
     }
 
     // Find the last transaction for this bank to determine starting point
