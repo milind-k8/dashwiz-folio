@@ -62,6 +62,15 @@ const AVAILABLE_BANKS = [
   { name: 'HDFC', displayName: 'HDFC Bank', description: 'Connect your HDFC Bank account' }
 ];
 
+// Helper function to convert stored bank name to edge function format
+const getBankCodeFromStoredName = (storedBankName: string): string => {
+  const bankName = storedBankName.toUpperCase();
+  if (bankName.includes('HDFC')) return 'HDFC';
+  if (bankName.includes('ICICI')) return 'ICICI';
+  if (bankName.includes('SBI')) return 'SBI';
+  return bankName; // fallback
+};
+
 export const BanksContent = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [showAddBankDialog, setShowAddBankDialog] = useState(false);
@@ -187,7 +196,7 @@ export const BanksContent = () => {
       
       const { data, error } = await supabase.functions.invoke('process-transactions', {
         body: { 
-          bankName: bank.bank_name.toLowerCase(),
+          bankName: getBankCodeFromStoredName(bank.bank_name),
           month: selectedMonth,
           googleAccessToken: session.provider_token
         }
