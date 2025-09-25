@@ -176,23 +176,9 @@ export const useGlobalData = () => {
         // After initial data load, auto-process latest transactions
         // Only if we have banks and Google access token
         const currentBanks = useGlobalStore.getState().banks;
-        
-        console.log('Auto-processing check:', {
-          banksCount: currentBanks.length,
-          hasProviderToken: !!session?.provider_token,
-          autoProcessing,
-          userId: user?.id
-        });
-        
         if (currentBanks.length > 0 && session?.provider_token && !autoProcessing) {
           console.log('Starting automatic transaction processing...');
           processLatestTransactions();
-        } else {
-          console.log('Skipping auto-processing:', {
-            noBanks: currentBanks.length === 0,
-            noToken: !session?.provider_token,
-            alreadyProcessing: autoProcessing
-          });
         }
       });
     } else if (!user) {
