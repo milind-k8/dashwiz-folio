@@ -98,16 +98,22 @@ export const BanksContent = () => {
         throw new Error(error.message || 'Failed to verify bank');
       }
 
-      if (data.success) {
+      if (data.valid) {
         toast({
           title: "Success",
           description: data.message,
         });
         setShowAddBankDialog(false);
         // Add the new bank to global store
-        if (data.bank) {
-          addBank(data.bank);
-        }
+        const newBank = {
+          id: data.bankId,
+          user_id: session.user.id,
+          bank_name: data.bankName,
+          bank_account_no: data.accountNumber,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+        addBank(newBank);
       } else {
         toast({
           title: "Verification Failed",
