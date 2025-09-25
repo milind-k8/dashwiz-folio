@@ -32,6 +32,7 @@ interface GlobalStore {
   loading: boolean;
   initialized: boolean;
   refreshing: boolean;
+  autoProcessing: boolean;
   
   // Actions
   setBanks: (banks: Bank[]) => void;
@@ -42,6 +43,7 @@ interface GlobalStore {
   setLoading: (loading: boolean) => void;
   setInitialized: (initialized: boolean) => void;
   setRefreshing: (refreshing: boolean) => void;
+  setAutoProcessing: (autoProcessing: boolean) => void;
   refreshData: () => Promise<void>;
   reset: () => void;
 }
@@ -52,6 +54,7 @@ const initialState = {
   loading: false,
   initialized: false,
   refreshing: false,
+  autoProcessing: false,
 };
 
 export const useGlobalStore = create<GlobalStore>((set, get) => ({
@@ -78,6 +81,8 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   setInitialized: (initialized) => set({ initialized }),
   
   setRefreshing: (refreshing) => set({ refreshing }),
+  
+  setAutoProcessing: (autoProcessing) => set({ autoProcessing }),
   
   refreshData: async () => {
     const state = get();

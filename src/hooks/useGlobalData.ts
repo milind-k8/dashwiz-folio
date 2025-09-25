@@ -5,16 +5,18 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
 export const useGlobalData = () => {
-  const { user, loading: authLoading } = useAuth();
+  const { user, session, loading: authLoading } = useAuth();
   const { 
     banks, 
     transactions,
     loading, 
     initialized, 
+    autoProcessing,
     setBanks, 
     setTransactions,
     setLoading, 
     setInitialized,
+    setAutoProcessing,
     reset 
   } = useGlobalStore();
 
@@ -87,12 +89,98 @@ export const useGlobalData = () => {
     }
   };
 
+  const processLatestTransactions = async () => {
+    if (!user || !session?.provider_token || banks.length === 0) {
+      return;
+    }
+
+    try {
+      setAutoProcessing(true);
+      
+      // Get current month in MM/YYYY format
+      const now = new Date();
+      const currentMonth = `${now.getMonth() + 1}/${now.getFullYear()}`;
+      
+      console.log('Auto-processing transactions for current month:', currentMonth);
+      
+      // Process transactions for each bank
+      const processingPromises = banks.map(async (bank) => {
+        try {
+          const { data, error } = await supabase.functions.invoke('process-transactions', {
+            body: {
+              bankName: bank.bank_name,
+              month: currentMonth,
+              googleAccessToken: session.provider_token
+            }
+          });
+          
+          if (error) {
+            console.error(`Error processing transactions for ${bank.bank_name}:`, error);
+          } else {
+            console.log(`Started processing transactions for ${bank.bank_name}:`, data);
+          }
+        } catch (error) {
+          console.error(`Error calling process-transactions for ${bank.bank_name}:`, error);
+        }
+      });
+      
+      // Wait for all processing calls to complete
+      await Promise.allSettled(processingPromises);
+      
+      // Wait for background processing (15 seconds initial delay)
+      console.log('Waiting for background processing to complete...');
+      await new Promise(resolve => setTimeout(resolve, 15000));
+      
+      // Retry mechanism - try up to 2 times with 10 second intervals
+      for (let retry = 0; retry < 2; retry++) {
+        const transactionCountBefore = transactions.length;
+        
+        // Refresh data to get new transactions
+        await fetchData();
+        
+        // Check if we got new transactions
+        if (useGlobalStore.getState().transactions.length > transactionCountBefore) {
+          console.log('New transactions found after processing');
+          toast({
+            title: "Success",
+            description: "Latest transactions processed successfully",
+          });
+          break;
+        }
+        
+        // If no new transactions and not the last retry, wait and try again
+        if (retry < 1) {
+          console.log(`No new transactions found, retrying in 10 seconds... (attempt ${retry + 2})`);
+          await new Promise(resolve => setTimeout(resolve, 10000));
+        }
+      }
+      
+    } catch (error) {
+      console.error('Error in auto-processing:', error);
+      toast({
+        title: "Processing Error",
+        description: "Failed to process latest transactions",
+        variant: "destructive",
+      });
+    } finally {
+      setAutoProcessing(false);
+    }
+  };
+
   // Initialize data when user logs in
   useEffect(() => {
     if (authLoading) return;
     
     if (user && !initialized && !loading) {
-      fetchData();
+      fetchData().then(() => {
+        // After initial data load, auto-process latest transactions
+        // Only if we have banks and Google access token
+        const currentBanks = useGlobalStore.getState().banks;
+        if (currentBanks.length > 0 && session?.provider_token && !autoProcessing) {
+          console.log('Starting automatic transaction processing...');
+          processLatestTransactions();
+        }
+      });
     } else if (!user) {
       reset();
     }
@@ -103,6 +191,7 @@ export const useGlobalData = () => {
     transactions,
     loading,
     initialized,
+    autoProcessing,
     refetch: fetchData,
   };
 };
