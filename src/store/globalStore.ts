@@ -90,7 +90,23 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       
-      // Call the database function to get all data at once
+      // Fetch all user banks first
+      const { data: userBanks, error: banksError } = await supabase
+        .from('user_banks')
+        .select('*')
+        .eq('user_id', user.id);
+
+      if (banksError) {
+        console.error('Error fetching banks:', banksError);
+        toast({
+          title: "Error",
+          description: "Failed to refresh banks",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Call the database function to get transaction data
       const { data, error } = await supabase
         .rpc('get_user_transactions_with_details', { 
           user_uuid: user.id, 
@@ -106,23 +122,6 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
         });
         return;
       }
-
-      // Extract unique banks from the transaction data
-      const uniqueBanks = new Map();
-      data?.forEach(item => {
-        if (!uniqueBanks.has(item.bank_id)) {
-          uniqueBanks.set(item.bank_id, {
-            id: item.bank_id,
-            user_id: user.id,
-            bank_name: item.bank_name,
-            bank_account_no: item.bank_account_no,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          });
-        }
-      });
-
-      const banks = Array.from(uniqueBanks.values());
 
       // Process transactions from the function result
       const processedTransactions = (data || []).map(item => ({
@@ -140,7 +139,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
       }));
 
       set({ 
-        banks,
+        banks: userBanks || [],
         transactions: processedTransactions,
         initialized: true 
       });
