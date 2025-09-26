@@ -108,18 +108,18 @@ export function EnhancedMetricCard({
         className
       )}
     >
-      <CardContent className="relative p-6 space-y-4">
+      <CardContent className="relative p-5 space-y-4">
         {/* Icon and value section */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {/* Icon */}
           <div className="flex justify-start">
             <div className={cn(
-              "p-3 rounded-xl transition-all duration-300",
+              "p-2.5 rounded-lg transition-all duration-300",
               "group-hover:scale-110",
               styles.iconBg
             )}>
               <Icon className={cn(
-                "w-6 h-6 transition-colors duration-300",
+                "w-5 h-5 transition-colors duration-300",
                 styles.iconColor
               )} />
             </div>
@@ -128,7 +128,7 @@ export function EnhancedMetricCard({
           {/* Value */}
           <div className="space-y-1">
             <p className={cn(
-              "text-2xl font-bold tracking-tight",
+              "text-xl font-bold tracking-tight",
               styles.textColor
             )}>
               {value}
@@ -160,7 +160,7 @@ export function EnhancedMetricCard({
         {/* Bank Breakdown Section */}
         {filteredBreakdown.length > 0 && (
           <div className={cn(
-            "space-y-3 border-t pt-4",
+            "space-y-2 border-t pt-3",
             styles.borderColor
           )}>
             <div className={cn(
@@ -169,7 +169,7 @@ export function EnhancedMetricCard({
             )}>
               Breakdown
             </div>
-            <div className="space-y-2 max-h-32 overflow-y-auto">
+            <div className="space-y-1.5 max-h-28 overflow-y-auto">
               {filteredBreakdown.slice(0, 3).map((bank, index) => {
                 const bankValue = getMetricValue(bank);
 
@@ -177,7 +177,7 @@ export function EnhancedMetricCard({
                   <div
                     key={bank.bank}
                     className={cn(
-                      "flex items-center justify-between p-2.5 rounded-lg transition-all duration-300",
+                      "flex items-center justify-between p-2 rounded-md transition-all duration-300",
                       "hover:scale-[1.01]",
                       styles.breakdown
                     )}
