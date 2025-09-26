@@ -1,6 +1,8 @@
 import { useMemo, useCallback } from 'react';
 import { EnhancedMetricCard } from '@/components/EnhancedMetricCard';
 import { TransactionList } from '@/components/TransactionList';
+import { SpendingInsights } from '@/components/SpendingInsights';
+import { AdvancedCharts } from '@/components/AdvancedCharts';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
 import { DashboardSkeleton } from '@/components/DashboardSkeleton';
@@ -19,6 +21,12 @@ export function Dashboard() {
   // Memoize the expensive data calculation
   const data = useMemo(() => {
     return getFilteredData(selectedBank, selectedDuration);
+  }, [getFilteredData, selectedBank, selectedDuration]);
+
+  // Get previous month data for insights comparison
+  const previousMonthData = useMemo(() => {
+    const prevDuration = selectedDuration === 'current-month' ? 'previous-month' : 'month-before-previous';
+    return getFilteredData(selectedBank, prevDuration);
   }, [getFilteredData, selectedBank, selectedDuration]);
 
   if (isLoading) {
@@ -54,8 +62,25 @@ export function Dashboard() {
         />
       </div>
 
+      {/* Spending Insights */}
+      <div className="mb-8">
+        <SpendingInsights 
+          transactions={data.transactions}
+          currentExpenses={data.expenses}
+          previousExpenses={previousMonthData.expenses}
+        />
+      </div>
+
+      {/* Advanced Charts */}
+      <div className="mb-8">
+        <AdvancedCharts 
+          transactions={data.transactions}
+          expenseCategories={data.expenseCategoriesList}
+        />
+      </div>
+
       {/* Transaction Summary */}
-      <div className="mt-12 mb-8">
+      <div className="mb-8">
         <TransactionList expenseCategories={data.expenseCategoriesList} />
       </div>
 
