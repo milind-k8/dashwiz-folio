@@ -124,7 +124,7 @@ export function EnhancedMetricCard({
         </div>
 
         {/* Content Section */}
-        <div className="text-center space-y-2">
+        <div className="text-left space-y-2">
           <h3 className={cn(
             "text-xs font-medium tracking-wide uppercase",
             styles.mutedColor
@@ -141,7 +141,7 @@ export function EnhancedMetricCard({
           {/* Trend indicator */}
           {trend && (
             <div className={cn(
-              "flex items-center justify-center gap-1 text-xs font-medium",
+              "flex items-center gap-1 text-xs font-medium",
               isPositiveTrend ? "text-success" : isNegativeTrend ? "text-destructive" : styles.mutedColor
             )}>
               {isPositiveTrend ? (
