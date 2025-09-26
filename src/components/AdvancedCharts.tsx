@@ -3,9 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   LineChart, 
   Line, 
-  PieChart, 
-  Pie, 
-  Cell, 
   AreaChart, 
   Area,
   XAxis, 
@@ -15,7 +12,6 @@ import {
   ResponsiveContainer,
   Legend
 } from 'recharts';
-import { ExpenseChart } from '@/components/ExpenseChart';
 
 interface Transaction {
   amount: number;
@@ -96,14 +92,6 @@ export function AdvancedCharts({ transactions, expenseCategories }: AdvancedChar
     ];
   }, [transactions]);
 
-  // Prepare pie chart data (top 5 categories)
-  const pieData = expenseCategories
-    .slice(0, 5)
-    .map(cat => ({
-      name: cat.category,
-      value: cat.amount,
-      color: cat.color,
-    }));
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (!active || !payload || payload.length === 0) return null;
@@ -120,17 +108,6 @@ export function AdvancedCharts({ transactions, expenseCategories }: AdvancedChar
     );
   };
 
-  const PieTooltip = ({ active, payload }: any) => {
-    if (!active || !payload || payload.length === 0) return null;
-    const data = payload[0];
-    
-    return (
-      <div className="bg-card/95 backdrop-blur-sm border border-border rounded-lg shadow-lg p-3">
-        <p className="font-semibold text-foreground text-sm">{data.name}</p>
-        <p className="text-sm text-muted-foreground">₹{data.value.toLocaleString()}</p>
-      </div>
-    );
-  };
 
   return (
     <div className="space-y-6">
@@ -183,42 +160,8 @@ export function AdvancedCharts({ transactions, expenseCategories }: AdvancedChar
           </CardContent>
         </Card>
 
-        {/* Category Distribution Pie Chart */}
-        <Card className="border-muted/40">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-medium">Category Distribution</CardTitle>
-            <p className="text-sm text-muted-foreground">Top 5 spending categories</p>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="h-48">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={40}
-                    outerRadius={80}
-                    paddingAngle={2}
-                    dataKey="value"
-                  >
-                    {pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<PieTooltip />} />
-                  <Legend 
-                    wrapperStyle={{ fontSize: '12px' }}
-                    formatter={(value) => <span style={{ color: 'hsl(var(--foreground))' }}>{value}</span>}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Monthly Comparison */}
-        <Card className="border-muted/40 lg:col-span-2">
+        <Card className="border-muted/40">
           <CardHeader className="pb-3">
             <CardTitle className="text-base font-medium">Monthly Comparison</CardTitle>
             <p className="text-sm text-muted-foreground">Income vs Expenses comparison</p>
@@ -267,17 +210,6 @@ export function AdvancedCharts({ transactions, expenseCategories }: AdvancedChar
           </CardContent>
         </Card>
       </div>
-
-      {/* Enhanced Expense Breakdown */}
-      <Card className="border-muted/40">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base font-medium">Detailed Category Breakdown</CardTitle>
-          <p className="text-sm text-muted-foreground">Complete expense analysis by category</p>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <ExpenseChart data={expenseCategories} />
-        </CardContent>
-      </Card>
     </div>
   );
 }
