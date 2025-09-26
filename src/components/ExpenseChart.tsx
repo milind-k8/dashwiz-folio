@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from 'react';
 import { Tooltip as UiTooltip, TooltipContent as UiTooltipContent, TooltipProvider as UiTooltipProvider, TooltipTrigger as UiTooltipTrigger } from '@/components/ui/tooltip';
 import { Card } from '@/components/ui/card';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Cell } from 'recharts';
 import { useFinancialStore } from '@/store/financialStore';
 
 interface ExpenseCategoryPoint {
@@ -80,32 +80,46 @@ export function ExpenseChart({ data: series }: ExpenseChartProps) {
 
       <div className="flex flex-col items-center gap-4">
         <div className="w-full">
-          <div className="relative h-48 sm:h-56">
+          <div className="relative h-64 sm:h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={chartData as any}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={85}
-                  dataKey="amount"
-                  startAngle={90}
-                  endAngle={-270}
+              <BarChart
+                data={chartData as any}
+                margin={{
+                  top: 20,
+                  right: 30,
+                  left: 20,
+                  bottom: 60,
+                }}
+                barCategoryGap="20%"
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                <XAxis 
+                  dataKey="category" 
+                  tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                  axisLine={false}
+                  tickLine={false}
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                  interval={0}
+                />
+                <YAxis 
+                  tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
+                />
+                <Bar 
+                  dataKey="amount" 
+                  radius={[4, 4, 0, 0]}
                 >
                   {Array.isArray(chartData) && chartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={(entry as any).color} />
                   ))}
-                </Pie>
+                </Bar>
                 <Tooltip content={<CustomTooltip />} wrapperStyle={{ outline: 'none', zIndex: 20 }} />
-              </PieChart>
+              </BarChart>
             </ResponsiveContainer>
-            <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
-              <div className="text-center">
-                <div className="text-xs text-muted-foreground">Total</div>
-                <div className="text-sm font-semibold text-foreground">₹{totalAmount.toLocaleString()}</div>
-              </div>
-            </div>
           </div>
         </div>
         
