@@ -55,37 +55,37 @@ export function EnhancedMetricCard({
     switch (metricType) {
       case 'balance':
         return {
-          cardClass: 'bg-gradient-balance text-metric-balance-foreground border-0',
+          cardClass: 'bg-gradient-balance text-metric-balance-foreground border-0 shadow-card hover:shadow-elevated',
           iconBg: 'bg-white/20',
           iconColor: 'text-white',
           textColor: 'text-white',
-          mutedColor: 'text-white/70',
+          mutedColor: 'text-white/80',
           borderColor: 'border-white/20',
           breakdown: 'bg-white/10'
         };
       case 'expenses':
         return {
-          cardClass: 'bg-gradient-expense text-metric-expense-foreground border-0',
+          cardClass: 'bg-gradient-expense text-metric-expense-foreground border-0 shadow-card hover:shadow-elevated',
           iconBg: 'bg-white/20',
           iconColor: 'text-white',
           textColor: 'text-white',
-          mutedColor: 'text-white/70',
+          mutedColor: 'text-white/80',
           borderColor: 'border-white/20',
           breakdown: 'bg-white/10'
         };
       case 'income':
         return {
-          cardClass: 'bg-gradient-income text-metric-income-foreground border-0',
+          cardClass: 'bg-gradient-income text-metric-income-foreground border-0 shadow-card hover:shadow-elevated',
           iconBg: 'bg-white/20',
           iconColor: 'text-white',
           textColor: 'text-white',
-          mutedColor: 'text-white/70',
+          mutedColor: 'text-white/80',
           borderColor: 'border-white/20',
           breakdown: 'bg-white/10'
         };
       default:
         return {
-          cardClass: 'bg-card text-card-foreground shadow-card hover:shadow-elevated',
+          cardClass: 'bg-card text-card-foreground shadow-card hover:shadow-elevated border',
           iconBg: 'bg-primary/10',
           iconColor: 'text-primary',
           textColor: 'text-card-foreground',
@@ -101,63 +101,66 @@ export function EnhancedMetricCard({
   return (
     <Card
       className={cn(
-        "group relative overflow-hidden transition-all duration-300",
-        "hover:shadow-elevated hover:-translate-y-1 hover:scale-[1.01]",
+        "group relative overflow-hidden transition-all duration-300 rounded-2xl",
+        "hover:shadow-elevated hover:-translate-y-1",
         "active:scale-[0.98] active:transition-transform active:duration-150",
         styles.cardClass,
         className
       )}
     >
-      <CardContent className="relative p-4 space-y-4">
-        {/* Icon at top left */}
-        <div className="flex justify-start mb-3">
-          <div className={cn(
-            "p-3 rounded-xl transition-all duration-300",
-            "group-hover:scale-110 group-hover:rotate-3",
-            styles.iconBg
-          )}>
-            <Icon className={cn(
-              "w-5 h-5 transition-colors duration-300",
-              styles.iconColor
-            )} />
+      <CardContent className="relative p-6 space-y-4">
+        {/* Icon and value section */}
+        <div className="space-y-4">
+          {/* Icon */}
+          <div className="flex justify-start">
+            <div className={cn(
+              "p-3 rounded-xl transition-all duration-300",
+              "group-hover:scale-110",
+              styles.iconBg
+            )}>
+              <Icon className={cn(
+                "w-6 h-6 transition-colors duration-300",
+                styles.iconColor
+              )} />
+            </div>
+          </div>
+
+          {/* Value */}
+          <div className="space-y-1">
+            <p className={cn(
+              "text-2xl font-bold tracking-tight",
+              styles.textColor
+            )}>
+              {value}
+            </p>
+            <h3 className={cn(
+              "text-sm font-medium",
+              styles.mutedColor
+            )}>
+              {title}
+            </h3>
           </div>
         </div>
-
-        {/* Content Section */}
-        <div className="text-left space-y-2">
-          <h3 className={cn(
-            "text-xs font-medium tracking-wide uppercase",
-            styles.mutedColor
+        
+        {/* Trend indicator */}
+        {trend && (
+          <div className={cn(
+            "flex items-center gap-1.5 text-xs font-medium",
+            isPositiveTrend ? "text-success" : isNegativeTrend ? "text-destructive" : styles.mutedColor
           )}>
-            {title}
-          </h3>
-          <p className={cn(
-            "text-lg lg:text-xl font-bold tracking-tight",
-            styles.textColor
-          )}>
-            {value}
-          </p>
-          
-          {/* Trend indicator */}
-          {trend && (
-            <div className={cn(
-              "flex items-center gap-1 text-xs font-medium",
-              isPositiveTrend ? "text-success" : isNegativeTrend ? "text-destructive" : styles.mutedColor
-            )}>
-              {isPositiveTrend ? (
-                <TrendingUp className="w-3 h-3 flex-shrink-0" />
-              ) : isNegativeTrend ? (
-                <TrendingDown className="w-3 h-3 flex-shrink-0" />
-              ) : null}
-              <span className="truncate">{trend}</span>
-            </div>
-          )}
-        </div>
+            {isPositiveTrend ? (
+              <TrendingUp className="w-3.5 h-3.5 flex-shrink-0" />
+            ) : isNegativeTrend ? (
+              <TrendingDown className="w-3.5 h-3.5 flex-shrink-0" />
+            ) : null}
+            <span className="truncate">{trend}</span>
+          </div>
+        )}
 
         {/* Bank Breakdown Section */}
         {filteredBreakdown.length > 0 && (
           <div className={cn(
-            "space-y-2 border-t pt-3",
+            "space-y-3 border-t pt-4",
             styles.borderColor
           )}>
             <div className={cn(
@@ -166,7 +169,7 @@ export function EnhancedMetricCard({
             )}>
               Breakdown
             </div>
-            <div className="space-y-1 max-h-32 overflow-y-auto">
+            <div className="space-y-2 max-h-32 overflow-y-auto">
               {filteredBreakdown.slice(0, 3).map((bank, index) => {
                 const bankValue = getMetricValue(bank);
 
@@ -174,7 +177,7 @@ export function EnhancedMetricCard({
                   <div
                     key={bank.bank}
                     className={cn(
-                      "flex items-center justify-between p-2 rounded-md transition-all duration-300",
+                      "flex items-center justify-between p-2.5 rounded-lg transition-all duration-300",
                       "hover:scale-[1.01]",
                       styles.breakdown
                     )}

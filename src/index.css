@@ -8,125 +8,118 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Google Pay inspired color palette */
-    --background: 0 0% 97%;
-    --foreground: 218 9% 17%;
+    /* Modern vibrant color palette */
+    --background: 0 0% 98%;
+    --foreground: 220 9% 15%;
 
-    /* Card system - Google Pay style white cards */
+    /* Card system - Clean modern white cards */
     --card: 0 0% 100%;
-    --card-foreground: 218 9% 17%;
-    --card-subtle: 0 0% 98%;
+    --card-foreground: 220 9% 15%;
+    --card-subtle: 0 0% 99%;
     --card-elevated: 0 0% 100%;
 
     /* Interactive elements */
     --popover: 0 0% 100%;
-    --popover-foreground: 218 9% 17%;
+    --popover-foreground: 220 9% 15%;
 
-    /* Google Pay brand colors - Teal/Blue palette */
-    --primary: 184 91% 17%;
+    /* Modern primary colors - Purple theme */
+    --primary: 258 89% 66%;
     --primary-foreground: 0 0% 100%;
-    --primary-subtle: 184 91% 97%;
+    --primary-subtle: 258 89% 97%;
 
     /* Secondary system */
-    --secondary: 220 13% 95%;
-    --secondary-foreground: 218 9% 17%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 9% 15%;
 
     /* Muted elements */
-    --muted: 220 13% 95%;
-    --muted-foreground: 218 11% 65%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
 
-    /* Accent colors - Google Pay teal */
-    --accent: 184 100% 29%;
+    /* Accent colors */
+    --accent: 258 89% 66%;
     --accent-foreground: 0 0% 100%;
 
-    /* Status colors - Google Pay style */
+    /* Status colors - Modern vibrant */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     --destructive-subtle: 0 84% 97%;
 
-    --success: 142 76% 36%;
+    --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
-    --success-subtle: 142 76% 97%;
+    --success-subtle: 142 71% 97%;
 
-    --warning: 45 93% 47%;
+    --warning: 25 95% 53%;
     --warning-foreground: 0 0% 100%;
-    --warning-subtle: 45 93% 97%;
+    --warning-subtle: 25 95% 97%;
 
     /* Form elements */
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 184 91% 17%;
+    --ring: 258 89% 66%;
 
-    /* Metric card variants - Google Pay inspired */
-    --metric-balance: 184 91% 17%;
+    /* Modern metric card variants - Vibrant colors */
+    --metric-balance: 258 89% 66%;
     --metric-balance-foreground: 0 0% 100%;
-    --metric-income: 142 76% 36%;
+    --metric-income: 142 71% 45%;
     --metric-income-foreground: 0 0% 100%;
-    --metric-expense: 0 84% 60%;
+    --metric-expense: 320 65% 52%;
     --metric-expense-foreground: 0 0% 100%;
 
-    /* Google Pay style gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(184 91% 17%), hsl(184 100% 29%));
-    --gradient-balance: linear-gradient(135deg, hsl(184 91% 17%), hsl(184 100% 29%));
-    --gradient-income: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 46%));
-    --gradient-expense: linear-gradient(135deg, hsl(0 84% 60%), hsl(0 84% 70%));
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 98%));
+    /* Modern vibrant gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(258 89% 66%), hsl(258 89% 76%));
+    --gradient-balance: linear-gradient(135deg, hsl(258 89% 66%), hsl(258 89% 76%));
+    --gradient-income: linear-gradient(135deg, hsl(142 71% 45%), hsl(142 71% 55%));
+    --gradient-expense: linear-gradient(135deg, hsl(320 65% 52%), hsl(320 65% 62%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 99%));
     
-    /* Google Pay style shadows - more pronounced */
-    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
-    --shadow-card: 0 2px 4px 0 hsl(0 0% 0% / 0.06), 0 1px 2px -1px hsl(0 0% 0% / 0.06);
-    --shadow-elevated: 0 8px 16px -4px hsl(0 0% 0% / 0.08), 0 4px 6px -2px hsl(0 0% 0% / 0.05);
-    --shadow-large: 0 16px 24px -8px hsl(0 0% 0% / 0.12), 0 8px 12px -4px hsl(0 0% 0% / 0.08);
-
-    --radius: 0.75rem;
+    --radius: 1rem;
+    
+    /* Modern shadows - softer and more pronounced */
+    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.1);
+    --shadow-card: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
+    --shadow-elevated: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -4px hsl(0 0% 0% / 0.1);
+    --shadow-large: 0 20px 25px -5px hsl(0 0% 0% / 0.1), 0 8px 10px -6px hsl(0 0% 0% / 0.1);
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    /* Google Pay dark theme */
-    --background: 218 9% 8%;
+    /* Modern dark theme */
+    --background: 220 9% 8%;
     --foreground: 0 0% 98%;
 
-    /* Card system - Dark mode cards */
-    --card: 218 9% 12%;
+    /* Card system - Modern dark cards */
+    --card: 220 9% 12%;
     --card-foreground: 0 0% 98%;
-    --card-subtle: 218 9% 15%;
-    --card-elevated: 218 9% 14%;
+    --card-subtle: 220 9% 15%;
+    --card-elevated: 220 9% 14%;
 
     /* Interactive elements */
-    --popover: 218 9% 12%;
+    --popover: 220 9% 12%;
     --popover-foreground: 0 0% 98%;
 
-    /* Google Pay brand colors - Dark mode */
-    --primary: 184 100% 29%;
+    /* Modern primary colors - Purple theme dark */
+    --primary: 258 89% 70%;
     --primary-foreground: 0 0% 100%;
-    --primary-subtle: 184 91% 15%;
+    --primary-subtle: 258 89% 15%;
 
     /* Secondary system */
-    --secondary: 218 9% 18%;
+    --secondary: 220 9% 18%;
     --secondary-foreground: 0 0% 98%;
 
     /* Muted elements */
-    --muted: 218 9% 18%;
-    --muted-foreground: 218 11% 70%;
+    --muted: 220 9% 18%;
+    --muted-foreground: 220 11% 70%;
 
     /* Accent colors */
-    --accent: 184 100% 35%;
+    --accent: 258 89% 70%;
     --accent-foreground: 0 0% 100%;
 
     /* Status colors - Dark mode */
@@ -134,48 +127,48 @@ All colors MUST be HSL.
     --destructive-foreground: 0 0% 100%;
     --destructive-subtle: 0 84% 15%;
 
-    --success: 142 76% 42%;
+    --success: 142 71% 50%;
     --success-foreground: 0 0% 100%;
-    --success-subtle: 142 76% 15%;
+    --success-subtle: 142 71% 15%;
 
-    --warning: 45 93% 53%;
+    --warning: 25 95% 58%;
     --warning-foreground: 0 0% 100%;
-    --warning-subtle: 45 93% 15%;
+    --warning-subtle: 25 95% 15%;
 
     /* Form elements */
-    --border: 218 9% 22%;
-    --input: 218 9% 22%;
-    --ring: 184 100% 29%;
+    --border: 220 9% 22%;
+    --input: 220 9% 22%;
+    --ring: 258 89% 70%;
 
-    /* Metric card variants - Dark mode */
-    --metric-balance: 184 100% 29%;
+    /* Modern metric card variants - Dark mode */
+    --metric-balance: 258 89% 70%;
     --metric-balance-foreground: 0 0% 100%;
-    --metric-income: 142 76% 42%;
+    --metric-income: 142 71% 50%;
     --metric-income-foreground: 0 0% 100%;
-    --metric-expense: 0 84% 65%;
+    --metric-expense: 320 65% 58%;
     --metric-expense-foreground: 0 0% 100%;
 
-    /* Google Pay dark gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(184 100% 29%), hsl(184 100% 39%));
-    --gradient-balance: linear-gradient(135deg, hsl(184 100% 29%), hsl(184 100% 39%));
-    --gradient-income: linear-gradient(135deg, hsl(142 76% 42%), hsl(142 76% 52%));
-    --gradient-expense: linear-gradient(135deg, hsl(0 84% 65%), hsl(0 84% 75%));
-    --gradient-card: linear-gradient(135deg, hsl(218 9% 12%), hsl(218 9% 15%));
+    /* Modern dark gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(258 89% 70%), hsl(258 89% 80%));
+    --gradient-balance: linear-gradient(135deg, hsl(258 89% 70%), hsl(258 89% 80%));
+    --gradient-income: linear-gradient(135deg, hsl(142 71% 50%), hsl(142 71% 60%));
+    --gradient-expense: linear-gradient(135deg, hsl(320 65% 58%), hsl(320 65% 68%));
+    --gradient-card: linear-gradient(135deg, hsl(220 9% 12%), hsl(220 9% 15%));
     
-    /* Dark shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.3);
-    --shadow-card: 0 2px 4px 0 hsl(0 0% 0% / 0.4), 0 1px 2px -1px hsl(0 0% 0% / 0.4);
-    --shadow-elevated: 0 8px 16px -4px hsl(0 0% 0% / 0.5), 0 4px 6px -2px hsl(0 0% 0% / 0.3);
-    --shadow-large: 0 16px 24px -8px hsl(0 0% 0% / 0.6), 0 8px 12px -4px hsl(0 0% 0% / 0.4);
+    /* Modern dark shadows */
+    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.4);
+    --shadow-card: 0 4px 6px -1px hsl(0 0% 0% / 0.5), 0 2px 4px -2px hsl(0 0% 0% / 0.5);
+    --shadow-elevated: 0 10px 15px -3px hsl(0 0% 0% / 0.6), 0 4px 6px -4px hsl(0 0% 0% / 0.4);
+    --shadow-large: 0 20px 25px -5px hsl(0 0% 0% / 0.7), 0 8px 10px -6px hsl(0 0% 0% / 0.5);
 
-    --sidebar-background: 218 9% 10%;
+    --sidebar-background: 220 9% 10%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 184 100% 29%;
+    --sidebar-primary: 258 89% 70%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 218 9% 18%;
+    --sidebar-accent: 220 9% 18%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 218 9% 20%;
-    --sidebar-ring: 184 100% 29%;
+    --sidebar-border: 220 9% 20%;
+    --sidebar-ring: 258 89% 70%;
   }
 }
 
