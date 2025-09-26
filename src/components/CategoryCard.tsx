@@ -43,16 +43,8 @@ export function CategoryCard({
             <ChevronRight className={`w-4 h-4 transition-transform duration-200 text-muted-foreground ${isExpanded ? 'rotate-90' : 'rotate-0'}`} />
             <div className="min-w-0">
               <h4 className="font-medium text-foreground text-sm truncate">
-                {category}
+                {category} {tags.length} merchants
               </h4>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="text-xs text-muted-foreground">
-                  {tags.length} merchants
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {percentage}%
-                </span>
-              </div>
             </div>
           </div>
           
@@ -87,7 +79,7 @@ export function CategoryCard({
                       </span>
                       {merchantCount > 1 && (
                         <span className="text-xs text-muted-foreground">
-                          {merchantCount} transactions
+                          {merchantCount} X
                         </span>
                       )}
                     </div>
