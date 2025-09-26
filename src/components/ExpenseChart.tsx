@@ -84,34 +84,34 @@ export function ExpenseChart({ data: series }: ExpenseChartProps) {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={chartData as any}
+                layout="horizontal"
                 margin={{
                   top: 20,
                   right: 30,
-                  left: 20,
-                  bottom: 60,
+                  left: 80,
+                  bottom: 20,
                 }}
                 barCategoryGap="20%"
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
                 <XAxis 
-                  dataKey="category" 
-                  tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                  axisLine={false}
-                  tickLine={false}
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                  interval={0}
-                />
-                <YAxis 
+                  type="number"
                   tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
                   axisLine={false}
                   tickLine={false}
                   tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
                 />
+                <YAxis 
+                  type="category"
+                  dataKey="category" 
+                  tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                  axisLine={false}
+                  tickLine={false}
+                  width={70}
+                />
                 <Bar 
                   dataKey="amount" 
-                  radius={[4, 4, 0, 0]}
+                  radius={[0, 4, 4, 0]}
                 >
                   {Array.isArray(chartData) && chartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={(entry as any).color} />
@@ -121,50 +121,6 @@ export function ExpenseChart({ data: series }: ExpenseChartProps) {
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </div>
-        
-        <div className="w-full pt-2">
-          <UiTooltipProvider delayDuration={0}>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
-              {Array.isArray(chartData) && chartData.slice(0, 8).map((category: any, index: number) => (
-                <UiTooltip key={index}>
-                  <UiTooltipTrigger asChild>
-                    <div className="flex items-center gap-2 min-w-0 cursor-default p-2 rounded-lg hover:bg-muted/50 transition-colors">
-                      <span 
-                        className="w-2.5 h-2.5 rounded-full flex-shrink-0" 
-                        style={{ backgroundColor: category.color }}
-                      ></span>
-                      <span className="text-xs text-muted-foreground truncate">{category.category}</span>
-                    </div>
-                  </UiTooltipTrigger>
-                  <UiTooltipContent sideOffset={6} className="max-w-[240px] leading-5 break-words">
-                    <div className="flex items-center gap-2">
-                      <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: category.color }}></span>
-                      <span className="font-medium text-foreground text-sm break-words">{category.category}</span>
-                    </div>
-                    <div className="mt-1 text-xs text-muted-foreground">
-                      ₹{Number(category.amount).toLocaleString()} {typeof category.percentage === 'number' ? `(${category.percentage}%)` : ''}
-                    </div>
-                    {Array.isArray(category.tags) && category.tags.length > 0 && (
-                      <div className="mt-2">
-                        <div className="text-[11px] text-muted-foreground mb-1">Tags</div>
-                        <div className="flex flex-wrap gap-1.5">
-                          {category.tags.map((t: string, i: number) => (
-                            <span
-                              key={`${t}-${i}`}
-                              className="text-[11px] text-foreground bg-muted border border-border rounded-full px-2 py-0.5"
-                            >
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </UiTooltipContent>
-                </UiTooltip>
-              ))}
-            </div>
-          </UiTooltipProvider>
         </div>
       </div>
     </div>
