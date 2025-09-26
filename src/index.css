@@ -8,8 +8,8 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Modern vibrant color palette */
-    --background: 0 0% 98%;
+    /* Pastel color palette inspired by design notes */
+    --background: 250 15% 92%;
     --foreground: 220 9% 15%;
 
     /* Card system - Clean modern white cards */
@@ -22,54 +22,54 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 220 9% 15%;
 
-    /* Modern primary colors - Purple theme */
-    --primary: 258 89% 66%;
+    /* Modern primary colors - Soft purple theme */
+    --primary: 260 50% 70%;
     --primary-foreground: 0 0% 100%;
-    --primary-subtle: 258 89% 97%;
+    --primary-subtle: 260 50% 95%;
 
     /* Secondary system */
-    --secondary: 220 14% 96%;
+    --secondary: 250 15% 90%;
     --secondary-foreground: 220 9% 15%;
 
     /* Muted elements */
-    --muted: 220 14% 96%;
+    --muted: 250 15% 90%;
     --muted-foreground: 220 9% 46%;
 
-    /* Accent colors */
-    --accent: 258 89% 66%;
+    /* Accent colors - Soft cyan */
+    --accent: 180 70% 60%;
     --accent-foreground: 0 0% 100%;
 
-    /* Status colors - Modern vibrant */
-    --destructive: 0 84% 60%;
+    /* Status colors - Pastel tones */
+    --destructive: 15 85% 65%;
     --destructive-foreground: 0 0% 100%;
-    --destructive-subtle: 0 84% 97%;
+    --destructive-subtle: 15 85% 95%;
 
-    --success: 142 71% 45%;
+    --success: 75 60% 55%;
     --success-foreground: 0 0% 100%;
-    --success-subtle: 142 71% 97%;
+    --success-subtle: 75 60% 95%;
 
-    --warning: 25 95% 53%;
+    --warning: 25 80% 70%;
     --warning-foreground: 0 0% 100%;
-    --warning-subtle: 25 95% 97%;
+    --warning-subtle: 25 80% 95%;
 
     /* Form elements */
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 258 89% 66%;
+    --border: 250 15% 85%;
+    --input: 250 15% 85%;
+    --ring: 260 50% 70%;
 
-    /* Modern metric card variants - Vibrant colors */
-    --metric-balance: 258 89% 66%;
+    /* Pastel metric card variants */
+    --metric-balance: 260 50% 70%;
     --metric-balance-foreground: 0 0% 100%;
-    --metric-income: 142 71% 45%;
+    --metric-income: 75 60% 55%;
     --metric-income-foreground: 0 0% 100%;
-    --metric-expense: 320 65% 52%;
+    --metric-expense: 15 85% 65%;
     --metric-expense-foreground: 0 0% 100%;
 
-    /* Modern vibrant gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(258 89% 66%), hsl(258 89% 76%));
-    --gradient-balance: linear-gradient(135deg, hsl(258 89% 66%), hsl(258 89% 76%));
-    --gradient-income: linear-gradient(135deg, hsl(142 71% 45%), hsl(142 71% 55%));
-    --gradient-expense: linear-gradient(135deg, hsl(320 65% 52%), hsl(320 65% 62%));
+    /* Soft pastel gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(260 50% 70%), hsl(260 50% 80%));
+    --gradient-balance: linear-gradient(135deg, hsl(260 50% 70%), hsl(260 50% 80%));
+    --gradient-income: linear-gradient(135deg, hsl(75 60% 55%), hsl(75 60% 65%));
+    --gradient-expense: linear-gradient(135deg, hsl(15 85% 65%), hsl(15 85% 75%));
     --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 99%));
     
     --radius: 1rem;
@@ -80,80 +80,80 @@ All colors MUST be HSL.
     --shadow-elevated: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -4px hsl(0 0% 0% / 0.1);
     --shadow-large: 0 20px 25px -5px hsl(0 0% 0% / 0.1), 0 8px 10px -6px hsl(0 0% 0% / 0.1);
 
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 250 15% 90%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-primary: 260 50% 70%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 250 15% 85%;
     --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-border: 250 15% 80%;
+    --sidebar-ring: 260 50% 70%;
   }
 
   .dark {
-    /* Modern dark theme */
-    --background: 220 9% 8%;
+    /* Dark theme with pastel accents */
+    --background: 250 15% 8%;
     --foreground: 0 0% 98%;
 
     /* Card system - Modern dark cards */
-    --card: 220 9% 12%;
+    --card: 250 15% 12%;
     --card-foreground: 0 0% 98%;
-    --card-subtle: 220 9% 15%;
-    --card-elevated: 220 9% 14%;
+    --card-subtle: 250 15% 15%;
+    --card-elevated: 250 15% 14%;
 
     /* Interactive elements */
-    --popover: 220 9% 12%;
+    --popover: 250 15% 12%;
     --popover-foreground: 0 0% 98%;
 
-    /* Modern primary colors - Purple theme dark */
-    --primary: 258 89% 70%;
+    /* Soft purple theme for dark mode */
+    --primary: 260 50% 75%;
     --primary-foreground: 0 0% 100%;
-    --primary-subtle: 258 89% 15%;
+    --primary-subtle: 260 50% 15%;
 
     /* Secondary system */
-    --secondary: 220 9% 18%;
+    --secondary: 250 15% 18%;
     --secondary-foreground: 0 0% 98%;
 
     /* Muted elements */
-    --muted: 220 9% 18%;
-    --muted-foreground: 220 11% 70%;
+    --muted: 250 15% 18%;
+    --muted-foreground: 250 15% 70%;
 
-    /* Accent colors */
-    --accent: 258 89% 70%;
+    /* Soft cyan accent for dark mode */
+    --accent: 180 70% 65%;
     --accent-foreground: 0 0% 100%;
 
-    /* Status colors - Dark mode */
-    --destructive: 0 84% 65%;
+    /* Status colors - Dark mode with pastel tones */
+    --destructive: 15 85% 70%;
     --destructive-foreground: 0 0% 100%;
-    --destructive-subtle: 0 84% 15%;
+    --destructive-subtle: 15 85% 15%;
 
-    --success: 142 71% 50%;
+    --success: 75 60% 60%;
     --success-foreground: 0 0% 100%;
-    --success-subtle: 142 71% 15%;
+    --success-subtle: 75 60% 15%;
 
-    --warning: 25 95% 58%;
+    --warning: 25 80% 75%;
     --warning-foreground: 0 0% 100%;
-    --warning-subtle: 25 95% 15%;
+    --warning-subtle: 25 80% 15%;
 
     /* Form elements */
-    --border: 220 9% 22%;
-    --input: 220 9% 22%;
-    --ring: 258 89% 70%;
+    --border: 250 15% 22%;
+    --input: 250 15% 22%;
+    --ring: 260 50% 75%;
 
-    /* Modern metric card variants - Dark mode */
-    --metric-balance: 258 89% 70%;
+    /* Pastel metric card variants - Dark mode */
+    --metric-balance: 260 50% 75%;
     --metric-balance-foreground: 0 0% 100%;
-    --metric-income: 142 71% 50%;
+    --metric-income: 75 60% 60%;
     --metric-income-foreground: 0 0% 100%;
-    --metric-expense: 320 65% 58%;
+    --metric-expense: 15 85% 70%;
     --metric-expense-foreground: 0 0% 100%;
 
-    /* Modern dark gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(258 89% 70%), hsl(258 89% 80%));
-    --gradient-balance: linear-gradient(135deg, hsl(258 89% 70%), hsl(258 89% 80%));
-    --gradient-income: linear-gradient(135deg, hsl(142 71% 50%), hsl(142 71% 60%));
-    --gradient-expense: linear-gradient(135deg, hsl(320 65% 58%), hsl(320 65% 68%));
-    --gradient-card: linear-gradient(135deg, hsl(220 9% 12%), hsl(220 9% 15%));
+    /* Soft pastel gradients for dark mode */
+    --gradient-primary: linear-gradient(135deg, hsl(260 50% 75%), hsl(260 50% 85%));
+    --gradient-balance: linear-gradient(135deg, hsl(260 50% 75%), hsl(260 50% 85%));
+    --gradient-income: linear-gradient(135deg, hsl(75 60% 60%), hsl(75 60% 70%));
+    --gradient-expense: linear-gradient(135deg, hsl(15 85% 70%), hsl(15 85% 80%));
+    --gradient-card: linear-gradient(135deg, hsl(250 15% 12%), hsl(250 15% 15%));
     
     /* Modern dark shadows */
     --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.4);
@@ -161,14 +161,14 @@ All colors MUST be HSL.
     --shadow-elevated: 0 10px 15px -3px hsl(0 0% 0% / 0.6), 0 4px 6px -4px hsl(0 0% 0% / 0.4);
     --shadow-large: 0 20px 25px -5px hsl(0 0% 0% / 0.7), 0 8px 10px -6px hsl(0 0% 0% / 0.5);
 
-    --sidebar-background: 220 9% 10%;
+    --sidebar-background: 250 15% 10%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 258 89% 70%;
+    --sidebar-primary: 260 50% 75%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 9% 18%;
+    --sidebar-accent: 250 15% 18%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 220 9% 20%;
-    --sidebar-ring: 258 89% 70%;
+    --sidebar-border: 250 15% 20%;
+    --sidebar-ring: 260 50% 75%;
   }
 }
 
