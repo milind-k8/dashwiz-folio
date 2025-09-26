@@ -24,7 +24,7 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
           <div className="w-6 h-6 bg-gradient-primary rounded-lg flex items-center justify-center">
             <IndianRupee className="w-4 h-4 text-white" />
           </div>
-          <span className="text-lg font-bold text-foreground">PisaWise</span>
+          <span className="text-xl font-semibold text-foreground">PisaWise</span>
         </button>
       )}
       
