@@ -22,10 +22,10 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 220 9% 15%;
 
-    /* Modern primary colors - Flat bright theme */
-    --primary: 262 83% 75%;
-    --primary-foreground: 220 9% 15%;
-    --primary-subtle: 262 83% 95%;
+    /* Modern primary colors - Soft purple theme */
+    --primary: 260 50% 70%;
+    --primary-foreground: 0 0% 100%;
+    --primary-subtle: 260 50% 95%;
 
     /* Secondary system */
     --secondary: 250 15% 90%;
@@ -35,42 +35,42 @@ All colors MUST be HSL.
     --muted: 250 15% 90%;
     --muted-foreground: 220 9% 46%;
 
-    /* Accent colors - Flat cyan */
-    --accent: 188 95% 55%;
-    --accent-foreground: 220 9% 15%;
+    /* Accent colors - Soft cyan */
+    --accent: 180 70% 60%;
+    --accent-foreground: 0 0% 100%;
 
-    /* Status colors - Flat bright tones */
-    --destructive: 8 85% 70%;
-    --destructive-foreground: 220 9% 15%;
-    --destructive-subtle: 8 85% 95%;
+    /* Status colors - Pastel tones */
+    --destructive: 15 85% 65%;
+    --destructive-foreground: 0 0% 100%;
+    --destructive-subtle: 15 85% 95%;
 
-    --success: 82 75% 65%;
-    --success-foreground: 220 9% 15%;
-    --success-subtle: 82 75% 95%;
+    --success: 75 60% 55%;
+    --success-foreground: 0 0% 100%;
+    --success-subtle: 75 60% 95%;
 
-    --warning: 38 95% 70%;
-    --warning-foreground: 220 9% 15%;
-    --warning-subtle: 38 95% 95%;
+    --warning: 25 80% 70%;
+    --warning-foreground: 0 0% 100%;
+    --warning-subtle: 25 80% 95%;
 
     /* Form elements */
     --border: 250 15% 85%;
     --input: 250 15% 85%;
-    --ring: 262 83% 75%;
+    --ring: 260 50% 70%;
 
-    /* Flat metric card variants - colors from image */
-    --metric-balance: 262 83% 75%;
-    --metric-balance-foreground: 220 9% 15%;
-    --metric-income: 82 75% 65%;
-    --metric-income-foreground: 220 9% 15%;
-    --metric-expense: 8 85% 70%;
-    --metric-expense-foreground: 220 9% 15%;
+    /* Pastel metric card variants */
+    --metric-balance: 260 50% 70%;
+    --metric-balance-foreground: 0 0% 100%;
+    --metric-income: 75 60% 55%;
+    --metric-income-foreground: 0 0% 100%;
+    --metric-expense: 15 85% 65%;
+    --metric-expense-foreground: 0 0% 100%;
 
-    /* Flat colors - no gradients */
-    --gradient-primary: hsl(262 83% 75%);
-    --gradient-balance: hsl(262 83% 75%);
-    --gradient-income: hsl(82 75% 65%);
-    --gradient-expense: hsl(8 85% 70%);
-    --gradient-card: hsl(0 0% 100%);
+    /* Soft pastel gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(260 50% 70%), hsl(260 50% 80%));
+    --gradient-balance: linear-gradient(135deg, hsl(260 50% 70%), hsl(260 50% 80%));
+    --gradient-income: linear-gradient(135deg, hsl(75 60% 55%), hsl(75 60% 65%));
+    --gradient-expense: linear-gradient(135deg, hsl(15 85% 65%), hsl(15 85% 75%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 99%));
     
     --radius: 1rem;
     
@@ -105,10 +105,10 @@ All colors MUST be HSL.
     --popover: 250 15% 12%;
     --popover-foreground: 0 0% 98%;
 
-    /* Flat bright theme for dark mode */
-    --primary: 262 83% 80%;
-    --primary-foreground: 220 9% 15%;
-    --primary-subtle: 262 83% 15%;
+    /* Soft purple theme for dark mode */
+    --primary: 260 50% 75%;
+    --primary-foreground: 0 0% 100%;
+    --primary-subtle: 260 50% 15%;
 
     /* Secondary system */
     --secondary: 250 15% 18%;
@@ -118,42 +118,42 @@ All colors MUST be HSL.
     --muted: 250 15% 18%;
     --muted-foreground: 250 15% 70%;
 
-    /* Flat cyan accent for dark mode */
-    --accent: 188 95% 60%;
-    --accent-foreground: 220 9% 15%;
+    /* Soft cyan accent for dark mode */
+    --accent: 180 70% 65%;
+    --accent-foreground: 0 0% 100%;
 
-    /* Status colors - Dark mode with flat bright tones */
-    --destructive: 8 85% 75%;
-    --destructive-foreground: 220 9% 15%;
-    --destructive-subtle: 8 85% 15%;
+    /* Status colors - Dark mode with pastel tones */
+    --destructive: 15 85% 70%;
+    --destructive-foreground: 0 0% 100%;
+    --destructive-subtle: 15 85% 15%;
 
-    --success: 82 75% 70%;
-    --success-foreground: 220 9% 15%;
-    --success-subtle: 82 75% 15%;
+    --success: 75 60% 60%;
+    --success-foreground: 0 0% 100%;
+    --success-subtle: 75 60% 15%;
 
-    --warning: 38 95% 75%;
-    --warning-foreground: 220 9% 15%;
-    --warning-subtle: 38 95% 15%;
+    --warning: 25 80% 75%;
+    --warning-foreground: 0 0% 100%;
+    --warning-subtle: 25 80% 15%;
 
     /* Form elements */
     --border: 250 15% 22%;
     --input: 250 15% 22%;
-    --ring: 262 83% 80%;
+    --ring: 260 50% 75%;
 
-    /* Flat metric card variants - Dark mode */
-    --metric-balance: 262 83% 80%;
-    --metric-balance-foreground: 220 9% 15%;
-    --metric-income: 82 75% 70%;
-    --metric-income-foreground: 220 9% 15%;
-    --metric-expense: 8 85% 75%;
-    --metric-expense-foreground: 220 9% 15%;
+    /* Pastel metric card variants - Dark mode */
+    --metric-balance: 260 50% 75%;
+    --metric-balance-foreground: 0 0% 100%;
+    --metric-income: 75 60% 60%;
+    --metric-income-foreground: 0 0% 100%;
+    --metric-expense: 15 85% 70%;
+    --metric-expense-foreground: 0 0% 100%;
 
-    /* Flat colors for dark mode - no gradients */
-    --gradient-primary: hsl(262 83% 80%);
-    --gradient-balance: hsl(262 83% 80%);
-    --gradient-income: hsl(82 75% 70%);
-    --gradient-expense: hsl(8 85% 75%);
-    --gradient-card: hsl(250 15% 12%);
+    /* Soft pastel gradients for dark mode */
+    --gradient-primary: linear-gradient(135deg, hsl(260 50% 75%), hsl(260 50% 85%));
+    --gradient-balance: linear-gradient(135deg, hsl(260 50% 75%), hsl(260 50% 85%));
+    --gradient-income: linear-gradient(135deg, hsl(75 60% 60%), hsl(75 60% 70%));
+    --gradient-expense: linear-gradient(135deg, hsl(15 85% 70%), hsl(15 85% 80%));
+    --gradient-card: linear-gradient(135deg, hsl(250 15% 12%), hsl(250 15% 15%));
     
     /* Modern dark shadows */
     --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.4);
