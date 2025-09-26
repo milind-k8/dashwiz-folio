@@ -67,12 +67,9 @@ export function CategoryCard({
 
       {/* Expanded Merchant Details */}
       {isExpanded && (
-        <div className="border-t border-border/30 bg-muted/20">
-          <div className="p-3 space-y-2">
-            <div className="text-xs font-medium text-muted-foreground mb-2">
-              Merchants & Spending
-            </div>
-            {tags.map((merchant) => {
+        <div className="border-t border-border/30">
+          <div className="divide-y divide-border/30">
+            {tags.map((merchant, index) => {
               const merchantAmount = tagSpending[merchant] || 0;
               const merchantCount = tagCounts[merchant] || 1;
               const merchantPercentage = amount > 0 ? Math.round((merchantAmount / amount) * 100) : 0;
@@ -81,27 +78,22 @@ export function CategoryCard({
               return (
                 <div 
                   key={`${category}-${merchant}`} 
-                  className={`flex items-center justify-between py-2 px-3 rounded-md transition-all duration-200 ${
-                    isMatching 
-                      ? 'bg-primary/10 border border-primary/20' 
-                      : 'bg-card hover:bg-muted/50'
-                  }`}
+                  className="flex items-center justify-between py-3 px-4 hover:bg-muted/20 transition-colors"
                 >
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${isMatching ? 'bg-primary' : 'bg-destructive/60'}`}></div>
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       <span className={`text-xs font-medium truncate ${isMatching ? 'text-primary font-semibold' : 'text-foreground'}`}>
                         {merchant}
                       </span>
                       {merchantCount > 1 && (
-                        <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
+                        <span className="text-xs text-muted-foreground">
                           {merchantCount} transactions
                         </span>
                       )}
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className="flex items-center gap-3 flex-shrink-0">
                     <span className="text-xs text-muted-foreground">
                       {merchantPercentage}%
                     </span>
