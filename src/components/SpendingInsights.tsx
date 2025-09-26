@@ -53,32 +53,32 @@ export function SpendingInsights({ transactions, currentExpenses, previousExpens
       title: "Spending Trend",
       value: insights.spendingChange > 0 ? `+${Math.abs(insights.spendingChange).toFixed(1)}%` : `-${Math.abs(insights.spendingChange).toFixed(1)}%`,
       icon: insights.spendingChange > 0 ? TrendingUp : TrendingDown,
-      color: insights.spendingChange > 0 ? "text-destructive" : "text-success",
-      bgColor: insights.spendingChange > 0 ? "bg-destructive/10" : "bg-success/10",
+      color: "text-foreground",
+      bgColor: insights.spendingChange > 0 ? "bg-gradient-expense" : "bg-gradient-income",
       description: insights.spendingChange > 0 ? "vs last month" : "vs last month",
     },
     {
       title: "Daily Average",
       value: `₹${Math.round(insights.avgDailySpending).toLocaleString()}`,
       icon: Calendar,
-      color: "text-success",
-      bgColor: "bg-success/10",
+      color: "text-foreground",
+      bgColor: "bg-gradient-balance",
       description: "per day spending",
     },
     {
       title: "Top Category",
       value: insights.topCategory ? insights.topCategory.name : "None",
       icon: Target,
-      color: "text-accent",
-      bgColor: "bg-accent/10",
+      color: "text-foreground",
+      bgColor: "bg-accent",
       description: insights.topCategory ? `₹${Math.round(insights.topCategory.amount).toLocaleString()}` : "No expenses",
     },
     {
       title: "Avg Transaction",
       value: `₹${Math.round(insights.avgTransactionSize).toLocaleString()}`,
       icon: DollarSign,
-      color: "text-primary",
-      bgColor: "bg-primary/10",
+      color: "text-foreground",
+      bgColor: "bg-warning",
       description: `${insights.transactionCount} transactions`,
     },
   ];
@@ -92,25 +92,22 @@ export function SpendingInsights({ transactions, currentExpenses, previousExpens
       
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {insightCards.map((insight, index) => (
-          <Card key={index} className="group hover:shadow-md transition-all duration-300 border-muted/40">
+          <Card key={index} className={`border-0 ${insight.bgColor}`}>
             <CardContent className="p-4">
               <div className="flex items-start justify-between mb-3">
-                <div className={cn(
-                  "p-2 rounded-lg transition-all duration-300",
-                  insight.bgColor
-                )}>
-                  <insight.icon className={cn("w-4 h-4", insight.color)} />
+                <div className="p-2 rounded-lg bg-black/10 dark:bg-white/10">
+                  <insight.icon className="w-4 h-4 text-foreground" />
                 </div>
               </div>
               
               <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                <p className="text-xs font-medium text-foreground/70 uppercase tracking-wide">
                   {insight.title}
                 </p>
                 <p className="text-lg font-bold text-foreground">
                   {insight.value}
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-foreground/60">
                   {insight.description}
                 </p>
               </div>
