@@ -88,7 +88,7 @@ export function ExpenseChart({ data: series }: ExpenseChartProps) {
                 margin={{
                   top: 20,
                   right: 30,
-                  left: 80,
+                  left: 60,  // Reduced from 80 for mobile
                   bottom: 20,
                 }}
                 barCategoryGap="20%"
@@ -107,7 +107,7 @@ export function ExpenseChart({ data: series }: ExpenseChartProps) {
                   tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
                   axisLine={false}
                   tickLine={false}
-                  width={70}
+                  width={60}  // Reduced from 70 to match margin
                 />
                 <Bar 
                   dataKey="amount" 
