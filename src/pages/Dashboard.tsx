@@ -41,7 +41,7 @@ export function Dashboard() {
       </div>
       
       {/* Essential Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+      <div className="grid grid-cols-2 gap-4 mb-8">
         <EnhancedMetricCard
           title="Total Balance"
           value={`₹${data.balance.toLocaleString()}`}

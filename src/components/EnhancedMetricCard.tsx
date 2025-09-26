@@ -109,41 +109,10 @@ export function EnhancedMetricCard({
       )}
     >
       <CardContent className="relative p-4 space-y-4">
-        {/* Header Section */}
-        <div className="flex items-start justify-between gap-3">
-          <div className="space-y-1 min-w-0 flex-1">
-            <h3 className={cn(
-              "text-xs font-medium tracking-wide uppercase truncate",
-              styles.mutedColor
-            )}>
-              {title}
-            </h3>
-            <p className={cn(
-              "text-xl lg:text-2xl font-bold tracking-tight break-words",
-              styles.textColor
-            )}>
-              {value}
-            </p>
-            
-            {/* Trend indicator */}
-            {trend && (
-              <div className={cn(
-                "flex items-center gap-1 text-xs font-medium",
-                isPositiveTrend ? "text-success" : isNegativeTrend ? "text-destructive" : styles.mutedColor
-              )}>
-                {isPositiveTrend ? (
-                  <TrendingUp className="w-3 h-3 flex-shrink-0" />
-                ) : isNegativeTrend ? (
-                  <TrendingDown className="w-3 h-3 flex-shrink-0" />
-                ) : null}
-                <span className="truncate">{trend}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Icon container */}
+        {/* Icon at top */}
+        <div className="flex justify-center mb-3">
           <div className={cn(
-            "p-3 rounded-xl transition-all duration-300 flex-shrink-0 self-start",
+            "p-3 rounded-xl transition-all duration-300",
             "group-hover:scale-110 group-hover:rotate-3",
             styles.iconBg
           )}>
@@ -152,6 +121,37 @@ export function EnhancedMetricCard({
               styles.iconColor
             )} />
           </div>
+        </div>
+
+        {/* Content Section */}
+        <div className="text-center space-y-2">
+          <h3 className={cn(
+            "text-xs font-medium tracking-wide uppercase",
+            styles.mutedColor
+          )}>
+            {title}
+          </h3>
+          <p className={cn(
+            "text-lg lg:text-xl font-bold tracking-tight",
+            styles.textColor
+          )}>
+            {value}
+          </p>
+          
+          {/* Trend indicator */}
+          {trend && (
+            <div className={cn(
+              "flex items-center justify-center gap-1 text-xs font-medium",
+              isPositiveTrend ? "text-success" : isNegativeTrend ? "text-destructive" : styles.mutedColor
+            )}>
+              {isPositiveTrend ? (
+                <TrendingUp className="w-3 h-3 flex-shrink-0" />
+              ) : isNegativeTrend ? (
+                <TrendingDown className="w-3 h-3 flex-shrink-0" />
+              ) : null}
+              <span className="truncate">{trend}</span>
+            </div>
+          )}
         </div>
 
         {/* Bank Breakdown Section */}
