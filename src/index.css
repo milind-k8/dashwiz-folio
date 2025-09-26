@@ -22,10 +22,10 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 220 9% 15%;
 
-    /* Modern primary colors - Soft purple theme */
-    --primary: 260 50% 70%;
+    /* Modern primary colors - Blue theme */
+    --primary: 228 75% 56%;
     --primary-foreground: 0 0% 100%;
-    --primary-subtle: 260 50% 95%;
+    --primary-subtle: 228 75% 95%;
 
     /* Secondary system */
     --secondary: 250 15% 90%;
@@ -55,19 +55,11 @@ All colors MUST be HSL.
     /* Form elements */
     --border: 250 15% 85%;
     --input: 250 15% 85%;
-    --ring: 260 50% 70%;
+    --ring: 228 75% 56%;
 
-    /* Pastel metric card variants */
-    --metric-balance: 260 50% 70%;
-    --metric-balance-foreground: 0 0% 100%;
-    --metric-income: 75 60% 55%;
-    --metric-income-foreground: 0 0% 100%;
-    --metric-expense: 15 85% 65%;
-    --metric-expense-foreground: 0 0% 100%;
-
-    /* Soft pastel gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(260 50% 70%), hsl(260 50% 80%));
-    --gradient-balance: linear-gradient(135deg, hsl(260 50% 70%), hsl(260 50% 80%));
+    /* Soft blue gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(228 75% 56%), hsl(228 75% 66%));
+    --gradient-balance: linear-gradient(135deg, hsl(228 75% 56%), hsl(228 75% 66%));
     --gradient-income: linear-gradient(135deg, hsl(75 60% 55%), hsl(75 60% 65%));
     --gradient-expense: linear-gradient(135deg, hsl(15 85% 65%), hsl(15 85% 75%));
     --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 99%));
@@ -82,12 +74,12 @@ All colors MUST be HSL.
 
     --sidebar-background: 250 15% 90%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 260 50% 70%;
+    --sidebar-primary: 228 75% 56%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 250 15% 85%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 250 15% 80%;
-    --sidebar-ring: 260 50% 70%;
+    --sidebar-ring: 228 75% 56%;
   }
 
   .dark {
@@ -105,10 +97,10 @@ All colors MUST be HSL.
     --popover: 250 15% 12%;
     --popover-foreground: 0 0% 98%;
 
-    /* Soft purple theme for dark mode */
-    --primary: 260 50% 75%;
+    /* Blue theme for dark mode */
+    --primary: 228 75% 60%;
     --primary-foreground: 0 0% 100%;
-    --primary-subtle: 260 50% 15%;
+    --primary-subtle: 228 75% 15%;
 
     /* Secondary system */
     --secondary: 250 15% 18%;
@@ -138,19 +130,11 @@ All colors MUST be HSL.
     /* Form elements */
     --border: 250 15% 22%;
     --input: 250 15% 22%;
-    --ring: 260 50% 75%;
+    --ring: 228 75% 60%;
 
-    /* Pastel metric card variants - Dark mode */
-    --metric-balance: 260 50% 75%;
-    --metric-balance-foreground: 0 0% 100%;
-    --metric-income: 75 60% 60%;
-    --metric-income-foreground: 0 0% 100%;
-    --metric-expense: 15 85% 70%;
-    --metric-expense-foreground: 0 0% 100%;
-
-    /* Soft pastel gradients for dark mode */
-    --gradient-primary: linear-gradient(135deg, hsl(260 50% 75%), hsl(260 50% 85%));
-    --gradient-balance: linear-gradient(135deg, hsl(260 50% 75%), hsl(260 50% 85%));
+    /* Soft blue gradients for dark mode */
+    --gradient-primary: linear-gradient(135deg, hsl(228 75% 60%), hsl(228 75% 70%));
+    --gradient-balance: linear-gradient(135deg, hsl(228 75% 60%), hsl(228 75% 70%));
     --gradient-income: linear-gradient(135deg, hsl(75 60% 60%), hsl(75 60% 70%));
     --gradient-expense: linear-gradient(135deg, hsl(15 85% 70%), hsl(15 85% 80%));
     --gradient-card: linear-gradient(135deg, hsl(250 15% 12%), hsl(250 15% 15%));
@@ -163,12 +147,12 @@ All colors MUST be HSL.
 
     --sidebar-background: 250 15% 10%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 260 50% 75%;
+    --sidebar-primary: 228 75% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 250 15% 18%;
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 250 15% 20%;
-    --sidebar-ring: 260 50% 75%;
+    --sidebar-ring: 228 75% 60%;
   }
 }
 
