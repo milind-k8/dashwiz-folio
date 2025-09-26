@@ -61,8 +61,8 @@ export function SpendingInsights({ transactions, currentExpenses, previousExpens
       title: "Daily Average",
       value: `₹${Math.round(insights.avgDailySpending).toLocaleString()}`,
       icon: Calendar,
-      color: "text-primary",
-      bgColor: "bg-primary/10",
+      color: "text-success",
+      bgColor: "bg-success/10",
       description: "per day spending",
     },
     {
@@ -77,16 +77,16 @@ export function SpendingInsights({ transactions, currentExpenses, previousExpens
       title: "Avg Transaction",
       value: `₹${Math.round(insights.avgTransactionSize).toLocaleString()}`,
       icon: DollarSign,
-      color: "text-secondary",
-      bgColor: "bg-secondary/10",
+      color: "text-primary",
+      bgColor: "bg-primary/10",
       description: `${insights.transactionCount} transactions`,
     },
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-semibold text-foreground mb-2">Spending Insights</h3>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="px-1">
+        <h3 className="text-lg font-semibold text-foreground mb-1 sm:mb-2">Spending Insights</h3>
         <p className="text-sm text-muted-foreground">Key metrics about your spending patterns</p>
       </div>
       
