@@ -1,6 +1,5 @@
 import { useMemo, useCallback } from 'react';
 import { EnhancedMetricCard } from '@/components/EnhancedMetricCard';
-import { ExpenseChart } from '@/components/ExpenseChart';
 import { TransactionList } from '@/components/TransactionList';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
@@ -8,7 +7,6 @@ import { DashboardSkeleton } from '@/components/DashboardSkeleton';
 import { useFinancialData } from '@/hooks/useFinancialData';
 import { useFilterStore } from '@/store/filterStore';
 import { Wallet, CreditCard as CreditCardIcon } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 
 export function Dashboard() {
   const { getFilteredData, isLoading } = useFinancialData();
@@ -54,15 +52,6 @@ export function Dashboard() {
           icon={CreditCardIcon}
           metricType="expenses"
         />
-      </div>
-
-      {/* Expense Chart */}
-      <div className="grid grid-cols-1 gap-6">
-        <Card className="shadow-card">
-          <CardContent className="p-6">
-            <ExpenseChart data={data.expenseCategoriesList as any} />
-          </CardContent>
-        </Card>
       </div>
 
       {/* Transaction Summary */}
