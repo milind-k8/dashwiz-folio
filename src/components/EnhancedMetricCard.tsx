@@ -50,12 +50,12 @@ export function EnhancedMetricCard({
   const isPositiveTrend = trendValue && trendValue > 0;
   const isNegativeTrend = trendValue && trendValue < 0;
 
-  // Define metric-specific styles based on design system - flat colors
+  // Define metric-specific styles based on design system - all cards use same background
   const getMetricStyles = () => {
     switch (metricType) {
       case 'balance':
         return {
-          cardClass: 'bg-metric-balance text-card-foreground shadow-card hover:shadow-elevated border',
+          cardClass: 'bg-card text-card-foreground shadow-card hover:shadow-elevated border',
           iconBg: 'bg-primary/10',
           iconColor: 'text-primary',
           textColor: 'text-card-foreground',
@@ -65,7 +65,7 @@ export function EnhancedMetricCard({
         };
       case 'expenses':
         return {
-          cardClass: 'bg-metric-expense text-card-foreground shadow-card hover:shadow-elevated border',
+          cardClass: 'bg-card text-card-foreground shadow-card hover:shadow-elevated border',
           iconBg: 'bg-destructive/10',
           iconColor: 'text-destructive',
           textColor: 'text-card-foreground',
@@ -75,7 +75,7 @@ export function EnhancedMetricCard({
         };
       case 'income':
         return {
-          cardClass: 'bg-metric-income text-card-foreground shadow-card hover:shadow-elevated border',
+          cardClass: 'bg-card text-card-foreground shadow-card hover:shadow-elevated border',
           iconBg: 'bg-success/10',
           iconColor: 'text-success',
           textColor: 'text-card-foreground',
