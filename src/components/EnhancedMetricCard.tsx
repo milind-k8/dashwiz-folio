@@ -109,8 +109,8 @@ export function EnhancedMetricCard({
       )}
     >
       <CardContent className="relative p-4 space-y-4">
-        {/* Icon at top */}
-        <div className="flex justify-center mb-3">
+        {/* Icon at top left */}
+        <div className="flex justify-start mb-3">
           <div className={cn(
             "p-3 rounded-xl transition-all duration-300",
             "group-hover:scale-110 group-hover:rotate-3",
