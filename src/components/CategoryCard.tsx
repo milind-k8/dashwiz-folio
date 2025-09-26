@@ -64,7 +64,6 @@ export function CategoryCard({
             {tags.map((merchant, index) => {
               const merchantAmount = tagSpending[merchant] || 0;
               const merchantCount = tagCounts[merchant] || 1;
-              const merchantPercentage = amount > 0 ? Math.round((merchantAmount / amount) * 100) : 0;
               const isMatching = searchTerm.trim() && merchant.toLowerCase().includes(searchTerm.toLowerCase());
               
               return (
@@ -79,16 +78,13 @@ export function CategoryCard({
                       </span>
                       {merchantCount > 1 && (
                         <span className="text-xs text-muted-foreground">
-                          {merchantCount} X
+                          {merchantCount} x
                         </span>
                       )}
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-3 flex-shrink-0">
-                    <span className="text-xs text-muted-foreground">
-                      {merchantPercentage}%
-                    </span>
                     <span className="text-xs font-medium text-destructive">
                       ₹{merchantAmount.toLocaleString()}
                     </span>
