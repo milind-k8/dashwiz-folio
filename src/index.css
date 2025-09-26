@@ -208,18 +208,6 @@ All colors MUST be HSL.
 
 /* Design System Component Classes */
 @layer components {
-  .metric-card-balance {
-    @apply bg-gradient-balance text-metric-balance-foreground border-0 shadow-card;
-  }
-  
-  .metric-card-income {
-    @apply bg-gradient-income text-metric-income-foreground border-0 shadow-card;
-  }
-  
-  .metric-card-expense {
-    @apply bg-gradient-expense text-metric-expense-foreground border-0 shadow-card;
-  }
-  
   .card-minimal {
     @apply bg-card border shadow-card hover:shadow-elevated transition-all duration-300;
   }

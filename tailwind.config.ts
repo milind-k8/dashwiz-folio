@@ -61,14 +61,6 @@ export default {
           foreground: "hsl(var(--warning-foreground))",
           subtle: "hsl(var(--warning-subtle))",
         },
-        metric: {
-          balance: "hsl(var(--metric-balance))",
-          "balance-foreground": "hsl(var(--metric-balance-foreground))",
-          income: "hsl(var(--metric-income))",
-          "income-foreground": "hsl(var(--metric-income-foreground))",
-          expense: "hsl(var(--metric-expense))",
-          "expense-foreground": "hsl(var(--metric-expense-foreground))",
-        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
