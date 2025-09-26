@@ -47,7 +47,7 @@ export function Dashboard() {
       </div>
       
       {/* Essential Metrics */}
-      <div className="grid grid-cols-2 gap-4 mb-6 sm:mb-8">
+      <div className="grid grid-cols-2 gap-4 mb-6 sm:pb-8">
         <EnhancedMetricCard
           title="Total Balance"
           value={`₹${data.balance.toLocaleString()}`}
@@ -63,7 +63,7 @@ export function Dashboard() {
       </div>
 
       {/* Spending Insights */}
-      <div className="mb-6 sm:mb-8">
+      <div className="mb-6 sm:pb-8">
         <SpendingInsights 
           transactions={data.transactions}
           currentExpenses={data.expenses}
@@ -72,7 +72,7 @@ export function Dashboard() {
       </div>
 
       {/* Advanced Charts */}
-      <div className="mb-6 sm:mb-8">
+      <div className="mb-6 sm:pb-8">
         <AdvancedCharts 
           transactions={data.transactions}
           expenseCategories={data.expenseCategoriesList}
@@ -80,7 +80,7 @@ export function Dashboard() {
       </div>
 
       {/* Transaction Summary */}
-      <div className="mb-6 sm:mb-8">
+      <div className="mb-6 sm:pb-8">
         <TransactionList expenseCategories={data.expenseCategoriesList} />
       </div>
 
