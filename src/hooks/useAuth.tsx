@@ -19,10 +19,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // Store Google tokens after successful sign in
+        if (event === 'SIGNED_IN' && session?.provider_token && session?.provider_refresh_token) {
+          try {
+            const { error } = await supabase.functions.invoke('store-user-token', {
+              headers: {
+                Authorization: `Bearer ${session.access_token}`,
+              },
+            });
+            
+            if (error) {
+              console.error('Failed to store user tokens:', error);
+            } else {
+              console.log('User tokens stored successfully');
+            }
+          } catch (error) {
+            console.error('Error storing user tokens:', error);
+          }
+        }
         
         // Handle token expiration
         if (event === 'TOKEN_REFRESHED' && !session) {
