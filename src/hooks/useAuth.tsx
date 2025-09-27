@@ -31,6 +31,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               headers: {
                 Authorization: `Bearer ${session.access_token}`,
               },
+              body: {
+                provider_token: session.provider_token,
+                provider_refresh_token: session.provider_refresh_token,
+              },
             });
             
             if (error) {

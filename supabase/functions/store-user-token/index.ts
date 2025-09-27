@@ -32,18 +32,13 @@ serve(async (req) => {
       throw new Error('Unauthorized');
     }
 
-    // Get current session to extract Google tokens
-    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-    
-    if (sessionError || !sessionData.session) {
-      throw new Error('No active session found');
-    }
+    // Get Google tokens from request body
+    const body = await req.json();
+    const googleAccessToken = body.provider_token;
+    const googleRefreshToken = body.provider_refresh_token;
 
-    const googleAccessToken = sessionData.session.provider_token;
-    const googleRefreshToken = sessionData.session.provider_refresh_token;
-
-    if (!googleRefreshToken) {
-      throw new Error('No Google refresh token available');
+    if (!googleAccessToken || !googleRefreshToken) {
+      throw new Error('No Google tokens provided in request body');
     }
 
     // Calculate token expiration (Google tokens typically expire in 1 hour)
