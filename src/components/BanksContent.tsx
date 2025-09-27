@@ -269,7 +269,7 @@ export const BanksContent = () => {
   return (
     <div className="p-3 sm:p-4 md:p-6 space-y-6 animate-fade-in max-w-7xl mx-auto">
       {/* Connected Banks List */}
-      <div className="space-y-4">
+      <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Building className="h-5 w-5 text-primary" />
