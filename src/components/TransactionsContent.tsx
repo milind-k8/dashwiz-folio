@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Drawer } from 'vaul';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import {
   Select,
   SelectContent,
@@ -25,10 +26,10 @@ import {
   Wallet,
   Building2,
   Tag,
-  ToggleLeft,
-  ToggleRight,
   X,
-  ChevronRight
+  ChevronRight,
+  List,
+  Grid3X3
 } from 'lucide-react';
 
 import { useGlobalStore } from '@/store/globalStore';
@@ -200,59 +201,53 @@ export const TransactionsContent = () => {
       {/* Header - Google Pay style */}
       <div className="bg-card border-b border-border/50 sticky top-0 z-10">
         <div className="max-w-md mx-auto p-4 space-y-3">
-          <div className="flex items-center gap-2">
-            {/* Search Bar - Takes most space */}
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-8 bg-muted/30 border border-border/50 rounded-full text-base font-medium"
-              />
-            </div>
-            
-            {/* Bank Filter - Compact fixed width */}
-            <div className="w-24">
-              <Select value={selectedBankId} onValueChange={setSelectedBankId}>
-                <SelectTrigger className="h-8 px-3 bg-muted/30 border border-border/50 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors w-full">
-                  <SelectValue placeholder="Bank" />
-                </SelectTrigger>
-                <SelectContent className="bg-background border border-border shadow-lg">
-                  {banks.map((bank) => (
-                    <SelectItem key={bank.id} value={bank.id} className="text-xs py-1.5">
-                      {bank.bank_name.toUpperCase()}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          {/* Search Bar - Full width */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 h-8 bg-muted/30 border border-border/50 rounded-full text-base font-medium"
+            />
           </div>
           
-          {/* Google-style Toggle Switch */}
-          <div className="flex items-center justify-center gap-2">
-            <span className={`text-xs font-medium transition-colors ${!isGroupedView ? 'text-foreground' : 'text-muted-foreground'}`}>
-              List
-            </span>
-            <button
-              onClick={() => setIsGroupedView(!isGroupedView)}
-              className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20 ${
-                isGroupedView 
-                  ? 'bg-primary' 
-                  : 'bg-muted-foreground/30'
-              }`}
+          {/* Bank Filter - Full width */}
+          <div>
+            <Select value={selectedBankId} onValueChange={setSelectedBankId}>
+              <SelectTrigger className="h-8 px-3 bg-muted/30 border border-border/50 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors w-full">
+                <SelectValue placeholder="Select Bank" />
+              </SelectTrigger>
+              <SelectContent className="bg-background border border-border shadow-lg z-50">
+                {banks.map((bank) => (
+                  <SelectItem key={bank.id} value={bank.id} className="text-xs py-1.5">
+                    {bank.bank_name.toUpperCase()}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          {/* Toggle Group for List/Group view */}
+          <div className="flex justify-end">
+            <ToggleGroup 
+              type="single" 
+              value={isGroupedView ? "group" : "list"} 
+              onValueChange={(value) => {
+                if (value) setIsGroupedView(value === "group");
+              }}
+              variant="outline"
+              size="sm"
             >
-              <div
-                className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${
-                  isGroupedView 
-                    ? 'translate-x-5' 
-                    : 'translate-x-0.5'
-                }`}
-              />
-            </button>
-            <span className={`text-xs font-medium transition-colors ${isGroupedView ? 'text-foreground' : 'text-muted-foreground'}`}>
-              Group
-            </span>
+              <ToggleGroupItem value="list" aria-label="List view" className="gap-1.5">
+                <List className="h-3 w-3" />
+                <span className="text-xs">List</span>
+              </ToggleGroupItem>
+              <ToggleGroupItem value="group" aria-label="Group view" className="gap-1.5">
+                <Grid3X3 className="h-3 w-3" />
+                <span className="text-xs">Group</span>
+              </ToggleGroupItem>
+            </ToggleGroup>
           </div>
         </div>
       </div>
