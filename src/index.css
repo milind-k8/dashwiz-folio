@@ -57,21 +57,21 @@ All colors MUST be HSL.
     --input: 0 0% 82%;
     --ring: 214 89% 52%;
 
-    /* Flat design - solid colors instead of gradients */
-    --gradient-primary: hsl(214 89% 52%);
-    --gradient-balance: hsl(214 89% 52%);
-    --gradient-income: hsl(122 39% 49%);
-    --gradient-expense: hsl(4 90% 58%);
-    --gradient-card: hsl(0 0% 100%);
+    /* Google Material gradients with correct blue */
+    --gradient-primary: linear-gradient(135deg, hsl(214 89% 52%), hsl(214 89% 62%));
+    --gradient-balance: linear-gradient(135deg, hsl(214 89% 52%), hsl(214 89% 62%));
+    --gradient-income: linear-gradient(135deg, hsl(122 39% 49%), hsl(122 39% 59%));
+    --gradient-expense: linear-gradient(135deg, hsl(4 90% 58%), hsl(4 90% 68%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 98%));
     
     /* Google Material radius */
     --radius: 0.5rem;
     
-    /* Flat design - no shadows, only borders */
-    --shadow-sm: none;
-    --shadow-card: none;
-    --shadow-elevated: none;
-    --shadow-large: none;
+    /* Google Material shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(60, 64, 67, 0.15);
+    --shadow-card: 0 1px 3px 0 rgba(60, 64, 67, 0.15), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+    --shadow-elevated: 0 2px 6px 2px rgba(60, 64, 67, 0.15), 0 8px 24px 4px rgba(60, 64, 67, 0.15);
+    --shadow-large: 0 4px 12px 6px rgba(60, 64, 67, 0.15), 0 20px 40px 6px rgba(60, 64, 67, 0.15);
 
     /* Google mobile spacing */
     --spacing-mobile-xs: 0.25rem;   /* 4px */
@@ -152,18 +152,18 @@ All colors MUST be HSL.
     --input: 218 25% 18%;
     --ring: 214 89% 62%;
 
-    /* Flat design - solid colors instead of gradients */
-    --gradient-primary: hsl(214 89% 62%);
-    --gradient-balance: hsl(214 89% 62%);
-    --gradient-income: hsl(122 39% 59%);
-    --gradient-expense: hsl(4 90% 68%);
-    --gradient-card: hsl(218 25% 10%);
+    /* Google Dark gradients with correct blue */
+    --gradient-primary: linear-gradient(135deg, hsl(214 89% 62%), hsl(214 89% 72%));
+    --gradient-balance: linear-gradient(135deg, hsl(214 89% 62%), hsl(214 89% 72%));
+    --gradient-income: linear-gradient(135deg, hsl(122 39% 59%), hsl(122 39% 69%));
+    --gradient-expense: linear-gradient(135deg, hsl(4 90% 68%), hsl(4 90% 78%));
+    --gradient-card: linear-gradient(135deg, hsl(218 25% 10%), hsl(218 25% 12%));
     
-    /* Flat design - no shadows, only borders */
-    --shadow-sm: none;
-    --shadow-card: none;
-    --shadow-elevated: none;
-    --shadow-large: none;
+    /* Google Dark shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 4px 8px 3px rgba(0, 0, 0, 0.2);
+    --shadow-elevated: 0 2px 6px 2px rgba(0, 0, 0, 0.4), 0 8px 24px 4px rgba(0, 0, 0, 0.3);
+    --shadow-large: 0 4px 12px 6px rgba(0, 0, 0, 0.4), 0 20px 40px 6px rgba(0, 0, 0, 0.3);
 
     --sidebar-background: 218 25% 8%;
     --sidebar-foreground: 0 0% 90%;
@@ -259,11 +259,11 @@ All colors MUST be HSL.
 /* Design System Component Classes */
 @layer components {
   .card-minimal {
-    @apply bg-card border border-border hover:border-primary/20 transition-all duration-300;
+    @apply bg-card border shadow-card hover:shadow-elevated transition-all duration-300;
   }
   
   .card-elevated {
-    @apply bg-card-elevated border border-border;
+    @apply bg-card-elevated shadow-elevated border-0;
   }
 
   /* Mobile-optimized touch targets - Industry standard 44px minimum */
@@ -296,15 +296,15 @@ All colors MUST be HSL.
     font-size: var(--text-lg-mobile);
   }
 
-  /* Mobile card styles - Flat design with borders */
+  /* Mobile card styles - Industry standard spacing */
   .card-mobile {
     padding: var(--card-padding-mobile);
-    @apply bg-card rounded-lg border border-border transition-all duration-200;
+    @apply bg-card rounded-lg shadow-card border border-border/50 transition-all duration-200;
   }
 
   .card-mobile-compact {
     padding: var(--spacing-mobile-md);
-    @apply bg-card rounded-lg border border-border transition-all duration-200;
+    @apply bg-card rounded-lg shadow-card border border-border/50 transition-all duration-200;
   }
 
   /* Mobile input styles - 48px height industry standard */

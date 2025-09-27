@@ -116,11 +116,10 @@ export default {
         'gradient-expense': 'var(--gradient-expense)',
       },
       boxShadow: {
-        'sm': 'none',
-        'card': 'none',
-        'elevated': 'none',
-        'large': 'none',
-        'none': 'none',
+        'sm': 'var(--shadow-sm)',
+        'card': 'var(--shadow-card)',
+        'elevated': 'var(--shadow-elevated)',
+        'large': 'var(--shadow-large)',
       },
       keyframes: {
         "accordion-down": {
