@@ -296,7 +296,7 @@ export const BanksContent = () => {
             
             <div className="space-y-3">
               {AVAILABLE_BANKS.map((bank) => (
-                <div key={bank.name} className="card-minimal p-4 hover:shadow-material-light transition-all duration-200">
+                <div key={bank.name} className="card-minimal p-4 hover:shadow-material-light transition-all duration-200 rounded-xl">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -350,7 +350,7 @@ export const BanksContent = () => {
         ) : userBanks.length > 0 ? (
           <div className="space-y-3">
             {userBanks.map((bank) => (
-              <div key={bank.id} className="card-minimal p-4 hover:shadow-material-light transition-all duration-200">
+              <div key={bank.id} className="card-minimal p-4 hover:shadow-material-light transition-all duration-200 rounded-xl">
                 <div className="space-y-4">
                   {/* Bank Header */}
                   <div className="flex items-center justify-between">
@@ -378,7 +378,7 @@ export const BanksContent = () => {
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full w-8 h-8 p-0"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10 rounded-full w-8 h-8 p-0"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
