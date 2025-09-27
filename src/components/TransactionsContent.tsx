@@ -56,11 +56,19 @@ export const TransactionsContent = () => {
   const [isGroupedView, setIsGroupedView] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<GroupedCategory | null>(null);
   const [modalSearchTerm, setModalSearchTerm] = useState('');
+  
+  // Drag functionality state
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartY, setDragStartY] = useState(0);
+  const [modalHeight, setModalHeight] = useState(80); // percentage of viewport height
+  const [dragOffset, setDragOffset] = useState(0);
 
   // Reset modal search when category changes
   useEffect(() => {
     if (selectedCategory) {
       setModalSearchTerm('');
+      setModalHeight(80); // Reset to default height
+      setDragOffset(0);
     }
   }, [selectedCategory]);
 
@@ -179,6 +187,84 @@ export const TransactionsContent = () => {
     
     return Object.values(groups).sort((a, b) => b.totalAmount - a.totalAmount);
   }, [selectedCategory, modalSearchTerm]);
+
+  // Drag handlers for modal
+  const handleDragStart = (clientY: number) => {
+    setIsDragging(true);
+    setDragStartY(clientY);
+  };
+
+  const handleDragMove = (clientY: number) => {
+    if (!isDragging) return;
+    
+    const deltaY = clientY - dragStartY;
+    const newOffset = Math.max(0, deltaY); // Only allow dragging down
+    setDragOffset(newOffset);
+  };
+
+  const handleDragEnd = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    
+    // Snap points: if dragged down more than 150px, close modal
+    if (dragOffset > 150) {
+      setSelectedCategory(null);
+      setModalSearchTerm('');
+    } else if (dragOffset > 50) {
+      // Snap to half height
+      setModalHeight(50);
+    } else {
+      // Snap back to full height
+      setModalHeight(80);
+    }
+    
+    setDragOffset(0);
+  };
+
+  // Mouse events
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    handleDragStart(e.clientY);
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    handleDragMove(e.clientY);
+  };
+
+  const handleMouseUp = () => {
+    handleDragEnd();
+  };
+
+  // Touch events
+  const handleTouchStart = (e: React.TouchEvent) => {
+    handleDragStart(e.touches[0].clientY);
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    e.preventDefault();
+    handleDragMove(e.touches[0].clientY);
+  };
+
+  const handleTouchEnd = () => {
+    handleDragEnd();
+  };
+
+  // Add global event listeners for drag
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+      document.addEventListener('touchend', handleTouchEnd);
+      
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
+      };
+    }
+  }, [isDragging, dragStartY, dragOffset]);
 
   if (loading) {
     return (
