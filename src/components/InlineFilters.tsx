@@ -103,19 +103,19 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
   }
 
   return (
-    <div className="flex flex-row items-center gap-3 text-sm min-w-0 w-full">
-      {/* Bank Filter - 50% width on mobile */}
-      <div className="flex-1 min-w-0">
+    <div className="flex items-center gap-2 text-xs">
+      {/* Bank Filter - Compact */}
+      <div className="min-w-0">
         <Select value={selectedBank} onValueChange={handleBankChange}>
-          <SelectTrigger className="w-full h-9 bg-card border border-border hover:bg-muted/50 transition-all duration-200 font-medium text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary">
-            <SelectValue placeholder="Select Bank" />
+          <SelectTrigger className="h-7 px-2 py-1 bg-muted/30 border-0 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors min-w-[80px] max-w-[120px]">
+            <SelectValue placeholder="Bank" />
           </SelectTrigger>
-          <SelectContent className="bg-popover border border-border shadow-elevated z-[100] min-w-[200px]">
+          <SelectContent className="bg-background border border-border shadow-lg z-[100] min-w-[140px]">
             {bankOptions.map((option) => (
               <SelectItem 
                 key={option.value} 
                 value={option.value}
-                className="hover:bg-accent hover:text-accent-foreground cursor-pointer text-sm py-2 px-3"
+                className="hover:bg-accent hover:text-accent-foreground cursor-pointer text-xs py-1.5 px-2"
               >
                 {option.label}
               </SelectItem>
@@ -124,18 +124,18 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
         </Select>
       </div>
 
-      {/* Duration Filter - 50% width on mobile */}
-      <div className="flex-1 min-w-0">
+      {/* Duration Filter - Compact */}
+      <div className="min-w-0">
         <Select value={selectedDuration} onValueChange={handleDurationChange}>
-          <SelectTrigger className="w-full h-9 bg-card border border-border hover:bg-muted/50 transition-all duration-200 font-medium text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary">
+          <SelectTrigger className="h-7 px-2 py-1 bg-muted/30 border-0 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors min-w-[90px] max-w-[140px]">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className="bg-popover border border-border shadow-elevated z-[100] min-w-[200px]">
+          <SelectContent className="bg-background border border-border shadow-lg z-[100] min-w-[160px]">
             {durationOptions.map((option) => (
               <SelectItem 
                 key={option.value} 
                 value={option.value}
-                className="hover:bg-accent hover:text-accent-foreground cursor-pointer text-sm py-2 px-3"
+                className="hover:bg-accent hover:text-accent-foreground cursor-pointer text-xs py-1.5 px-2"
               >
                 {option.label}
               </SelectItem>
