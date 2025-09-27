@@ -267,7 +267,7 @@ export const BanksContent = () => {
   }
 
   return (
-    <div className="p-3 sm:p-4 md:p-6 space-y-6 animate-fade-in max-w-7xl mx-auto">
+    <div className="p-3 sm:p-4 md:p-6 space-y-6 animate-fade-in max-w-7xl mx-auto border border-border/50 rounded-lg">
       {/* Connected Banks List */}
       <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -283,7 +283,7 @@ export const BanksContent = () => {
                 Add Bank
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-md border border-border">
               <DialogHeader>
                 <DialogTitle className="text-lg font-medium">Add Bank Account</DialogTitle>
                 <DialogDescription className="text-sm text-muted-foreground">
@@ -293,7 +293,7 @@ export const BanksContent = () => {
               
               <div className="space-y-3">
                 {AVAILABLE_BANKS.map((bank) => (
-                  <div key={bank.name} className="card-minimal p-4 hover:shadow-material-light transition-all duration-200 rounded-xl">
+                  <div key={bank.name} className="card-minimal p-4 hover:shadow-material-light transition-all duration-200 rounded-xl border border-border">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -339,7 +339,7 @@ export const BanksContent = () => {
         ) : userBanks.length > 0 ? (
           <div className="space-y-3">
             {userBanks.map((bank) => (
-              <div key={bank.id} className="card-minimal p-4 hover:shadow-material-light transition-all duration-200 rounded-xl">
+              <div key={bank.id} className="card-minimal p-4 hover:shadow-material-light transition-all duration-200 rounded-xl border border-border">
                 <div className="space-y-4">
                   {/* Bank Header */}
                   <div className="flex items-center justify-between">
