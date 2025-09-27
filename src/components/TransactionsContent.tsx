@@ -3,6 +3,8 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import {
   Select,
   SelectContent,
@@ -22,16 +24,38 @@ import {
   CreditCard,
   Wallet,
   Building2,
-  Tag
+  Tag,
+  ToggleLeft,
+  ToggleRight,
+  X,
+  ChevronRight
 } from 'lucide-react';
 
 import { useGlobalStore } from '@/store/globalStore';
 import { TableLoader } from '@/components/ui/loader';
 
+interface GroupedCategory {
+  category: string;
+  totalAmount: number;
+  merchantCount: number;
+  transactionCount: number;
+  transactions: any[];
+}
+
+interface GroupedMerchant {
+  merchant: string;
+  totalAmount: number;
+  transactionCount: number;
+  transactions: any[];
+}
+
 export const TransactionsContent = () => {
   const { banks, transactions, loading } = useGlobalStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBankId, setSelectedBankId] = useState<string>('');
+  const [isGroupedView, setIsGroupedView] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<GroupedCategory | null>(null);
+  const [modalSearchTerm, setModalSearchTerm] = useState('');
 
   // Set first bank as default when banks are loaded
   useEffect(() => {
@@ -90,6 +114,65 @@ export const TransactionsContent = () => {
     });
   }, [transactions, searchTerm, selectedBankId]);
 
+  // Group transactions by category
+  const groupedByCategory = useMemo(() => {
+    const groups: Record<string, GroupedCategory> = {};
+    
+    filteredTransactions.forEach(transaction => {
+      const category = transaction.category || 'Other';
+      
+      if (!groups[category]) {
+        groups[category] = {
+          category,
+          totalAmount: 0,
+          merchantCount: 0,
+          transactionCount: 0,
+          transactions: []
+        };
+      }
+      
+      groups[category].totalAmount += transaction.amount;
+      groups[category].transactionCount += 1;
+      groups[category].transactions.push(transaction);
+      
+      // Count unique merchants
+      const uniqueMerchants = new Set(groups[category].transactions.map(t => t.merchant));
+      groups[category].merchantCount = uniqueMerchants.size;
+    });
+    
+    return Object.values(groups).sort((a, b) => b.totalAmount - a.totalAmount);
+  }, [filteredTransactions]);
+
+  // Group merchants in selected category
+  const groupedMerchants = useMemo(() => {
+    if (!selectedCategory) return [];
+    
+    const groups: Record<string, GroupedMerchant> = {};
+    const categoryTransactions = selectedCategory.transactions.filter(transaction => {
+      if (!modalSearchTerm) return true;
+      return transaction.merchant?.toLowerCase().includes(modalSearchTerm.toLowerCase());
+    });
+    
+    categoryTransactions.forEach(transaction => {
+      const merchant = transaction.merchant || 'Unknown Merchant';
+      
+      if (!groups[merchant]) {
+        groups[merchant] = {
+          merchant,
+          totalAmount: 0,
+          transactionCount: 0,
+          transactions: []
+        };
+      }
+      
+      groups[merchant].totalAmount += transaction.amount;
+      groups[merchant].transactionCount += 1;
+      groups[merchant].transactions.push(transaction);
+    });
+    
+    return Object.values(groups).sort((a, b) => b.totalAmount - a.totalAmount);
+  }, [selectedCategory, modalSearchTerm]);
+
   if (loading) {
     return (
       <div className="p-4 space-y-4 animate-fade-in max-w-md mx-auto">
@@ -110,9 +193,31 @@ export const TransactionsContent = () => {
       {/* Header - Google Pay style */}
       <div className="bg-card border-b border-border/50 sticky top-0 z-10">
         <div className="max-w-md mx-auto p-4">
-          <h1 className="text-xl font-medium text-foreground font-google mb-4">
-            Transactions
-          </h1>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-xl font-medium text-foreground font-google">
+              Transactions
+            </h1>
+            
+            {/* Toggle Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsGroupedView(!isGroupedView)}
+              className="flex items-center gap-2 text-xs"
+            >
+              {isGroupedView ? (
+                <>
+                  <ToggleRight className="h-4 w-4 text-primary" />
+                  <span>Grouped</span>
+                </>
+              ) : (
+                <>
+                  <ToggleLeft className="h-4 w-4 text-muted-foreground" />
+                  <span>List</span>
+                </>
+              )}
+            </Button>
+          </div>
           
           <div className="flex items-center gap-2">
             {/* Search Bar - Takes most space */}
@@ -145,70 +250,204 @@ export const TransactionsContent = () => {
         </div>
       </div>
 
-      {/* Transaction List - Google Pay style */}
+      {/* Content Area */}
       <div className="max-w-md mx-auto">
-        {filteredTransactions.length === 0 ? (
-          <div className="p-8 text-center">
-            <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground font-google">
-              {searchTerm ? 'No transactions match your search' : 'No transactions found'}
+        {isGroupedView ? (
+          /* Grouped View - Categories */
+          groupedByCategory.length === 0 ? (
+            <div className="p-8 text-center">
+              <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground font-google">
+                {searchTerm ? 'No transactions match your search' : 'No transactions found'}
+              </p>
+            </div>
+          ) : (
+            <div className="divide-y divide-border/50">
+              {groupedByCategory.map((group) => {
+                const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor('', group.category);
+                
+                return (
+                  <div 
+                    key={group.category} 
+                    className="p-4 hover:bg-muted/30 transition-colors cursor-pointer"
+                    onClick={() => setSelectedCategory(group)}
+                  >
+                    <div className="flex items-center gap-3">
+                      {/* Category Icon */}
+                      <Avatar className={`h-10 w-10 ${bgColor}`}>
+                        <AvatarFallback className={`${bgColor} border-0`}>
+                          <CategoryIcon className={`h-5 w-5 ${iconColor}`} />
+                        </AvatarFallback>
+                      </Avatar>
+                      
+                      {/* Category Details */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium text-foreground font-google truncate">
+                              {group.category}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {group.transactionCount} transaction{group.transactionCount !== 1 ? 's' : ''} • {group.merchantCount} merchant{group.merchantCount !== 1 ? 's' : ''}
+                            </p>
+                          </div>
+                          
+                          <div className="flex items-center gap-2 ml-3">
+                            <div className="text-right">
+                              <div className="text-sm font-medium font-google text-foreground">
+                                ₹{group.totalAmount.toLocaleString()}
+                              </div>
+                            </div>
+                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )
+        ) : (
+          /* Normal List View */
+          filteredTransactions.length === 0 ? (
+            <div className="p-8 text-center">
+              <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground font-google">
+                {searchTerm ? 'No transactions match your search' : 'No transactions found'}
+              </p>
+            </div>
+          ) : (
+            <div className="divide-y divide-border/50">
+              {filteredTransactions.map((transaction) => {
+                const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor(transaction.merchant, transaction.category);
+                const isCredit = transaction.transaction_type === 'credit';
+                
+                return (
+                  <div key={transaction.id} className="p-4 hover:bg-muted/30 transition-colors">
+                    <div className="flex items-center gap-3">
+                      {/* Icon Avatar with category colors */}
+                      <Avatar className={`h-10 w-10 ${bgColor}`}>
+                        <AvatarFallback className={`${bgColor} border-0`}>
+                          <CategoryIcon className={`h-5 w-5 ${iconColor}`} />
+                        </AvatarFallback>
+                      </Avatar>
+                      
+                      {/* Transaction Details */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium text-foreground font-google truncate">
+                              {transaction.merchant || 'Unknown Merchant'}
+                            </p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <p className="text-xs text-muted-foreground">
+                                {new Date(transaction.mail_time).toLocaleDateString('en-US', { 
+                                  month: 'short', 
+                                  day: 'numeric'
+                                })}
+                              </p>
+                              <span className="text-xs text-muted-foreground">•</span>
+                              <div className="flex items-center gap-1">
+                                <Tag className="h-3 w-3 text-muted-foreground" />
+                                <p className="text-xs text-muted-foreground truncate">
+                                  {transaction.category || 'Other'}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Amount */}
+                          <div className="text-right ml-3">
+                            <div className={`text-sm font-medium font-google ${
+                              isCredit 
+                                ? 'text-success' 
+                                : 'text-foreground'
+                            }`}>
+                              {isCredit ? '+' : '-'}₹{transaction.amount.toLocaleString()}
+                            </div>
+                            <div className="flex items-center justify-end mt-1">
+                              {isCredit ? (
+                                <ArrowUpRight className="h-3 w-3 text-success" />
+                              ) : (
+                                <ArrowDownLeft className="h-3 w-3 text-muted-foreground" />
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )
+        )}
+        
+        {/* Summary Footer */}
+        {(isGroupedView ? groupedByCategory.length > 0 : filteredTransactions.length > 0) && (
+          <div className="p-4 text-center border-t border-border/50 bg-muted/20">
+            <p className="text-xs text-muted-foreground font-google">
+              {isGroupedView 
+                ? `${groupedByCategory.length} categor${groupedByCategory.length !== 1 ? 'ies' : 'y'} • ${getBankName(selectedBankId)}`
+                : `${filteredTransactions.length} transaction${filteredTransactions.length !== 1 ? 's' : ''} • ${getBankName(selectedBankId)}`
+              }
             </p>
           </div>
-        ) : (
-          <div className="divide-y divide-border/50">
-            {filteredTransactions.map((transaction) => {
-              const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor(transaction.merchant, transaction.category);
-              const isCredit = transaction.transaction_type === 'credit';
+        )}
+      </div>
+
+      {/* Bottom Modal for Category Details */}
+      <Sheet open={!!selectedCategory} onOpenChange={(open) => !open && setSelectedCategory(null)}>
+        <SheetContent side="bottom" className="max-h-[80vh] rounded-t-xl">
+          <SheetHeader className="pb-4">
+            <SheetTitle className="text-left font-google">
+              {selectedCategory?.category}
+            </SheetTitle>
+            <SheetDescription className="text-left">
+              {selectedCategory?.transactionCount} transactions • ₹{selectedCategory?.totalAmount.toLocaleString()}
+            </SheetDescription>
+          </SheetHeader>
+          
+          {/* Search in Modal */}
+          <div className="relative mb-4">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search merchants"
+              value={modalSearchTerm}
+              onChange={(e) => setModalSearchTerm(e.target.value)}
+              className="pl-10 h-9 bg-muted/30 border border-border/50 rounded-full text-sm font-google"
+            />
+          </div>
+          
+          {/* Grouped Merchants */}
+          <div className="space-y-2 max-h-[50vh] overflow-y-auto">
+            {groupedMerchants.map((merchant) => {
+              const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor(merchant.merchant, selectedCategory?.category || '');
               
               return (
-                <div key={transaction.id} className="p-4 hover:bg-muted/30 transition-colors">
+                <div key={merchant.merchant} className="p-3 bg-muted/20 rounded-lg">
                   <div className="flex items-center gap-3">
-                    {/* Icon Avatar with category colors */}
-                    <Avatar className={`h-10 w-10 ${bgColor}`}>
+                    <Avatar className={`h-8 w-8 ${bgColor}`}>
                       <AvatarFallback className={`${bgColor} border-0`}>
-                        <CategoryIcon className={`h-5 w-5 ${iconColor}`} />
+                        <CategoryIcon className={`h-4 w-4 ${iconColor}`} />
                       </AvatarFallback>
                     </Avatar>
                     
-                    {/* Transaction Details */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium text-foreground font-google truncate">
-                            {transaction.merchant || 'Unknown Merchant'}
+                            {merchant.merchant}
                           </p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <p className="text-xs text-muted-foreground">
-                              {new Date(transaction.mail_time).toLocaleDateString('en-US', { 
-                                month: 'short', 
-                                day: 'numeric'
-                              })}
-                            </p>
-                            <span className="text-xs text-muted-foreground">•</span>
-                            <div className="flex items-center gap-1">
-                              <Tag className="h-3 w-3 text-muted-foreground" />
-                              <p className="text-xs text-muted-foreground truncate">
-                                {transaction.category || 'Other'}
-                              </p>
-                            </div>
-                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {merchant.transactionCount}x transaction{merchant.transactionCount !== 1 ? 's' : ''}
+                          </p>
                         </div>
                         
-                        {/* Amount */}
                         <div className="text-right ml-3">
-                          <div className={`text-sm font-medium font-google ${
-                            isCredit 
-                              ? 'text-success' 
-                              : 'text-foreground'
-                          }`}>
-                            {isCredit ? '+' : '-'}₹{transaction.amount.toLocaleString()}
-                          </div>
-                          <div className="flex items-center justify-end mt-1">
-                            {isCredit ? (
-                              <ArrowUpRight className="h-3 w-3 text-success" />
-                            ) : (
-                              <ArrowDownLeft className="h-3 w-3 text-muted-foreground" />
-                            )}
+                          <div className="text-sm font-medium font-google text-foreground">
+                            ₹{merchant.totalAmount.toLocaleString()}
                           </div>
                         </div>
                       </div>
@@ -218,17 +457,8 @@ export const TransactionsContent = () => {
               );
             })}
           </div>
-        )}
-        
-        {/* Summary Footer */}
-        {filteredTransactions.length > 0 && (
-          <div className="p-4 text-center border-t border-border/50 bg-muted/20">
-            <p className="text-xs text-muted-foreground font-google">
-              {filteredTransactions.length} transaction{filteredTransactions.length !== 1 ? 's' : ''} • {getBankName(selectedBankId)}
-            </p>
-          </div>
-        )}
-      </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
