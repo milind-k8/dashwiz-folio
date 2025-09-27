@@ -199,39 +199,7 @@ export const TransactionsContent = () => {
     <div className="min-h-screen bg-background">
       {/* Header - Google Pay style */}
       <div className="bg-card border-b border-border/50 sticky top-0 z-10">
-        <div className="max-w-md mx-auto p-4">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-medium text-foreground font-google">
-              Transactions
-            </h1>
-            
-            {/* Google-style Toggle Switch */}
-            <div className="flex items-center gap-2">
-              <span className={`text-xs font-medium transition-colors ${!isGroupedView ? 'text-foreground' : 'text-muted-foreground'}`}>
-                List
-              </span>
-              <button
-                onClick={() => setIsGroupedView(!isGroupedView)}
-                className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20 ${
-                  isGroupedView 
-                    ? 'bg-primary' 
-                    : 'bg-muted-foreground/30'
-                }`}
-              >
-                <div
-                  className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${
-                    isGroupedView 
-                      ? 'translate-x-5' 
-                      : 'translate-x-0.5'
-                  }`}
-                />
-              </button>
-              <span className={`text-xs font-medium transition-colors ${isGroupedView ? 'text-foreground' : 'text-muted-foreground'}`}>
-                Group
-              </span>
-            </div>
-          </div>
-          
+        <div className="max-w-md mx-auto p-4 space-y-3">
           <div className="flex items-center gap-2">
             {/* Search Bar - Takes most space */}
             <div className="relative flex-1">
@@ -259,6 +227,32 @@ export const TransactionsContent = () => {
                 </SelectContent>
               </Select>
             </div>
+          </div>
+          
+          {/* Google-style Toggle Switch */}
+          <div className="flex items-center justify-center gap-2">
+            <span className={`text-xs font-medium transition-colors ${!isGroupedView ? 'text-foreground' : 'text-muted-foreground'}`}>
+              List
+            </span>
+            <button
+              onClick={() => setIsGroupedView(!isGroupedView)}
+              className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20 ${
+                isGroupedView 
+                  ? 'bg-primary' 
+                  : 'bg-muted-foreground/30'
+              }`}
+            >
+              <div
+                className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${
+                  isGroupedView 
+                    ? 'translate-x-5' 
+                    : 'translate-x-0.5'
+                }`}
+              />
+            </button>
+            <span className={`text-xs font-medium transition-colors ${isGroupedView ? 'text-foreground' : 'text-muted-foreground'}`}>
+              Group
+            </span>
           </div>
         </div>
       </div>
