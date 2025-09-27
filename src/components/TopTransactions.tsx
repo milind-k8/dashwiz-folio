@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { TrendingUp, TrendingDown, Building } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -97,28 +96,9 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
                   <p className="font-medium text-sm text-foreground truncate">
                     {transaction.merchant || 'Unknown Merchant'}
                   </p>
-                  <Badge 
-                    variant="outline" 
-                    className={cn(
-                      "text-xs px-1.5 py-0.5 border-0",
-                      transaction.transaction_type === 'debit' 
-                        ? "bg-destructive/10 text-destructive" 
-                        : "bg-success/10 text-success"
-                    )}
-                  >
-                    {transaction.transaction_type === 'debit' ? (
-                      <TrendingDown className="w-3 h-3 mr-1" />
-                    ) : (
-                      <TrendingUp className="w-3 h-3 mr-1" />
-                    )}
-                    {transaction.transaction_type}
-                  </Badge>
                 </div>
                 
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Building className="w-3 h-3" />
-                  <span className="truncate">{transaction.bankName}</span>
-                  <span>•</span>
                   <span>{format(new Date(transaction.mail_time), 'MMM dd, yyyy')}</span>
                 </div>
               </div>
