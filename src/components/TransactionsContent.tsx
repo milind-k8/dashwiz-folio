@@ -52,17 +52,17 @@ export const TransactionsContent = () => {
     const categoryLower = category?.toLowerCase() || '';
     
     if (merchantLower.includes('coffee') || merchantLower.includes('starbucks') || merchantLower.includes('cafe')) {
-      return { icon: Coffee, bgColor: 'bg-amber-100 dark:bg-amber-900/30', iconColor: 'text-amber-600 dark:text-amber-400' };
+      return { icon: Coffee, bgColor: 'bg-amber-50', iconColor: 'text-amber-600' };
     } else if (merchantLower.includes('uber') || merchantLower.includes('taxi') || categoryLower.includes('transport')) {
-      return { icon: Car, bgColor: 'bg-blue-100 dark:bg-blue-900/30', iconColor: 'text-blue-600 dark:text-blue-400' };
+      return { icon: Car, bgColor: 'bg-blue-50', iconColor: 'text-blue-600' };
     } else if (merchantLower.includes('restaurant') || merchantLower.includes('food') || categoryLower.includes('food')) {
-      return { icon: Utensils, bgColor: 'bg-orange-100 dark:bg-orange-900/30', iconColor: 'text-orange-600 dark:text-orange-400' };
+      return { icon: Utensils, bgColor: 'bg-orange-50', iconColor: 'text-orange-600' };
     } else if (merchantLower.includes('shop') || merchantLower.includes('store') || categoryLower.includes('shopping')) {
-      return { icon: ShoppingBag, bgColor: 'bg-purple-100 dark:bg-purple-900/30', iconColor: 'text-purple-600 dark:text-purple-400' };
+      return { icon: ShoppingBag, bgColor: 'bg-purple-50', iconColor: 'text-purple-600' };
     } else if (categoryLower.includes('bank') || categoryLower.includes('atm')) {
-      return { icon: CreditCard, bgColor: 'bg-green-100 dark:bg-green-900/30', iconColor: 'text-green-600 dark:text-green-400' };
+      return { icon: CreditCard, bgColor: 'bg-green-50', iconColor: 'text-green-600' };
     } else {
-      return { icon: Store, bgColor: 'bg-gray-100 dark:bg-gray-900/30', iconColor: 'text-gray-600 dark:text-gray-400' };
+      return { icon: Store, bgColor: 'bg-rose-50', iconColor: 'text-rose-600' };
     }
   };
 
