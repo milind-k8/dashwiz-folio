@@ -22,10 +22,10 @@ export function MetricCard({
   return (
     <Card 
       className={cn(
-        "p-4 transition-all duration-300 hover:border-primary/50",
+        "p-4 transition-all duration-300 hover:shadow-elevated",
         isHighlighted 
-          ? 'bg-primary text-primary-foreground border-primary/30' 
-          : 'bg-card border border-border hover:border-primary/30',
+          ? 'bg-gradient-primary text-primary-foreground border-0 shadow-card' 
+          : 'bg-card border shadow-card hover:shadow-elevated',
         onClick && 'cursor-pointer hover:scale-[1.02]'
       )}
       onClick={onClick}
