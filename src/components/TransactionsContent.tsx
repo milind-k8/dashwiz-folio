@@ -320,8 +320,8 @@ export const TransactionsContent = () => {
               <Receipt className="h-6 w-6 text-muted-foreground" />
             </div>
             
-            {/* Active Filters Display */}
-            <div className="flex flex-wrap gap-2 mb-3">
+            {/* Active Filters Display - Hidden on mobile */}
+            <div className="hidden md:flex flex-wrap gap-2 mb-3">
               {getCurrentFilters().map((filter, index) => (
                 <Badge key={index} variant="secondary" className="text-xs font-medium">
                   {filter}
@@ -329,38 +329,38 @@ export const TransactionsContent = () => {
               ))}
             </div>
 
-            {/* Summary Cards */}
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <Card className="p-3 bg-gradient-to-br from-card to-muted/20 border border-border/50">
-                <div className="flex items-center gap-2">
-                  <TrendingDown className="h-4 w-4 text-destructive" />
+            {/* Summary Cards - Simplified on mobile */}
+            <div className="grid grid-cols-2 gap-2 md:gap-3 mb-3 md:mb-4">
+              <Card className="p-2 md:p-3 bg-gradient-to-br from-card to-muted/20 border border-border/50">
+                <div className="flex items-center gap-1 md:gap-2">
+                  <TrendingDown className="h-3 w-3 md:h-4 md:w-4 text-destructive" />
                   <div>
-                    <p className="text-xs text-muted-foreground font-medium">Total Spent</p>
-                    <p className="text-lg font-bold text-foreground">₹{totalSpent.toLocaleString()}</p>
+                    <p className="text-xs text-muted-foreground font-medium">Spent</p>
+                    <p className="text-sm md:text-lg font-bold text-foreground">₹{totalSpent.toLocaleString()}</p>
                   </div>
                 </div>
               </Card>
-              <Card className="p-3 bg-gradient-to-br from-card to-muted/20 border border-border/50">
-                <div className="flex items-center gap-2">
-                  <ArrowUpRight className="h-4 w-4 text-success" />
+              <Card className="p-2 md:p-3 bg-gradient-to-br from-card to-muted/20 border border-border/50">
+                <div className="flex items-center gap-1 md:gap-2">
+                  <ArrowUpRight className="h-3 w-3 md:h-4 md:w-4 text-success" />
                   <div>
-                    <p className="text-xs text-muted-foreground font-medium">Total Earned</p>
-                    <p className="text-lg font-bold text-foreground">₹{totalEarned.toLocaleString()}</p>
+                    <p className="text-xs text-muted-foreground font-medium">Earned</p>
+                    <p className="text-sm md:text-lg font-bold text-foreground">₹{totalEarned.toLocaleString()}</p>
                   </div>
                 </div>
               </Card>
             </div>
           </div>
 
-          {/* Enhanced Search & Filters */}
-          <div className="px-4 pb-4 space-y-3">
+          {/* Enhanced Search & Filters - Mobile Optimized */}
+          <div className="px-3 md:px-4 pb-3 md:pb-4 space-y-2 md:space-y-3">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
               <Input
-                placeholder="Search transactions, merchants, amounts..."
+                placeholder="Search transactions..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 pr-16 h-12 bg-background/60 border-2 border-border/30 rounded-2xl text-base font-medium placeholder:text-muted-foreground/60 focus:border-primary/50 focus:bg-background shadow-sm"
+                className="pl-10 md:pl-12 pr-14 md:pr-16 h-10 md:h-12 bg-background/60 border-2 border-border/30 rounded-2xl text-sm md:text-base font-medium placeholder:text-muted-foreground/60 focus:border-primary/50 focus:bg-background shadow-sm"
               />
               
               {searchTerm && (
@@ -368,9 +368,9 @@ export const TransactionsContent = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-12 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0 hover:bg-muted/50 rounded-full"
+                  className="absolute right-10 md:right-12 top-1/2 transform -translate-y-1/2 h-6 w-6 md:h-7 md:w-7 p-0 hover:bg-muted/50 rounded-full"
                 >
-                  <X className="h-4 w-4 text-muted-foreground" />
+                  <X className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground" />
                 </Button>
               )}
               
@@ -380,9 +380,9 @@ export const TransactionsContent = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 px-3 bg-background/80 border-border/50 hover:bg-muted/50 rounded-xl"
+                    className="absolute right-1 md:right-2 top-1/2 transform -translate-y-1/2 h-8 px-2 md:px-3 bg-background/80 border-border/50 hover:bg-muted/50 rounded-xl"
                   >
-                    <Filter className="h-4 w-4 text-muted-foreground" />
+                    <Filter className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent 
@@ -440,17 +440,19 @@ export const TransactionsContent = () => {
               </Popover>
             </div>
             
-            {/* Enhanced View Toggle */}
+            {/* Enhanced View Toggle - Mobile Optimized */}
             <div className="flex justify-center">
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-md">
-                <TabsList className="grid w-full grid-cols-2 bg-muted/40 h-10 p-1 rounded-xl">
-                  <TabsTrigger value="group" className="text-sm font-semibold rounded-lg">
-                    <Grid3X3 className="h-4 w-4 mr-2" />
-                    Categories
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-xs md:max-w-md">
+                <TabsList className="grid w-full grid-cols-2 bg-muted/40 h-8 md:h-10 p-0.5 md:p-1 rounded-xl">
+                  <TabsTrigger value="group" className="text-xs md:text-sm font-semibold rounded-lg">
+                    <Grid3X3 className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                    <span className="hidden sm:inline">Categories</span>
+                    <span className="sm:hidden">Groups</span>
                   </TabsTrigger>
-                  <TabsTrigger value="list" className="text-sm font-semibold rounded-lg">
-                    <List className="h-4 w-4 mr-2" />
-                    All Transactions
+                  <TabsTrigger value="list" className="text-xs md:text-sm font-semibold rounded-lg">
+                    <List className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                    <span className="hidden sm:inline">All Transactions</span>
+                    <span className="sm:hidden">List</span>
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -480,7 +482,7 @@ export const TransactionsContent = () => {
                 </p>
               </div>
             ) : (
-              <div className="p-4 space-y-4">
+              <div className="p-2 md:p-4 space-y-2 md:space-y-4">
                 {groupedByCategory.map((group, index) => {
                   const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor('', group.category);
                   const percentageOfTotal = totalSpent > 0 ? (group.totalAmount / totalSpent) * 100 : 0;
@@ -488,51 +490,54 @@ export const TransactionsContent = () => {
                   return (
                     <Card 
                       key={group.category} 
-                      className="group p-0 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer border border-border/50 rounded-3xl bg-gradient-to-br from-card to-card/50 overflow-hidden"
+                      className="group p-0 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer border border-border/50 rounded-2xl md:rounded-3xl bg-gradient-to-br from-card to-card/50 overflow-hidden"
                       onClick={() => setSelectedCategory(group)}
                     >
-                      <CardContent className="p-5">
-                        <div className="flex items-start gap-4">
-                          {/* Enhanced Category Icon */}
-                          <div className={`p-4 rounded-2xl ${bgColor} group-hover:scale-110 transition-transform duration-300`}>
-                            <CategoryIcon className={`h-7 w-7 ${iconColor}`} />
+                      <CardContent className="p-3 md:p-5">
+                        <div className="flex items-center md:items-start gap-3 md:gap-4">
+                          {/* Enhanced Category Icon - Smaller on mobile */}
+                          <div className={`p-2 md:p-4 rounded-xl md:rounded-2xl ${bgColor} group-hover:scale-110 transition-transform duration-300`}>
+                            <CategoryIcon className={`h-5 w-5 md:h-7 md:w-7 ${iconColor}`} />
                           </div>
                           
-                          {/* Category Information */}
+                          {/* Category Information - Mobile Optimized */}
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center md:items-start justify-between mb-1 md:mb-3">
                               <div className="min-w-0 flex-1">
-                                <h3 className="text-xl font-bold text-foreground mb-1 truncate">
+                                <h3 className="text-base md:text-xl font-bold text-foreground mb-0 md:mb-1 truncate">
                                   {group.category}
                                 </h3>
-                                <div className="flex items-center gap-3">
-                                  <Badge variant="secondary" className="text-xs font-medium px-2 py-1">
+                                {/* Simplified badges on mobile */}
+                                <div className="flex items-center gap-2 md:gap-3">
+                                  <Badge variant="secondary" className="text-xs font-medium px-1.5 md:px-2 py-0.5 md:py-1">
                                     {group.merchantCount} merchant{group.merchantCount !== 1 ? 's' : ''}
                                   </Badge>
-                                  <Badge variant="outline" className="text-xs font-medium px-2 py-1">
+                                  {/* Hide transaction count on mobile */}
+                                  <Badge variant="outline" className="hidden md:flex text-xs font-medium px-2 py-1">
                                     {group.transactionCount} transaction{group.transactionCount !== 1 ? 's' : ''}
                                   </Badge>
                                 </div>
                               </div>
                               
-                              <div className="flex items-center gap-3 ml-4">
+                              <div className="flex items-center gap-2 md:gap-3 ml-3 md:ml-4">
                                 <div className="text-right">
-                                  <div className="text-2xl font-bold text-foreground mb-1">
+                                  <div className="text-lg md:text-2xl font-bold text-foreground mb-0 md:mb-1">
                                     ₹{group.totalAmount.toLocaleString()}
                                   </div>
+                                  {/* Hide percentage on mobile */}
                                   {percentageOfTotal > 0 && (
-                                    <div className="text-sm font-medium text-muted-foreground">
+                                    <div className="hidden md:block text-sm font-medium text-muted-foreground">
                                       {percentageOfTotal.toFixed(1)}% of spending
                                     </div>
                                   )}
                                 </div>
-                                <ChevronRight className="h-6 w-6 text-muted-foreground group-hover:translate-x-1 transition-transform duration-300" />
+                                <ChevronRight className="h-5 w-5 md:h-6 md:w-6 text-muted-foreground group-hover:translate-x-1 transition-transform duration-300" />
                               </div>
                             </div>
                             
-                            {/* Progress Bar */}
+                            {/* Progress Bar - Hidden on mobile */}
                             {percentageOfTotal > 0 && (
-                              <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
+                              <div className="hidden md:block w-full bg-muted/30 rounded-full h-2 overflow-hidden">
                                 <div 
                                   className="h-full bg-gradient-to-r from-primary/60 to-primary rounded-full transition-all duration-1000 ease-out"
                                   style={{ width: `${Math.min(percentageOfTotal, 100)}%` }}
@@ -577,51 +582,52 @@ export const TransactionsContent = () => {
                   return (
                     <div 
                       key={transaction.id} 
-                      className="group p-5 hover:bg-gradient-to-r hover:from-muted/20 hover:to-transparent transition-all duration-300 animate-fade-in"
+                      className="group p-3 md:p-5 hover:bg-gradient-to-r hover:from-muted/20 hover:to-transparent transition-all duration-300 animate-fade-in"
                       style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <div className="flex items-center gap-4">
-                        {/* Enhanced Icon Avatar */}
+                      <div className="flex items-center gap-3 md:gap-4">
+                        {/* Enhanced Icon Avatar - Smaller on mobile */}
                         <div className="relative">
-                          <Avatar className={`h-14 w-14 ${bgColor} group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
+                          <Avatar className={`h-10 w-10 md:h-14 md:w-14 ${bgColor} group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
                             <AvatarFallback className={`${bgColor} border-0`}>
-                              <CategoryIcon className={`h-7 w-7 ${iconColor}`} />
+                              <CategoryIcon className={`h-5 w-5 md:h-7 md:w-7 ${iconColor}`} />
                             </AvatarFallback>
                           </Avatar>
+                          {/* Hide high value indicator on mobile */}
                           {isHighValue && (
-                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-warning rounded-full flex items-center justify-center">
+                            <div className="hidden md:flex absolute -top-1 -right-1 w-4 h-4 bg-warning rounded-full items-center justify-center">
                               <div className="w-2 h-2 bg-warning-foreground rounded-full" />
                             </div>
                           )}
                         </div>
                         
-                        {/* Enhanced Transaction Details */}
+                        {/* Enhanced Transaction Details - Mobile Optimized */}
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between">
+                          <div className="flex items-center md:items-start justify-between">
                             <div className="min-w-0 flex-1">
-                              <h3 className="text-lg font-bold text-foreground mb-1 truncate group-hover:text-primary transition-colors">
+                              <h3 className="text-base md:text-lg font-bold text-foreground mb-1 truncate group-hover:text-primary transition-colors">
                                 {transaction.merchant || 'Unknown Merchant'}
                               </h3>
-                              <div className="flex items-center gap-3 mb-2">
-                                <div className="flex items-center gap-1">
-                                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                                  <p className="text-sm font-medium text-muted-foreground">
-                                    {transactionDate.toLocaleDateString('en-US', { 
-                                      month: 'short', 
-                                      day: 'numeric',
-                                      year: transactionDate.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
-                                    })}
-                                  </p>
-                                </div>
-                                <span className="text-muted-foreground">•</span>
-                                <div className="flex items-center gap-1">
+                              {/* Simplified date display on mobile */}
+                              <div className="flex items-center gap-2 md:gap-3 mb-0 md:mb-2">
+                                <p className="text-xs md:text-sm font-medium text-muted-foreground">
+                                  {transactionDate.toLocaleDateString('en-US', { 
+                                    month: 'short', 
+                                    day: 'numeric',
+                                    year: transactionDate.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
+                                  })}
+                                </p>
+                                {/* Hide category badge on mobile */}
+                                <span className="hidden md:inline text-muted-foreground">•</span>
+                                <div className="hidden md:flex items-center gap-1">
                                   <Tag className="h-4 w-4 text-muted-foreground" />
                                   <Badge variant="outline" className="text-xs font-medium px-2 py-0.5">
                                     {transaction.category || 'Other'}
                                   </Badge>
                                 </div>
                               </div>
-                              <p className="text-xs text-muted-foreground">
+                              {/* Hide detailed time on mobile */}
+                              <p className="hidden md:block text-xs text-muted-foreground">
                                 {transactionDate.toLocaleDateString('en-US', { 
                                   weekday: 'long',
                                   hour: '2-digit',
@@ -630,30 +636,30 @@ export const TransactionsContent = () => {
                               </p>
                             </div>
                             
-                            {/* Enhanced Amount Display */}
-                            <div className="text-right ml-6">
-                              <div className={`text-xl font-bold mb-1 ${
+                            {/* Enhanced Amount Display - Simplified on mobile */}
+                            <div className="text-right ml-3 md:ml-6">
+                              <div className={`text-base md:text-xl font-bold mb-0 md:mb-1 ${
                                 isCredit 
                                   ? 'text-success' 
                                   : 'text-foreground'
                               }`}>
                                 {isCredit ? '+' : '-'}₹{transaction.amount.toLocaleString()}
                               </div>
-                              <div className="flex items-center justify-end gap-1">
+                              {/* Simplified transaction type display */}
+                              <div className="flex items-center justify-end gap-0.5 md:gap-1">
                                 {isCredit ? (
-                                  <>
-                                    <ArrowUpRight className="h-4 w-4 text-success" />
-                                    <span className="text-xs font-medium text-success">Credit</span>
-                                  </>
+                                  <ArrowUpRight className="h-3 w-3 md:h-4 md:w-4 text-success" />
                                 ) : (
-                                  <>
-                                    <ArrowDownLeft className="h-4 w-4 text-muted-foreground" />
-                                    <span className="text-xs font-medium text-muted-foreground">Debit</span>
-                                  </>
+                                  <ArrowDownLeft className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground" />
                                 )}
+                                {/* Hide type labels on mobile */}
+                                <span className={`hidden md:inline text-xs font-medium ${isCredit ? 'text-success' : 'text-muted-foreground'}`}>
+                                  {isCredit ? 'Credit' : 'Debit'}
+                                </span>
                               </div>
+                              {/* Hide high value badge on mobile */}
                               {isHighValue && (
-                                <Badge variant="secondary" className="text-xs mt-1">
+                                <Badge variant="secondary" className="hidden md:inline-flex text-xs mt-1">
                                   High Value
                                 </Badge>
                               )}
@@ -669,20 +675,22 @@ export const TransactionsContent = () => {
           </TabsContent>
         </Tabs>
         
-        {/* Enhanced Summary Footer */}
+        {/* Enhanced Summary Footer - Simplified on mobile */}
         {(activeTab === 'group' ? groupedByCategory.length > 0 : filteredTransactions.length > 0) && (
-          <div className="p-6 text-center border-t border-border/30 bg-gradient-to-t from-muted/30 to-transparent">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-              <p className="text-sm font-semibold text-foreground">
+          <div className="p-3 md:p-6 text-center border-t border-border/30 bg-gradient-to-t from-muted/30 to-transparent">
+            <div className="flex items-center justify-center gap-1 md:gap-2 mb-1 md:mb-2">
+              <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary rounded-full animate-pulse" />
+              <p className="text-xs md:text-sm font-semibold text-foreground">
                 {activeTab === 'group'
-                  ? `${groupedByCategory.length} categor${groupedByCategory.length !== 1 ? 'ies' : 'y'} found`
-                  : `${filteredTransactions.length} transaction${filteredTransactions.length !== 1 ? 's' : ''} found`
+                  ? `${groupedByCategory.length} categor${groupedByCategory.length !== 1 ? 'ies' : 'y'}`
+                  : `${filteredTransactions.length} transaction${filteredTransactions.length !== 1 ? 's' : ''}`
                 }
               </p>
             </div>
             <p className="text-xs text-muted-foreground">
-              Showing data from {getBankName(selectedBankId)} • {getDurationLabel()}
+              {/* Simplified footer text on mobile */}
+              <span className="md:hidden">{getBankName(selectedBankId)}</span>
+              <span className="hidden md:inline">Showing data from {getBankName(selectedBankId)} • {getDurationLabel()}</span>
             </p>
           </div>
         )}
