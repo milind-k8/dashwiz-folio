@@ -103,22 +103,18 @@ export const TransactionsContent = () => {
     
     // Set current month as default if no duration is selected
     if (!selectedDuration) {
-      setSelectedDuration(getCurrentMonth());
+      setSelectedDuration('current-month');
     }
   }, [banks, selectedBankId, selectedBank, setSelectedBank, selectedDuration, setSelectedDuration]);
 
   
-  // Get current date and generate last 3 month options
-  const getMonthOptions = () => {
-    const options = [];
-    const now = new Date();
-    
-    for (let i = 0; i < 3; i++) {
-      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-      const label = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-      options.push({ value, label });
-    }
+  // Get current date and generate duration options
+  const getDurationOptions = () => {
+    const options = [
+      { value: 'current-month', label: 'Current Month' },
+      { value: 'previous-month', label: 'Previous Month' },
+      { value: 'month-before-previous', label: 'Month Before Previous' }
+    ];
     
     return options;
   };
@@ -169,13 +165,36 @@ export const TransactionsContent = () => {
       
       const matchesBank = transaction.bank_id === selectedBankId;
       
-      // Month filter - always filter by selected month since no "all-time" option
+      // Month filter - convert duration to actual date range
       let matchesMonth = true;
       if (selectedDuration) {
         const transactionDate = new Date(transaction.mail_time);
-        const [year, month] = selectedDuration.split('-');
+        const now = new Date();
+        let targetYear: number, targetMonth: number;
+        
+        switch (selectedDuration) {
+          case 'current-month':
+            targetYear = now.getFullYear();
+            targetMonth = now.getMonth() + 1;
+            break;
+          case 'previous-month':
+            const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            targetYear = prevMonth.getFullYear();
+            targetMonth = prevMonth.getMonth() + 1;
+            break;
+          case 'month-before-previous':
+            const monthBefore = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+            targetYear = monthBefore.getFullYear();
+            targetMonth = monthBefore.getMonth() + 1;
+            break;
+          default:
+            targetYear = now.getFullYear();
+            targetMonth = now.getMonth() + 1;
+        }
+        
         const transactionMonth = `${transactionDate.getFullYear()}-${String(transactionDate.getMonth() + 1).padStart(2, '0')}`;
-        matchesMonth = transactionMonth === selectedDuration;
+        const targetMonthStr = `${targetYear}-${String(targetMonth).padStart(2, '0')}`;
+        matchesMonth = transactionMonth === targetMonthStr;
       }
       
       return matchesSearch && matchesBank && matchesMonth;
@@ -332,7 +351,7 @@ export const TransactionsContent = () => {
                         <SelectValue placeholder="Select Month" />
                       </SelectTrigger>
                       <SelectContent className="bg-background border border-border shadow-lg z-[100]">
-                        {getMonthOptions().map((option) => (
+                        {getDurationOptions().map((option) => (
                           <SelectItem key={option.value} value={option.value} className="text-xs py-1.5">
                             {option.label}
                           </SelectItem>

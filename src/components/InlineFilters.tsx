@@ -71,27 +71,20 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
   }));
 
   // Generate duration options for last 3 months
-  const durationOptions = (() => {
-    const now = new Date();
-    const currentMonth = startOfMonth(now);
-    const previousMonth = startOfMonth(subMonths(now, 1));
-    const monthBeforePrevious = startOfMonth(subMonths(now, 2));
-
-    return [
-      { 
-        value: 'current-month', 
-        label: `${format(currentMonth, 'MMMM yyyy')} (Current)` 
-      },
-      { 
-        value: 'previous-month', 
-        label: format(previousMonth, 'MMMM yyyy') 
-      },
-      { 
-        value: 'month-before-previous', 
-        label: format(monthBeforePrevious, 'MMMM yyyy') 
-      }
-    ];
-  })();
+  const durationOptions = [
+    { 
+      value: 'current-month', 
+      label: 'Current Month'
+    },
+    { 
+      value: 'previous-month', 
+      label: 'Previous Month'
+    },
+    { 
+      value: 'month-before-previous', 
+      label: 'Month Before Previous'
+    }
+  ];
 
   const handleBankChange = (value: string) => {
     setSelectedBank(value);
