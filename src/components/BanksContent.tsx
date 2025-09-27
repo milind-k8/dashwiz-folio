@@ -278,7 +278,7 @@ export const BanksContent = () => {
           
           <Dialog open={showAddBankDialog} onOpenChange={setShowAddBankDialog}>
             <DialogTrigger asChild>
-              <Button className="card-elevated touch-target">
+              <Button variant="outline" className="rounded-full border-primary text-primary bg-background hover:bg-primary/5 touch-target">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Bank
               </Button>
