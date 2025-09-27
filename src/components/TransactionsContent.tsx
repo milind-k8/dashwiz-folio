@@ -272,7 +272,7 @@ export const TransactionsContent = () => {
             />
             
             {/* Filter Popover */}
-            <Popover open={filterOpen} onOpenChange={setFilterOpen}>
+            <Popover open={filterOpen} onOpenChange={setFilterOpen} modal={true}>
               <PopoverTrigger asChild>
                 <Button
                   variant="ghost"
@@ -282,7 +282,12 @@ export const TransactionsContent = () => {
                   <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-80 p-4 bg-background border border-border shadow-lg" align="end">
+              <PopoverContent 
+                className="w-80 p-4 bg-background border border-border shadow-lg" 
+                align="end"
+                onOpenAutoFocus={(e) => e.preventDefault()}
+                onCloseAutoFocus={(e) => e.preventDefault()}
+              >
                 <div className="space-y-4">
                   <h4 className="font-medium text-sm">Filters</h4>
                   
