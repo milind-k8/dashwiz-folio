@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Drawer } from 'vaul';
 import {
   Select,
   SelectContent,
@@ -56,19 +56,11 @@ export const TransactionsContent = () => {
   const [isGroupedView, setIsGroupedView] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<GroupedCategory | null>(null);
   const [modalSearchTerm, setModalSearchTerm] = useState('');
-  
-  // Drag functionality state
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStartY, setDragStartY] = useState(0);
-  const [modalHeight, setModalHeight] = useState(80); // percentage of viewport height
-  const [dragOffset, setDragOffset] = useState(0);
 
   // Reset modal search when category changes
   useEffect(() => {
     if (selectedCategory) {
       setModalSearchTerm('');
-      setModalHeight(80); // Reset to default height
-      setDragOffset(0);
     }
   }, [selectedCategory]);
 
@@ -187,84 +179,6 @@ export const TransactionsContent = () => {
     
     return Object.values(groups).sort((a, b) => b.totalAmount - a.totalAmount);
   }, [selectedCategory, modalSearchTerm]);
-
-  // Drag handlers for modal
-  const handleDragStart = (clientY: number) => {
-    setIsDragging(true);
-    setDragStartY(clientY);
-  };
-
-  const handleDragMove = (clientY: number) => {
-    if (!isDragging) return;
-    
-    const deltaY = clientY - dragStartY;
-    const newOffset = Math.max(0, deltaY); // Only allow dragging down
-    setDragOffset(newOffset);
-  };
-
-  const handleDragEnd = () => {
-    if (!isDragging) return;
-    setIsDragging(false);
-    
-    // Snap points: if dragged down more than 150px, close modal
-    if (dragOffset > 150) {
-      setSelectedCategory(null);
-      setModalSearchTerm('');
-    } else if (dragOffset > 50) {
-      // Snap to half height
-      setModalHeight(50);
-    } else {
-      // Snap back to full height
-      setModalHeight(80);
-    }
-    
-    setDragOffset(0);
-  };
-
-  // Mouse events
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    handleDragStart(e.clientY);
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    handleDragMove(e.clientY);
-  };
-
-  const handleMouseUp = () => {
-    handleDragEnd();
-  };
-
-  // Touch events
-  const handleTouchStart = (e: React.TouchEvent) => {
-    handleDragStart(e.touches[0].clientY);
-  };
-
-  const handleTouchMove = (e: TouchEvent) => {
-    e.preventDefault();
-    handleDragMove(e.touches[0].clientY);
-  };
-
-  const handleTouchEnd = () => {
-    handleDragEnd();
-  };
-
-  // Add global event listeners for drag
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      document.addEventListener('touchmove', handleTouchMove, { passive: false });
-      document.addEventListener('touchend', handleTouchEnd);
-      
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-        document.removeEventListener('touchmove', handleTouchMove);
-        document.removeEventListener('touchend', handleTouchEnd);
-      };
-    }
-  }, [isDragging, dragStartY, dragOffset]);
 
   if (loading) {
     return (
@@ -496,78 +410,87 @@ export const TransactionsContent = () => {
         )}
       </div>
 
-      {/* Bottom Modal for Category Details - Draggable like Google Maps */}
-      <Sheet open={!!selectedCategory} onOpenChange={(open) => {
-        if (!open) {
-          setSelectedCategory(null);
-          setModalSearchTerm('');
-        }
-      }}>
-        <SheetContent side="bottom" className="max-h-[80vh] rounded-t-xl overflow-hidden">
-          {/* Drag Handle */}
-          <div className="flex justify-center py-2 cursor-grab active:cursor-grabbing">
-            <div className="w-8 h-1 bg-muted-foreground/40 rounded-full"></div>
-          </div>
-          <SheetHeader className="pb-4 pt-2">
-            <SheetTitle className="text-left font-google">
-              {selectedCategory?.category}
-            </SheetTitle>
-            <SheetDescription className="text-left">
-              {selectedCategory?.transactionCount} transactions • ₹{selectedCategory?.totalAmount.toLocaleString()}
-            </SheetDescription>
-          </SheetHeader>
-          
-          {/* Search in Modal */}
-          <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search merchants"
-              value={modalSearchTerm}
-              onChange={(e) => setModalSearchTerm(e.target.value)}
-              className="pl-10 h-9 bg-muted/30 border border-border/50 rounded-full text-sm font-google"
-              onFocus={(e) => e.target.blur()}
-            />
-          </div>
-          
-          {/* Grouped Merchants */}
-          <div className="space-y-2 max-h-[50vh] overflow-y-auto">
-            {groupedMerchants.map((merchant) => {
-              const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor(merchant.merchant, selectedCategory?.category || '');
+      {/* Bottom Modal for Category Details - Draggable with Vaul */}
+      <Drawer.Root 
+        open={!!selectedCategory} 
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedCategory(null);
+            setModalSearchTerm('');
+          }
+        }}
+      >
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/40 z-40" />
+          <Drawer.Content className="bg-background flex flex-col rounded-t-[10px] h-[80vh] mt-24 fixed bottom-0 left-0 right-0 z-50">
+            {/* Drag Handle */}
+            <div className="p-4 bg-background rounded-t-[10px] flex-shrink-0">
+              <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/40" />
+            </div>
+            
+            <div className="px-6 flex flex-col flex-1 overflow-hidden">
+              {/* Header */}
+              <div className="pb-4">
+                <Drawer.Title className="text-lg font-semibold text-foreground font-google">
+                  {selectedCategory?.category}
+                </Drawer.Title>
+                <Drawer.Description className="text-sm text-muted-foreground">
+                  {selectedCategory?.transactionCount} transactions • ₹{selectedCategory?.totalAmount.toLocaleString()}
+                </Drawer.Description>
+              </div>
               
-              return (
-                <div key={merchant.merchant} className="p-3 bg-muted/20 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Avatar className={`h-8 w-8 ${bgColor}`}>
-                      <AvatarFallback className={`${bgColor} border-0`}>
-                        <CategoryIcon className={`h-4 w-4 ${iconColor}`} />
-                      </AvatarFallback>
-                    </Avatar>
-                    
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-foreground font-google truncate">
-                            {merchant.merchant}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {merchant.transactionCount}x transaction{merchant.transactionCount !== 1 ? 's' : ''}
-                          </p>
-                        </div>
+              {/* Search in Modal */}
+              <div className="relative mb-4 flex-shrink-0">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search merchants"
+                  value={modalSearchTerm}
+                  onChange={(e) => setModalSearchTerm(e.target.value)}
+                  className="pl-10 h-9 bg-muted/30 border border-border/50 rounded-full text-sm font-google"
+                />
+              </div>
+              
+              {/* Grouped Merchants - Scrollable */}
+              <div className="space-y-2 overflow-y-auto flex-1" style={{ scrollbarWidth: 'thin' }}>
+                {groupedMerchants.map((merchant) => {
+                  const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor(merchant.merchant, selectedCategory?.category || '');
+                  
+                  return (
+                    <div key={merchant.merchant} className="p-3 bg-muted/20 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Avatar className={`h-8 w-8 ${bgColor}`}>
+                          <AvatarFallback className={`${bgColor} border-0`}>
+                            <CategoryIcon className={`h-4 w-4 ${iconColor}`} />
+                          </AvatarFallback>
+                        </Avatar>
                         
-                        <div className="text-right ml-3">
-                          <div className="text-sm font-medium font-google text-foreground">
-                            ₹{merchant.totalAmount.toLocaleString()}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-medium text-foreground font-google truncate">
+                                {merchant.merchant}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {merchant.transactionCount}x transaction{merchant.transactionCount !== 1 ? 's' : ''}
+                              </p>
+                            </div>
+                            
+                            <div className="text-right ml-3">
+                              <div className="text-sm font-medium font-google text-foreground">
+                                ₹{merchant.totalAmount.toLocaleString()}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </SheetContent>
-      </Sheet>
+                  );
+                })}
+              </div>
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
     </div>
   );
 };
