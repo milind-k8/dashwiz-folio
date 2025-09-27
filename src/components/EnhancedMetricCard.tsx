@@ -17,7 +17,7 @@ interface EnhancedMetricCardProps {
   trendValue?: number;
   isHighlighted?: boolean;
   bankBreakdown?: BankBreakdown[];
-  metricType: 'balance' | 'expenses' | 'income';
+  metricType: 'balance' | 'expenses' | 'income' | 'spending';
   className?: string;
 }
 
@@ -38,6 +38,7 @@ export function EnhancedMetricCard({
       case 'balance':
         return breakdown.balance || 0;
       case 'expenses':
+      case 'spending':
         return breakdown.expenses || 0;
       case 'income':
         return breakdown.income || 0;
@@ -50,38 +51,48 @@ export function EnhancedMetricCard({
   const isPositiveTrend = trendValue && trendValue > 0;
   const isNegativeTrend = trendValue && trendValue < 0;
 
-  // Define metric-specific styles based on design system - all cards use same background
+  // Define metric-specific styles based on design system - colorful card backgrounds
   const getMetricStyles = () => {
     switch (metricType) {
       case 'balance':
         return {
-          cardClass: 'bg-card text-card-foreground border border-border',
-          iconBg: 'bg-primary/10',
-          iconColor: 'text-primary',
-          textColor: 'text-card-foreground',
-          mutedColor: 'text-muted-foreground',
-          borderColor: 'border-border',
-          breakdown: 'bg-muted/30'
+          cardClass: 'bg-card-balance text-card-balance-foreground border border-card-balance',
+          iconBg: 'bg-card-balance-foreground/10',
+          iconColor: 'text-card-balance-foreground',
+          textColor: 'text-card-balance-foreground',
+          mutedColor: 'text-card-balance-foreground/70',
+          borderColor: 'border-card-balance-foreground/20',
+          breakdown: 'bg-card-balance-foreground/5'
         };
       case 'expenses':
         return {
-          cardClass: 'bg-card text-card-foreground border border-border',
-          iconBg: 'bg-destructive/10',
-          iconColor: 'text-destructive',
-          textColor: 'text-card-foreground',
-          mutedColor: 'text-muted-foreground',
-          borderColor: 'border-border',
-          breakdown: 'bg-muted/30'
+          cardClass: 'bg-card-expenses text-card-expenses-foreground border border-card-expenses',
+          iconBg: 'bg-card-expenses-foreground/10',
+          iconColor: 'text-card-expenses-foreground',
+          textColor: 'text-card-expenses-foreground',
+          mutedColor: 'text-card-expenses-foreground/70',
+          borderColor: 'border-card-expenses-foreground/20',
+          breakdown: 'bg-card-expenses-foreground/5'
         };
       case 'income':
         return {
-          cardClass: 'bg-card text-card-foreground border border-border',
-          iconBg: 'bg-success/10',
-          iconColor: 'text-success',
-          textColor: 'text-card-foreground',
-          mutedColor: 'text-muted-foreground',
-          borderColor: 'border-border',
-          breakdown: 'bg-muted/30'
+          cardClass: 'bg-card-income text-card-income-foreground border border-card-income',
+          iconBg: 'bg-card-income-foreground/10',
+          iconColor: 'text-card-income-foreground',
+          textColor: 'text-card-income-foreground',
+          mutedColor: 'text-card-income-foreground/70',
+          borderColor: 'border-card-income-foreground/20',
+          breakdown: 'bg-card-income-foreground/5'
+        };
+      case 'spending':
+        return {
+          cardClass: 'bg-card-spending text-card-spending-foreground border border-card-spending',
+          iconBg: 'bg-card-spending-foreground/10',
+          iconColor: 'text-card-spending-foreground',
+          textColor: 'text-card-spending-foreground',
+          mutedColor: 'text-card-spending-foreground/70',
+          borderColor: 'border-card-spending-foreground/20',
+          breakdown: 'bg-card-spending-foreground/5'
         };
       default:
         return {
@@ -192,7 +203,7 @@ export function EnhancedMetricCard({
                       "font-semibold text-xs flex-shrink-0 ml-2",
                       styles.textColor
                     )}>
-                      {metricType === 'expenses' ? "-" : ""}₹{bankValue.toLocaleString()}
+                      {(metricType === 'expenses' || metricType === 'spending') ? "-" : ""}₹{bankValue.toLocaleString()}
                     </span>
                   </div>
                 );

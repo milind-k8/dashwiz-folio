@@ -92,6 +92,22 @@ export default {
           foreground: "hsl(var(--warning-foreground))",
           subtle: "hsl(var(--warning-subtle))",
         },
+        "card-balance": {
+          DEFAULT: "hsl(var(--card-balance))",
+          foreground: "hsl(var(--card-balance-foreground))",
+        },
+        "card-expenses": {
+          DEFAULT: "hsl(var(--card-expenses))",
+          foreground: "hsl(var(--card-expenses-foreground))",
+        },
+        "card-income": {
+          DEFAULT: "hsl(var(--card-income))",
+          foreground: "hsl(var(--card-income-foreground))",
+        },
+        "card-spending": {
+          DEFAULT: "hsl(var(--card-spending))",
+          foreground: "hsl(var(--card-spending-foreground))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

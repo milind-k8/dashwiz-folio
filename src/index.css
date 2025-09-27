@@ -52,6 +52,16 @@ All colors MUST be HSL.
     --warning-foreground: 0 0% 100%;
     --warning-subtle: 38 92% 96%;
 
+    /* Dashboard card backgrounds - inspired by reference design */
+    --card-balance: 38 46% 95%;        /* Light peach/orange */
+    --card-balance-foreground: 38 46% 25%;
+    --card-expenses: 122 23% 95%;      /* Light green */
+    --card-expenses-foreground: 122 23% 25%;
+    --card-income: 214 46% 95%;        /* Light blue */
+    --card-income-foreground: 214 46% 25%;
+    --card-spending: 122 23% 95%;      /* Light green (same as expenses) */
+    --card-spending-foreground: 122 23% 25%;
+
     /* Google Form elements - Enhanced borders */
     --border: 0 0% 82%;
     --input: 0 0% 82%;
@@ -146,6 +156,16 @@ All colors MUST be HSL.
     --warning: 38 92% 60%;
     --warning-foreground: 0 0% 100%;
     --warning-subtle: 38 92% 15%;
+
+    /* Dashboard card backgrounds - dark mode */
+    --card-balance: 38 46% 15%;        /* Dark peach/orange */
+    --card-balance-foreground: 38 46% 85%;
+    --card-expenses: 122 23% 15%;      /* Dark green */
+    --card-expenses-foreground: 122 23% 85%;
+    --card-income: 214 46% 15%;        /* Dark blue */
+    --card-income-foreground: 214 46% 85%;
+    --card-spending: 122 23% 15%;      /* Dark green (same as expenses) */
+    --card-spending-foreground: 122 23% 85%;
 
     /* Google Dark Form elements - bluish tint */
     --border: 218 25% 18%;

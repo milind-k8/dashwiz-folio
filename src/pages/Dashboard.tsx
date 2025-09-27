@@ -84,7 +84,7 @@ export function Dashboard() {
           title="Avg Daily Spending"
           value={`₹${averageSpending.toLocaleString()}`}
           icon={Calculator}
-          metricType="expenses"
+          metricType="spending"
         />
       </div>
 
