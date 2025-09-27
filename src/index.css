@@ -9,7 +9,7 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Google Material Design Color Palette - More Contrasted */
-    --background: 200 12% 92%;
+    --background: 200 3.27% 93.21%;
     --foreground: 0 0% 9%;
 
     /* Google Card system - Enhanced contrast */
