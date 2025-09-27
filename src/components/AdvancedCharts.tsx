@@ -113,7 +113,7 @@ export function AdvancedCharts({ transactions, expenseCategories }: AdvancedChar
     <div className="space-y-4 sm:space-y-6">
       
       {/* Daily Spending Trend */}
-      <Card className="border-muted/40">
+      <Card className="border border-border">
         <CardHeader className="pb-3">
           <CardTitle className="text-base font-medium">Daily Spending Trend</CardTitle>
           <p className="text-sm text-muted-foreground">Last 14 days</p>

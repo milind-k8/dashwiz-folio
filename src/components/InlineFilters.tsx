@@ -111,7 +111,7 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
       {/* Bank Filter - Compact */}
       <div className="min-w-0">
         <Select value={selectedBank} onValueChange={handleBankChange}>
-          <SelectTrigger className="h-7 px-2 py-1 bg-muted/30 border-0 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors min-w-[80px] max-w-[120px]">
+          <SelectTrigger className="h-7 px-2 py-1 bg-muted/30 border border-border rounded-full text-xs font-medium hover:bg-muted/50 transition-colors min-w-[80px] max-w-[120px]">
             <SelectValue placeholder="Bank" />
           </SelectTrigger>
           <SelectContent className="bg-background border border-border shadow-lg z-[100] min-w-[140px]">
@@ -131,7 +131,7 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
       {/* Duration Filter - Compact */}
       <div className="min-w-0">
         <Select value={selectedDuration} onValueChange={handleDurationChange}>
-          <SelectTrigger className="h-7 px-2 py-1 bg-muted/30 border-0 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors min-w-[90px] max-w-[140px]">
+          <SelectTrigger className="h-7 px-2 py-1 bg-muted/30 border border-border rounded-full text-xs font-medium hover:bg-muted/50 transition-colors min-w-[90px] max-w-[140px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="bg-background border border-border shadow-lg z-[100] min-w-[160px]">
