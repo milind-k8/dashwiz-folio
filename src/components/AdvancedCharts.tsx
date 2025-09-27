@@ -112,100 +112,48 @@ export function AdvancedCharts({ transactions, expenseCategories }: AdvancedChar
   return (
     <div className="space-y-4 sm:space-y-6">
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Daily Spending Trend */}
-        <Card className="border-muted/40">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-medium">Daily Spending Trend</CardTitle>
-            <p className="text-sm text-muted-foreground">Last 14 days</p>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="h-48">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={dailyTrendData}>
-                  <defs>
-                    <linearGradient id="spendingGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.05}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                  <XAxis 
-                    dataKey="date" 
-                    tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <YAxis 
-                    tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
-                    axisLine={false}
-                    tickLine={false}
-                    tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Area 
-                    type="monotone" 
-                    dataKey="amount" 
-                    stroke="hsl(var(--primary))" 
-                    fill="url(#spendingGradient)"
-                    strokeWidth={2}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Monthly Comparison */}
-        <Card className="border-muted/40">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-medium">Monthly Comparison</CardTitle>
-            <p className="text-sm text-muted-foreground">Income vs Expenses comparison</p>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={monthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                  <XAxis 
-                    dataKey="month" 
-                    tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <YAxis 
-                    tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                    axisLine={false}
-                    tickLine={false}
-                    tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Line 
-                    type="monotone" 
-                    dataKey="income" 
-                    stroke="hsl(var(--success))" 
-                    strokeWidth={3}
-                    dot={{ fill: 'hsl(var(--success))', strokeWidth: 2, r: 4 }}
-                    name="Income"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="expenses" 
-                    stroke="hsl(var(--destructive))" 
-                    strokeWidth={3}
-                    dot={{ fill: 'hsl(var(--destructive))', strokeWidth: 2, r: 4 }}
-                    name="Expenses"
-                  />
-                  <Legend 
-                    wrapperStyle={{ fontSize: '14px', paddingTop: '20px' }}
-                    formatter={(value) => <span style={{ color: 'hsl(var(--foreground))' }}>{value}</span>}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Daily Spending Trend */}
+      <Card className="border-muted/40">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-medium">Daily Spending Trend</CardTitle>
+          <p className="text-sm text-muted-foreground">Last 14 days</p>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="h-48">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={dailyTrendData}>
+                <defs>
+                  <linearGradient id="spendingGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.05}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                <XAxis 
+                  dataKey="date" 
+                  tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis 
+                  tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Area 
+                  type="monotone" 
+                  dataKey="amount" 
+                  stroke="hsl(var(--primary))" 
+                  fill="url(#spendingGradient)"
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
