@@ -284,7 +284,7 @@ export const TransactionsContent = () => {
                     key={group.category} 
                     className="p-4 hover:bg-muted/30 transition-colors cursor-pointer"
                     onClick={() => setSelectedCategory(group)}
-                  >
+            style={{ scrollbarWidth: 'thin' }}>
                     <div className="flex items-center gap-3">
                       {/* Category Icon */}
                       <Avatar className={`h-10 w-10 ${bgColor}`}>
@@ -410,15 +410,19 @@ export const TransactionsContent = () => {
         )}
       </div>
 
-      {/* Bottom Modal for Category Details */}
+      {/* Bottom Modal for Category Details - Draggable like Google Maps */}
       <Sheet open={!!selectedCategory} onOpenChange={(open) => {
         if (!open) {
           setSelectedCategory(null);
           setModalSearchTerm('');
         }
       }}>
-        <SheetContent side="bottom" className="max-h-[80vh] rounded-t-xl" onInteractOutside={(e) => e.preventDefault()}>
-          <SheetHeader className="pb-4">
+        <SheetContent side="bottom" className="max-h-[80vh] rounded-t-xl overflow-hidden">
+          {/* Drag Handle */}
+          <div className="flex justify-center py-2 cursor-grab active:cursor-grabbing">
+            <div className="w-8 h-1 bg-muted-foreground/40 rounded-full"></div>
+          </div>
+          <SheetHeader className="pb-4 pt-2">
             <SheetTitle className="text-left font-google">
               {selectedCategory?.category}
             </SheetTitle>
