@@ -41,13 +41,17 @@ export default function AuthPage() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
+      // Check if user has previously gone through consent
+      const hasConsented = localStorage.getItem('google_consent_given') === 'true';
+      const promptValue = hasConsented ? 'select_account' : 'consent';
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           scopes: 'https://www.googleapis.com/auth/gmail.readonly',
           queryParams: {
             access_type: 'offline',
-            prompt: 'consent',
+            prompt: promptValue,
             include_granted_scopes: 'true',
           },
         }

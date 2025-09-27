@@ -41,6 +41,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               console.error('Failed to store user tokens:', error);
             } else {
               console.log('User tokens stored successfully');
+              // Mark that user has gone through consent
+              localStorage.setItem('google_consent_given', 'true');
             }
           } catch (error) {
             console.error('Error storing user tokens:', error);
