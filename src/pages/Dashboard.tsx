@@ -8,7 +8,7 @@ import { DashboardSkeleton } from '@/components/DashboardSkeleton';
 import { useFinancialData } from '@/hooks/useFinancialData';
 import { useFilterStore } from '@/store/filterStore';
 import { useGlobalStore } from '@/store/globalStore';
-import { Wallet, CreditCard as CreditCardIcon } from 'lucide-react';
+import { Wallet, CreditCard as CreditCardIcon, TrendingUp, Calculator } from 'lucide-react';
 
 export function Dashboard() {
   const { getFilteredData, isLoading } = useFinancialData();
@@ -30,6 +30,19 @@ export function Dashboard() {
     return getFilteredData(selectedBank, prevDuration);
   }, [getFilteredData, selectedBank, selectedDuration]);
 
+  // Calculate average daily spending
+  const averageSpending = useMemo(() => {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const currentDay = now.getDate();
+    
+    // Use current day for current month, full month for others
+    const relevantDays = selectedDuration === 'current-month' ? currentDay : daysInMonth;
+    return relevantDays > 0 ? Math.round(data.expenses / relevantDays) : 0;
+  }, [data.expenses, selectedDuration]);
+
   if (isLoading) {
     return (
       <PageContent>
@@ -48,7 +61,7 @@ export function Dashboard() {
       </div>
       
       {/* Essential Metrics */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <EnhancedMetricCard
           title="Total Balance"
           value={`₹${data.balance.toLocaleString()}`}
@@ -59,6 +72,18 @@ export function Dashboard() {
           title="Monthly Expenses"
           value={`₹${data.expenses.toLocaleString()}`}
           icon={CreditCardIcon}
+          metricType="expenses"
+        />
+        <EnhancedMetricCard
+          title="Total Income"
+          value={`₹${data.income.toLocaleString()}`}
+          icon={TrendingUp}
+          metricType="income"
+        />
+        <EnhancedMetricCard
+          title="Avg Daily Spending"
+          value={`₹${averageSpending.toLocaleString()}`}
+          icon={Calculator}
           metricType="expenses"
         />
       </div>
