@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      email_sync_logs: {
+        Row: {
+          created_at: string
+          emails_processed: number | null
+          error_message: string | null
+          id: string
+          status: string | null
+          sync_completed_at: string | null
+          sync_started_at: string
+          transactions_created: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          emails_processed?: number | null
+          error_message?: string | null
+          id?: string
+          status?: string | null
+          sync_completed_at?: string | null
+          sync_started_at?: string
+          transactions_created?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          emails_processed?: number | null
+          error_message?: string | null
+          id?: string
+          status?: string | null
+          sync_completed_at?: string | null
+          sync_started_at?: string
+          transactions_created?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       merchants: {
         Row: {
           category: string | null
@@ -109,11 +145,51 @@ export type Database = {
         }
         Relationships: []
       }
+      user_tokens: {
+        Row: {
+          created_at: string
+          google_access_token: string | null
+          google_refresh_token: string
+          id: string
+          last_sync_at: string | null
+          sync_status: string | null
+          token_expires_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          google_access_token?: string | null
+          google_refresh_token: string
+          id?: string
+          last_sync_at?: string | null
+          sync_status?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          google_access_token?: string | null
+          google_refresh_token?: string
+          id?: string
+          last_sync_at?: string | null
+          sync_status?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      cleanup_old_sync_logs: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       get_user_transactions_with_details: {
         Args: { months_back?: number; user_uuid: string }
         Returns: {
