@@ -65,7 +65,7 @@ export function AppSidebar({ activeTab, onTabChange }: AppSidebarProps) {
               className="flex items-center gap-3 hover:opacity-80 transition-opacity disabled:opacity-50"
             >
               <div className={`${open || isMobile ? 'w-8 h-8' : 'w-6 h-6'} bg-gradient-primary rounded-lg flex items-center justify-center`}>
-                <IndianRupee className={`${open || isMobile ? 'w-5 h-5' : 'w-4 h-4'} text-primary-foreground`} />
+                <IndianRupee className={`${open || isMobile ? 'w-5 h-5' : 'w-4 h-4'} text-white`} />
               </div>
               {(open || isMobile) && (
                 <span className="text-xl font-bold text-foreground">PisaWise</span>

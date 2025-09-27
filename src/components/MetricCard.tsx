@@ -34,13 +34,13 @@ export function MetricCard({
         <div className={cn(
           "p-2 rounded-lg",
           isHighlighted 
-            ? 'bg-primary-foreground/20' 
+            ? 'bg-white/20' 
             : 'bg-primary/10'
         )}>
           <Icon className={cn(
             "w-5 h-5",
             isHighlighted 
-              ? 'text-primary-foreground' 
+              ? 'text-white' 
               : 'text-primary'
           )} />
         </div>
@@ -48,7 +48,7 @@ export function MetricCard({
           <span className={cn(
             "text-sm font-medium",
             isHighlighted 
-              ? 'text-primary-foreground/80' 
+              ? 'text-white/80' 
               : 'text-success'
           )}>
             {trend}
@@ -60,7 +60,7 @@ export function MetricCard({
         <p className={cn(
           "text-sm font-medium mb-2",
           isHighlighted 
-            ? 'text-primary-foreground/80' 
+            ? 'text-white/80' 
             : 'text-muted-foreground'
         )}>
           {title}
@@ -68,7 +68,7 @@ export function MetricCard({
         <p className={cn(
           "text-2xl font-bold",
           isHighlighted 
-            ? 'text-primary-foreground' 
+            ? 'text-white' 
             : 'text-foreground'
         )}>
           {value}

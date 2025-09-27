@@ -10,15 +10,15 @@ export function CreditCard() {
         </button>
       </div>
       
-      <Card className="relative bg-gradient-card text-primary-foreground border-0 shadow-elevated overflow-hidden">
+      <Card className="relative bg-gradient-card text-white border-0 shadow-elevated overflow-hidden">
         <div className="p-4 sm:p-6">
           <div className="flex items-start justify-between mb-6 sm:mb-8">
             <div>
-              <p className="text-primary-foreground/80 text-xs sm:text-sm mb-1">Balance</p>
+              <p className="text-white/80 text-xs sm:text-sm mb-1">Balance</p>
               <p className="text-xl sm:text-2xl font-bold">₹2,190.19</p>
             </div>
             <div className="text-right">
-              <p className="text-primary-foreground/80 text-xs sm:text-sm">VISA</p>
+              <p className="text-white/80 text-xs sm:text-sm">VISA</p>
             </div>
           </div>
           
@@ -32,11 +32,11 @@ export function CreditCard() {
             
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-primary-foreground/80 text-xs mb-1">Card Holder</p>
+                <p className="text-white/80 text-xs mb-1">Card Holder</p>
                 <p className="font-medium text-sm">John Smith</p>
               </div>
               <div className="text-right">
-                <p className="text-primary-foreground/80 text-xs mb-1">Valid Thru</p>
+                <p className="text-white/80 text-xs mb-1">Valid Thru</p>
                 <p className="font-medium text-sm">12/24</p>
               </div>
             </div>
@@ -44,8 +44,8 @@ export function CreditCard() {
         </div>
         
         {/* Decorative circles */}
-        <div className="absolute -top-12 -right-12 w-24 h-24 bg-primary-foreground/10 rounded-full"></div>
-        <div className="absolute -bottom-8 -left-8 w-16 h-16 bg-primary-foreground/10 rounded-full"></div>
+        <div className="absolute -top-12 -right-12 w-24 h-24 bg-white/10 rounded-full"></div>
+        <div className="absolute -bottom-8 -left-8 w-16 h-16 bg-white/10 rounded-full"></div>
       </Card>
       
       <div className="flex items-center justify-between text-sm">

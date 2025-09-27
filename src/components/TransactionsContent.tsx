@@ -131,17 +131,17 @@ export const TransactionsContent = () => {
     const categoryLower = category?.toLowerCase() || '';
     
     if (merchantLower.includes('coffee') || merchantLower.includes('starbucks') || merchantLower.includes('cafe')) {
-      return { icon: Coffee, bgColor: 'bg-warning/10', iconColor: 'text-warning' };
+      return { icon: Coffee, bgColor: 'bg-warning-subtle dark:bg-warning-subtle', iconColor: 'text-warning dark:text-warning' };
     } else if (merchantLower.includes('uber') || merchantLower.includes('taxi') || categoryLower.includes('transport')) {
-      return { icon: Car, bgColor: 'bg-primary/10', iconColor: 'text-primary' };
+      return { icon: Car, bgColor: 'bg-primary-subtle dark:bg-primary-subtle', iconColor: 'text-primary dark:text-primary' };
     } else if (merchantLower.includes('restaurant') || merchantLower.includes('food') || categoryLower.includes('food')) {
-      return { icon: Utensils, bgColor: 'bg-muted', iconColor: 'text-muted-foreground' };
+      return { icon: Utensils, bgColor: 'bg-muted dark:bg-muted', iconColor: 'text-muted-foreground dark:text-muted-foreground' };
     } else if (merchantLower.includes('shop') || merchantLower.includes('store') || categoryLower.includes('shopping')) {
-      return { icon: ShoppingBag, bgColor: 'bg-accent/10', iconColor: 'text-accent' };
+      return { icon: ShoppingBag, bgColor: 'bg-accent/10 dark:bg-accent/10', iconColor: 'text-accent dark:text-accent' };
     } else if (categoryLower.includes('bank') || categoryLower.includes('atm')) {
-      return { icon: CreditCard, bgColor: 'bg-success/10', iconColor: 'text-success' };
+      return { icon: CreditCard, bgColor: 'bg-success-subtle dark:bg-success-subtle', iconColor: 'text-success dark:text-success' };
     } else {
-      return { icon: Store, bgColor: 'bg-destructive/10', iconColor: 'text-destructive' };
+      return { icon: Store, bgColor: 'bg-destructive-subtle dark:bg-destructive-subtle', iconColor: 'text-destructive dark:text-destructive' };
     }
   };
 
@@ -544,7 +544,7 @@ export const TransactionsContent = () => {
         }}
       >
         <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-overlay z-40" />
+          <Drawer.Overlay className="fixed inset-0 bg-black/40 z-40" />
           <Drawer.Content className="bg-background flex flex-col rounded-t-[10px] h-[80vh] mt-24 fixed bottom-0 left-0 right-0 z-50">
             {/* Drag Handle */}
             <div className="p-4 bg-background rounded-t-[10px] flex-shrink-0">
