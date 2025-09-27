@@ -45,7 +45,7 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
   if (topTransactions.length === 0) {
     return (
       <Card className={cn("", className)}>
-        <CardHeader className="pb-3">
+        <CardHeader>
           <CardTitle className="text-base font-medium flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-primary" />
             Top 5 Highest Transactions
@@ -65,7 +65,7 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
 
   return (
     <Card className={cn("", className)}>
-      <CardHeader className="pb-3">
+      <CardHeader>
         <CardTitle className="text-base font-medium flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-primary" />
           Top 5 Highest Transactions
@@ -80,13 +80,8 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
             >
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <div className="flex-shrink-0">
-                  <div className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
-                    index === 0 && "bg-primary/10 text-primary",
-                    index === 1 && "bg-success/10 text-success", 
-                    index === 2 && "bg-warning/10 text-warning",
-                    index > 2 && "bg-muted/50 text-muted-foreground"
-                  )}>
+                  <div className=
+                    "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-muted/50 text-muted-foreground">
                     #{index + 1}
                   </div>
                 </div>

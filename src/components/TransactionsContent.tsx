@@ -545,13 +545,13 @@ export const TransactionsContent = () => {
       >
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40 z-40" />
-          <Drawer.Content className="bg-background flex flex-col rounded-t-[10px] h-[80vh] mt-24 fixed bottom-0 left-0 right-0 z-50">
+          <Drawer.Content className="bg-card flex flex-col rounded-t-[10px] h-[80vh] mt-24 fixed bottom-0 left-0 right-0 z-50">
             {/* Drag Handle */}
-            <div className="p-4 bg-background rounded-t-[10px] flex-shrink-0">
+            <div className="p-4 bg-card rounded-t-[10px] flex-shrink-0">
               <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/40" />
             </div>
             
-            <div className="px-6 flex flex-col flex-1 overflow-hidden">
+            <div className="px-4 flex flex-col flex-1 overflow-hidden">
               {/* Header */}
               <div className="pb-4">
                 <Drawer.Title className="text-lg font-semibold text-foreground font-google">
@@ -579,7 +579,7 @@ export const TransactionsContent = () => {
                   const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor(merchant.merchant, selectedCategory?.category || '');
                   
                   return (
-                    <div key={merchant.merchant} className="p-3 bg-muted/20 rounded-2xl">
+                    <div key={merchant.merchant} className="p-3 bg-muted/80 rounded-2xl">
                       <div className="flex items-center gap-3">
                         <Avatar className={`h-8 w-8 ${bgColor}`}>
                           <AvatarFallback className={`${bgColor} border-0`}>
