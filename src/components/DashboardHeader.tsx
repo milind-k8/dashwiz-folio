@@ -19,12 +19,11 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
         <button 
           onClick={refreshData}
           disabled={refreshing}
-          className="flex items-center gap-2 hover:opacity-80 transition-opacity disabled:opacity-50"
+          className="flex items-center hover:opacity-80 transition-opacity disabled:opacity-50"
         >
-          <div className="w-6 h-6 bg-gradient-primary rounded-lg flex items-center justify-center">
-            <IndianRupee className="w-4 h-4 text-white" />
-          </div>
-          <span className="text-xl font-semibold text-foreground">PisaWise</span>
+          <span className="text-xl font-semibold text-foreground">
+            Mona<span className="text-primary">ro</span>
+          </span>
         </button>
       )}
       
