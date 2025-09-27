@@ -268,8 +268,20 @@ export const TransactionsContent = () => {
               placeholder="Search transactions, merchants..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-12 h-12 bg-muted/30 border border-border/50 rounded-full text-base font-normal placeholder:text-muted-foreground/70"
+              className="pl-10 pr-20 h-12 bg-muted/30 border border-border/50 rounded-full text-base font-normal placeholder:text-muted-foreground/70"
             />
+            
+            {/* Clear search button */}
+            {searchTerm && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSearchTerm('')}
+                className="absolute right-12 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-muted/50 rounded-full"
+              >
+                <X className="h-4 w-4 text-muted-foreground" />
+              </Button>
+            )}
             
             {/* Filter Popover */}
             <Popover open={filterOpen} onOpenChange={setFilterOpen} modal={true}>
