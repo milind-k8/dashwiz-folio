@@ -254,75 +254,78 @@ export const BanksContent = () => {
 
   if (!session?.user) {
     return (
-      <div className="p-4 md:p-6 space-y-6 animate-fade-in">
-        <div className="text-center py-12">
-          <Building className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h2 className="text-xl font-semibold mb-2">Sign in Required</h2>
-          <p className="text-muted-foreground">Please sign in to manage your banks.</p>
+      <div className="p-3 sm:p-4 md:p-6 space-y-6 animate-fade-in max-w-7xl mx-auto">
+        <div className="text-center py-16">
+          <div className="w-16 h-16 rounded-full bg-muted/20 flex items-center justify-center mx-auto mb-4">
+            <Building className="h-8 w-8 text-muted-foreground/50" />
+          </div>
+          <h2 className="text-lg font-medium mb-2">Sign in to continue</h2>
+          <p className="text-sm text-muted-foreground">Connect with your Google account to manage bank accounts</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-6 animate-fade-in">
+    <div className="p-3 sm:p-4 md:p-6 space-y-6 animate-fade-in max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="space-y-2">
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-            Connected Banks
+        <div className="space-y-1">
+          <h1 className="text-2xl md:text-3xl font-semibold text-foreground">
+            Banks
           </h1>
-          <p className="text-muted-foreground">
-            Connect your banks by verifying through email
+          <p className="text-muted-foreground text-sm">
+            Connect your bank accounts to track transactions
           </p>
         </div>
         
         <Dialog open={showAddBankDialog} onOpenChange={setShowAddBankDialog}>
           <DialogTrigger asChild>
-            <Button className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
+            <Button className="card-elevated touch-target">
+              <Plus className="h-4 w-4 mr-2" />
               Add Bank
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Add Bank Account</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-lg font-medium">Add Bank Account</DialogTitle>
+              <DialogDescription className="text-sm text-muted-foreground">
                 Select a bank to connect. We'll verify your account using your email.
               </DialogDescription>
             </DialogHeader>
             
-            <div className="space-y-4">
+            <div className="space-y-3">
               {AVAILABLE_BANKS.map((bank) => (
-                <Card key={bank.name} className="p-4 hover:shadow-md transition-shadow">
+                <div key={bank.name} className="card-minimal p-4 hover:shadow-material-light transition-all duration-200">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                         <CreditCard className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold">{bank.displayName}</h3>
-                        <p className="text-sm text-muted-foreground">{bank.description}</p>
+                        <h3 className="font-medium text-sm">{bank.displayName}</h3>
+                        <p className="text-xs text-muted-foreground">{bank.description}</p>
                       </div>
                     </div>
                     <Button 
                       onClick={() => handleVerifyBank(bank.name)}
                       disabled={isVerifying}
-                      className="flex items-center gap-2"
+                      size="sm"
+                      className="touch-target"
                     >
                       {isVerifying ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
                       ) : (
-                        <CheckCircle className="h-4 w-4" />
+                        <CheckCircle className="h-4 w-4 mr-2" />
                       )}
-                      {isVerifying ? 'Verifying...' : 'Verify & Add'}
+                      {isVerifying ? 'Verifying...' : 'Connect'}
                     </Button>
                   </div>
-                </Card>
+                </div>
               ))}
             </div>
             
-            <DialogFooter>
+            <DialogFooter className="pt-4">
               <Button variant="outline" onClick={() => setShowAddBankDialog(false)}>
                 Cancel
               </Button>
@@ -333,38 +336,37 @@ export const BanksContent = () => {
       </div>
 
       {/* Connected Banks List */}
-      <Card className="p-4 md:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Building className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold">Your Banks</h2>
-            <p className="text-sm text-muted-foreground">Manage your connected bank accounts</p>
-          </div>
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Building className="h-5 w-5 text-primary" />
+          <h2 className="text-lg font-medium">Connected Banks</h2>
         </div>
         
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin mb-4 text-primary" />
-            <p className="text-muted-foreground">Loading your banks...</p>
+          <div className="flex flex-col items-center justify-center py-16">
+            <Loader2 className="h-6 w-6 animate-spin mb-3 text-primary" />
+            <p className="text-muted-foreground text-sm">Loading banks...</p>
           </div>
         ) : userBanks.length > 0 ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {userBanks.map((bank) => (
-              <Card key={bank.id} className="p-4 border border-border/50 hover:shadow-md transition-all duration-200 hover:border-primary/20">
-                <div className="flex flex-col space-y-4">
+              <div key={bank.id} className="card-minimal p-4 hover:shadow-material-light transition-all duration-200">
+                <div className="space-y-4">
                   {/* Bank Header */}
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                         <CreditCard className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-lg">{bank.bank_name} Bank</h3>
+                        <h3 className="font-medium text-base">{bank.bank_name} Bank</h3>
                         <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="secondary" className="font-mono text-xs">
-                            {bank.bank_account_no}
+                          <Badge variant="secondary" className="font-mono text-xs px-2 py-0.5">
+                            •••• {bank.bank_account_no.slice(-4)}
+                          </Badge>
+                          <Badge variant="outline" className="text-xs px-2 py-0.5 border-success/30 bg-success/10 text-success">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            Connected
                           </Badge>
                         </div>
                       </div>
@@ -376,7 +378,7 @@ export const BanksContent = () => {
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="text-destructive hover:text-destructive hover:bg-destructive/10 p-2"
+                          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full w-8 h-8 p-0"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -402,37 +404,34 @@ export const BanksContent = () => {
                   </div>
                   
                   {/* Bank Details */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-3 border-t border-border/30">
+                  <div className="grid grid-cols-2 gap-4 py-3 border-t border-border/20">
                     <div className="space-y-1">
-                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Added On</p>
+                      <p className="text-xs text-muted-foreground">Added</p>
                       <p className="text-sm font-medium">
                         {new Date(bank.created_at).toLocaleDateString('en-US', {
-                          year: 'numeric',
                           month: 'short',
-                          day: 'numeric'
+                          day: 'numeric',
+                          year: 'numeric'
                         })}
                       </p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Status</p>
-                      <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-100">
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                        Connected
-                      </Badge>
+                      <p className="text-xs text-muted-foreground">Account</p>
+                      <p className="text-sm font-medium font-mono">{bank.bank_account_no}</p>
                     </div>
                   </div>
                   
                   {/* Month Selection and Actions */}
-                  <div className="pt-2 space-y-3">
+                  <div className="space-y-3">
                     <div className="space-y-2">
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        Select Month to Scan
+                      <label className="text-sm font-medium">
+                        Scan transactions for
                       </label>
                       <Select 
                         value={getSelectedMonth(bank.id)} 
                         onValueChange={(value) => handleMonthChange(bank.id, value)}
                       >
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className="w-full h-10">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -448,47 +447,47 @@ export const BanksContent = () => {
                     <Button 
                       onClick={() => handleProcessTransactions(bank)}
                       disabled={processingBanks.has(bank.bank_name) || !getSelectedMonth(bank.id)}
-                      className="w-full flex items-center gap-2"
+                      className="w-full touch-target"
                       size="sm"
                     >
                       {processingBanks.has(bank.bank_name) ? (
                         <>
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          Processing...
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                          Scanning...
                         </>
                       ) : (
                         <>
-                          <Download className="h-4 w-4" />
+                          <Download className="h-4 w-4 mr-2" />
                           Scan Transactions
                         </>
                       )}
                     </Button>
                   </div>
                 </div>
-              </Card>
+              </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <div className="flex flex-col items-center gap-4">
-              <div className="p-4 bg-muted/20 rounded-full">
+          <div className="text-center py-16">
+            <div className="flex flex-col items-center gap-4 max-w-sm mx-auto">
+              <div className="w-16 h-16 rounded-full bg-muted/20 flex items-center justify-center">
                 <Building className="h-8 w-8 text-muted-foreground/50" />
               </div>
-              <div className="space-y-1">
-                <p className="text-lg font-medium text-muted-foreground">No banks connected yet</p>
-                <p className="text-sm text-muted-foreground/70">Add your first bank to start tracking transactions</p>
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium">No banks connected</h3>
+                <p className="text-sm text-muted-foreground">Connect your first bank account to start tracking transactions automatically</p>
               </div>
               <Button 
                 onClick={() => setShowAddBankDialog(true)}
-                className="mt-2"
+                className="touch-target mt-2"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Add Your First Bank
+                Connect Bank
               </Button>
             </div>
           </div>
         )}
-      </Card>
+      </div>
     </div>
   );
 };
