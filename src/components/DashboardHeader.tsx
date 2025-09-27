@@ -14,7 +14,7 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
   const { autoProcessing } = useGlobalData();
 
   return (
-    <header className="sticky top-0 z-50 flex items-center gap-3 px-3 sm:px-4 h-14 bg-card/95 backdrop-blur-lg border-b border-border shadow-sm">        
+    <header className="sticky top-0 z-50 flex items-center gap-3 px-3 sm:px-4 h-14 bg-card border-b border-border">        
       {isMobile && (
         <button 
           onClick={refreshData}

@@ -7,7 +7,7 @@ export function DashboardSkeleton() {
       {/* Header Skeleton */}
       <div className="relative mb-8">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-2xl blur-xl"></div>
-        <Card className="relative backdrop-blur-sm bg-card/80 border border-border/50 shadow-xl">
+        <Card className="relative bg-card border border-border">
           <CardContent className="p-6">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
               <div className="space-y-3">

@@ -10,7 +10,7 @@ export function CreditCard() {
         </button>
       </div>
       
-      <Card className="relative bg-gradient-card text-white border-0 shadow-elevated overflow-hidden">
+      <Card className="relative bg-gradient-card text-white border border-primary overflow-hidden">
         <div className="p-4 sm:p-6">
           <div className="flex items-start justify-between mb-6 sm:mb-8">
             <div>

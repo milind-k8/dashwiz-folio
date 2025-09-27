@@ -34,7 +34,7 @@ export function ExpenseChart({ data: series }: ExpenseChartProps) {
     const percent = typeof p.percentage === 'number' ? `${p.percentage}%` : '';
     const tags = p.tags && p.tags.length > 0 ? p.tags.join(', ') : '';
     return (
-      <div className="bg-card/95 backdrop-blur-sm border border-border rounded-lg shadow-lg p-3 animate-scale-in max-w-[240px]">
+      <div className="bg-card border border-border rounded-lg p-3 animate-scale-in max-w-[240px]">
         <div className="flex items-center gap-2 mb-2">
           <span
             className="w-3 h-3 rounded-full flex-shrink-0"

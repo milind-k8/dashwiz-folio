@@ -97,7 +97,7 @@ export function AdvancedCharts({ transactions, expenseCategories }: AdvancedChar
     if (!active || !payload || payload.length === 0) return null;
     
     return (
-      <div className="bg-card/95 backdrop-blur-sm border border-border rounded-lg shadow-lg p-3">
+      <div className="bg-card border border-border rounded-lg p-3">
         <p className="font-semibold text-foreground text-sm mb-2">{label}</p>
         {payload.map((entry: any, index: number) => (
           <p key={index} className="text-sm" style={{ color: entry.color }}>

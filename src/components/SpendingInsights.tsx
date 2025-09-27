@@ -92,7 +92,7 @@ export function SpendingInsights({ transactions, currentExpenses, previousExpens
       
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {insightCards.map((insight, index) => (
-          <Card key={index} className="group hover:shadow-md transition-all duration-300 border-muted/40">
+          <Card key={index} className="group hover:border-primary/50 transition-all duration-300 border border-border">
             <CardContent className="p-4">
               <div className="flex items-start justify-between mb-3">
                 <div className={cn(

@@ -267,7 +267,7 @@ export const BanksContent = () => {
   }
 
   return (
-    <div className="p-3 sm:p-4 md:p-6 space-y-6 animate-fade-in max-w-7xl mx-auto border border-border/50 rounded-lg">
+    <div className="p-3 sm:p-4 md:p-6 space-y-6 animate-fade-in max-w-7xl mx-auto border border-border rounded-lg">
       {/* Connected Banks List */}
       <div className="space-y-6">
         <div className="flex items-center justify-between">

@@ -20,7 +20,7 @@ export function BottomNavbar({ activeTab, onTabChange }: BottomNavbarProps) {
   if (!isMobile) return null;
 
   return (
-    <div className="fixed pb-2 bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-t border-border ios-pwa-bottom h-20">
+    <div className="fixed pb-2 bottom-0 left-0 right-0 z-50 bg-card border-t border-border ios-pwa-bottom h-20">
       <div className="flex items-center justify-around px-1 h-full">
         {menuItems.map((item) => {
           const Icon = item.icon;

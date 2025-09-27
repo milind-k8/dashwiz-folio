@@ -55,7 +55,7 @@ export function EnhancedMetricCard({
     switch (metricType) {
       case 'balance':
         return {
-          cardClass: 'bg-card text-card-foreground shadow-card hover:shadow-elevated border',
+          cardClass: 'bg-card text-card-foreground border border-border',
           iconBg: 'bg-primary/10',
           iconColor: 'text-primary',
           textColor: 'text-card-foreground',
@@ -65,7 +65,7 @@ export function EnhancedMetricCard({
         };
       case 'expenses':
         return {
-          cardClass: 'bg-card text-card-foreground shadow-card hover:shadow-elevated border',
+          cardClass: 'bg-card text-card-foreground border border-border',
           iconBg: 'bg-destructive/10',
           iconColor: 'text-destructive',
           textColor: 'text-card-foreground',
@@ -75,7 +75,7 @@ export function EnhancedMetricCard({
         };
       case 'income':
         return {
-          cardClass: 'bg-card text-card-foreground shadow-card hover:shadow-elevated border',
+          cardClass: 'bg-card text-card-foreground border border-border',
           iconBg: 'bg-success/10',
           iconColor: 'text-success',
           textColor: 'text-card-foreground',
@@ -85,7 +85,7 @@ export function EnhancedMetricCard({
         };
       default:
         return {
-          cardClass: 'bg-card text-card-foreground shadow-card hover:shadow-elevated border',
+          cardClass: 'bg-card text-card-foreground border border-border',
           iconBg: 'bg-primary/10',
           iconColor: 'text-primary',
           textColor: 'text-card-foreground',
@@ -102,7 +102,7 @@ export function EnhancedMetricCard({
     <Card
       className={cn(
         "group relative overflow-hidden transition-all duration-300 rounded-2xl",
-        "hover:shadow-elevated hover:-translate-y-1",
+        "hover:border-primary/50",
         "active:scale-[0.98] active:transition-transform active:duration-150",
         styles.cardClass,
         className
