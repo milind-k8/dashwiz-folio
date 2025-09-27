@@ -55,6 +55,13 @@ interface GroupedMerchant {
 export const TransactionsContent = () => {
   const { banks, transactions, loading } = useGlobalStore();
   const { selectedBank, selectedDuration, setSelectedBank, setSelectedDuration } = useFilterStore();
+  
+  // Get current month as default
+  const getCurrentMonth = () => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  };
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBankId, setSelectedBankId] = useState<string>(selectedBank || '');
   const [isGroupedView, setIsGroupedView] = useState(true);
@@ -68,7 +75,7 @@ export const TransactionsContent = () => {
     }
   }, [selectedCategory]);
 
-  // Set first bank as default when banks are loaded
+  // Set defaults when banks are loaded and components mount
   useEffect(() => {
     if (banks.length > 0 && !selectedBankId) {
       const defaultBank = selectedBank || banks[0].id;
@@ -77,15 +84,20 @@ export const TransactionsContent = () => {
         setSelectedBank(defaultBank);
       }
     }
-  }, [banks, selectedBankId, selectedBank, setSelectedBank]);
+    
+    // Set current month as default if no duration is selected
+    if (!selectedDuration) {
+      setSelectedDuration(getCurrentMonth());
+    }
+  }, [banks, selectedBankId, selectedBank, setSelectedBank, selectedDuration, setSelectedDuration]);
 
   
-  // Get current date and generate month options
+  // Get current date and generate last 3 month options
   const getMonthOptions = () => {
     const options = [];
     const now = new Date();
     
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 3; i++) {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
       const label = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
@@ -255,6 +267,7 @@ export const TransactionsContent = () => {
                   <SelectValue placeholder="Select Bank" />
                 </SelectTrigger>
                 <SelectContent className="bg-background border border-border shadow-lg z-50">
+                  <SelectItem value="all-time" className="text-xs py-1.5">All Time</SelectItem>
                   {banks.map((bank) => (
                     <SelectItem key={bank.id} value={bank.id} className="text-xs py-1.5">
                       {bank.bank_name.toUpperCase()}
