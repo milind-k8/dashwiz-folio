@@ -1,7 +1,6 @@
 import { useMemo, useCallback } from 'react';
 import { EnhancedMetricCard } from '@/components/EnhancedMetricCard';
 import { TransactionList } from '@/components/TransactionList';
-import { SpendingInsights } from '@/components/SpendingInsights';
 import { AdvancedCharts } from '@/components/AdvancedCharts';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
@@ -62,12 +61,6 @@ export function Dashboard() {
         />
       </div>
 
-      {/* Spending Insights */}
-      <SpendingInsights 
-        transactions={data.transactions}
-        currentExpenses={data.expenses}
-        previousExpenses={previousMonthData.expenses}
-      />
 
       {/* Advanced Charts */}
       <AdvancedCharts 
