@@ -329,43 +329,30 @@ export const TransactionsContent = () => {
                       setSelectedBankId(value);
                       setSelectedBank(value);
                     }}>
-                      <SelectTrigger className="h-10 bg-background border-0 shadow-sm rounded-lg hover:shadow-md transition-shadow">
+                      <SelectTrigger className="h-10 bg-muted/30 border border-border/50 rounded-md">
                         <SelectValue placeholder="Select Bank" />
                       </SelectTrigger>
-                       <SelectContent className="bg-background border border-border/20 shadow-xl rounded-lg z-[100] min-w-[200px]">
-                         {banks.map((bank) => (
-                           <SelectItem 
-                             key={bank.id} 
-                             value={bank.id} 
-                             className="text-sm py-3 px-4 hover:bg-muted/30 focus:bg-muted/30 rounded-md mx-1 my-0.5"
-                           >
-                             <div className="flex items-center gap-3">
-                               <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                                 <Building2 className="h-4 w-4 text-primary" />
-                               </div>
-                               {bank.bank_name.toUpperCase()}
-                             </div>
-                           </SelectItem>
-                         ))}
-                       </SelectContent>
-                     </Select>
+                      <SelectContent className="bg-background border border-border shadow-lg z-[100]">
+                        {banks.map((bank) => (
+                          <SelectItem key={bank.id} value={bank.id} className="text-xs py-1.5">
+                            {bank.bank_name.toUpperCase()}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   
                   {/* Month Filter */}
                   <div className="space-y-2">
                     <label className="text-xs text-muted-foreground">Month</label>
                     <Select value={selectedDuration} onValueChange={setSelectedDuration}>
-                      <SelectTrigger className="h-10 bg-background border-0 shadow-sm rounded-lg hover:shadow-md transition-shadow">
-                        <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <SelectTrigger className="h-10 bg-muted/30 border border-border/50 rounded-md">
+                        <Calendar className="h-4 w-4 mr-2" />
                         <SelectValue placeholder="Select Month" />
                       </SelectTrigger>
-                      <SelectContent className="bg-background border border-border/20 shadow-xl rounded-lg z-[100] min-w-[180px]">
+                      <SelectContent className="bg-background border border-border shadow-lg z-[100]">
                         {getDurationOptions().map((option) => (
-                          <SelectItem 
-                            key={option.value} 
-                            value={option.value} 
-                            className="text-sm py-3 px-4 hover:bg-muted/30 focus:bg-muted/30 rounded-md mx-1 my-0.5"
-                          >
+                          <SelectItem key={option.value} value={option.value} className="text-xs py-1.5">
                             {option.label}
                           </SelectItem>
                         ))}
