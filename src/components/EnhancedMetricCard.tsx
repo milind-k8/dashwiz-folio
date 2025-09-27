@@ -113,7 +113,6 @@ export function EnhancedMetricCard({
     <Card
       className={cn(
         "group relative overflow-hidden transition-all duration-300 rounded-2xl",
-        "hover:border-primary/50",
         "active:scale-[0.98] active:transition-transform active:duration-150",
         styles.cardClass,
         className

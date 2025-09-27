@@ -67,7 +67,6 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
     <Card className={cn("", className)}>
       <CardHeader>
         <CardTitle className="text-base font-medium flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-primary" />
           Top 5 Highest Transactions
         </CardTitle>
       </CardHeader>

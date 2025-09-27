@@ -61,7 +61,7 @@ export function Dashboard() {
       </div>
       
       {/* Essential Metrics */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pb-2">
         <EnhancedMetricCard
           title="Total Balance"
           value={`₹${data.balance.toLocaleString()}`}
@@ -92,7 +92,7 @@ export function Dashboard() {
       <TopTransactions 
         transactions={data.transactions}
         banks={banks}
-        className="mb-6"
+        className="pb-2"
       />
 
       {/* Advanced Charts */}
