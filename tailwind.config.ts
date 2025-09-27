@@ -13,8 +13,13 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        'sans': ['Google Sans', 'Roboto', 'system-ui', 'sans-serif'],
+        'google': ['Google Sans', 'sans-serif'],
+        'roboto': ['Roboto', 'sans-serif'],
+      },
       fontSize: {
-        // Mobile-first font scale - Industry standards
+        // Google-style font scale - matches Gmail and Google apps
         'xs': ['0.75rem', { lineHeight: '1.4' }],    // 12px
         'sm': ['0.875rem', { lineHeight: '1.4' }],   // 14px  
         'base': ['1rem', { lineHeight: '1.5' }],     // 16px - minimum for mobile

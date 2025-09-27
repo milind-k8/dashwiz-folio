@@ -8,72 +8,72 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Mobile-optimized color palette with enhanced contrast */
-    --background: 248 20% 94%;
-    --foreground: 220 15% 12%;
+    /* Google Material Design Color Palette */
+    --background: 0 0% 99%;
+    --foreground: 0 0% 15%;
 
-    /* Card system - Enhanced for mobile readability */
+    /* Google Card system */
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 12%;
+    --card-foreground: 0 0% 15%;
     --card-subtle: 0 0% 98%;
     --card-elevated: 0 0% 100%;
 
-    /* Interactive elements */
+    /* Google Material Popover */
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 12%;
+    --popover-foreground: 0 0% 15%;
 
-    /* Modern primary colors - Vibrant blue for mobile */
-    --primary: 220 85% 55%;
+    /* Google Blue - Primary color used in Gmail, Google Drive etc */
+    --primary: 214 100% 59%;
     --primary-foreground: 0 0% 100%;
-    --primary-subtle: 220 85% 96%;
+    --primary-subtle: 214 100% 96%;
 
-    /* Secondary system */
-    --secondary: 248 20% 88%;
-    --secondary-foreground: 220 15% 12%;
+    /* Google Secondary - Material Grey */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 15%;
 
-    /* Muted elements - Better contrast for mobile */
-    --muted: 248 20% 88%;
-    --muted-foreground: 220 15% 35%;
+    /* Google Muted - Light grey used in sidebars and secondary elements */
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    /* Accent colors - Enhanced primary */
-    --accent: 220 85% 55%;
+    /* Google Accent - Same as primary for Google consistency */
+    --accent: 214 100% 59%;
     --accent-foreground: 0 0% 100%;
 
-    /* Status colors - Mobile-optimized with better contrast */
-    --destructive: 0 85% 60%;
+    /* Google Status colors */
+    --destructive: 4 90% 58%;
     --destructive-foreground: 0 0% 100%;
-    --destructive-subtle: 0 85% 96%;
+    --destructive-subtle: 4 90% 96%;
 
-    --success: 120 60% 45%;
+    --success: 122 39% 49%;
     --success-foreground: 0 0% 100%;
-    --success-subtle: 120 60% 96%;
+    --success-subtle: 122 39% 96%;
 
-    --warning: 35 85% 55%;
+    --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
-    --warning-subtle: 35 85% 96%;
+    --warning-subtle: 38 92% 96%;
 
-    /* Form elements - Mobile-friendly */
-    --border: 248 20% 82%;
-    --input: 248 20% 82%;
-    --ring: 220 85% 55%;
+    /* Google Form elements */
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 214 100% 59%;
 
-    /* Enhanced gradients for mobile displays */
-    --gradient-primary: linear-gradient(135deg, hsl(220 85% 55%), hsl(220 85% 65%));
-    --gradient-balance: linear-gradient(135deg, hsl(220 85% 55%), hsl(220 85% 65%));
-    --gradient-income: linear-gradient(135deg, hsl(120 60% 45%), hsl(120 60% 55%));
-    --gradient-expense: linear-gradient(135deg, hsl(0 85% 60%), hsl(0 85% 70%));
+    /* Google Material gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(214 100% 59%), hsl(214 100% 69%));
+    --gradient-balance: linear-gradient(135deg, hsl(214 100% 59%), hsl(214 100% 69%));
+    --gradient-income: linear-gradient(135deg, hsl(122 39% 49%), hsl(122 39% 59%));
+    --gradient-expense: linear-gradient(135deg, hsl(4 90% 58%), hsl(4 90% 68%));
     --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 98%));
     
-    /* Mobile-optimized border radius */
-    --radius: 0.75rem;
+    /* Google Material radius */
+    --radius: 0.5rem;
     
-    /* Mobile-optimized shadows - subtle but visible */
-    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.08);
-    --shadow-card: 0 2px 4px -1px hsl(0 0% 0% / 0.12), 0 1px 2px -1px hsl(0 0% 0% / 0.08);
-    --shadow-elevated: 0 4px 8px -2px hsl(0 0% 0% / 0.15), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
-    --shadow-large: 0 8px 16px -4px hsl(0 0% 0% / 0.18), 0 4px 8px -4px hsl(0 0% 0% / 0.12);
+    /* Google Material shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(60, 64, 67, 0.15);
+    --shadow-card: 0 1px 3px 0 rgba(60, 64, 67, 0.15), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+    --shadow-elevated: 0 2px 6px 2px rgba(60, 64, 67, 0.15), 0 8px 24px 4px rgba(60, 64, 67, 0.15);
+    --shadow-large: 0 4px 12px 6px rgba(60, 64, 67, 0.15), 0 20px 40px 6px rgba(60, 64, 67, 0.15);
 
-    /* Mobile-specific spacing - Industry standards */
+    /* Google mobile spacing */
     --spacing-mobile-xs: 0.25rem;   /* 4px */
     --spacing-mobile-sm: 0.5rem;    /* 8px */
     --spacing-mobile-md: 0.75rem;   /* 12px */
@@ -81,98 +81,98 @@ All colors MUST be HSL.
     --spacing-mobile-xl: 1.5rem;    /* 24px */
     --spacing-mobile-2xl: 2rem;     /* 32px */
 
-    /* Mobile typography scale - Industry standards */
+    /* Google typography scale */
     --text-xs-mobile: 0.75rem;      /* 12px */
     --text-sm-mobile: 0.875rem;     /* 14px */
-    --text-base-mobile: 1rem;       /* 16px - minimum for body text */
+    --text-base-mobile: 1rem;       /* 16px */
     --text-lg-mobile: 1.125rem;     /* 18px */
     --text-xl-mobile: 1.25rem;      /* 20px */
     --text-2xl-mobile: 1.5rem;      /* 24px */
     --text-3xl-mobile: 1.75rem;     /* 28px */
     --text-4xl-mobile: 2rem;        /* 32px */
 
-    /* Touch target minimum - Accessibility standard */
+    /* Google touch targets */
     --touch-target-min: 2.75rem;    /* 44px minimum */
     --touch-target-comfortable: 3rem; /* 48px comfortable */
 
-    /* Mobile component heights - Industry standards */
+    /* Google mobile component heights */
     --input-height-mobile: 3rem;    /* 48px */
-    --button-height-mobile: 2.75rem; /* 44px */
+    --button-height-mobile: 2.25rem; /* 36px - Google style smaller buttons */
     --card-padding-mobile: 1rem;    /* 16px */
     --header-height-mobile: 3.5rem; /* 56px */
   }
 
   .dark {
-    /* Mobile-optimized dark theme */
-    --background: 220 20% 6%;
-    --foreground: 0 0% 98%;
+    /* Google Dark Theme - matches Gmail dark mode */
+    --background: 32 33% 9%;
+    --foreground: 0 0% 90%;
 
-    /* Card system - Enhanced dark cards for mobile */
-    --card: 220 20% 10%;
-    --card-foreground: 0 0% 98%;
-    --card-subtle: 220 20% 12%;
-    --card-elevated: 220 20% 11%;
+    /* Google Dark Cards */
+    --card: 33 33% 11%;
+    --card-foreground: 0 0% 90%;
+    --card-subtle: 33 33% 13%;
+    --card-elevated: 33 33% 12%;
 
-    /* Interactive elements */
-    --popover: 220 20% 10%;
-    --popover-foreground: 0 0% 98%;
+    /* Google Dark Popover */
+    --popover: 33 33% 11%;
+    --popover-foreground: 0 0% 90%;
 
-    /* Enhanced primary for dark mobile */
-    --primary: 220 85% 60%;
+    /* Google Blue Dark - Enhanced for dark mode */
+    --primary: 214 100% 69%;
     --primary-foreground: 0 0% 100%;
-    --primary-subtle: 220 85% 12%;
+    --primary-subtle: 214 100% 15%;
 
-    /* Secondary system */
-    --secondary: 220 20% 14%;
-    --secondary-foreground: 0 0% 98%;
+    /* Google Dark Secondary */
+    --secondary: 33 33% 15%;
+    --secondary-foreground: 0 0% 90%;
 
-    /* Muted elements - Better mobile contrast */
-    --muted: 220 20% 14%;
-    --muted-foreground: 220 15% 65%;
+    /* Google Dark Muted */
+    --muted: 33 33% 15%;
+    --muted-foreground: 0 0% 65%;
 
-    /* Enhanced accent for dark mobile */
-    --accent: 220 85% 60%;
+    /* Google Dark Accent */
+    --accent: 214 100% 69%;
     --accent-foreground: 0 0% 100%;
 
-    /* Status colors - Mobile dark mode optimized */
-    --destructive: 0 85% 65%;
+    /* Google Dark Status colors */
+    --destructive: 4 90% 68%;
     --destructive-foreground: 0 0% 100%;
-    --destructive-subtle: 0 85% 12%;
+    --destructive-subtle: 4 90% 15%;
 
-    --success: 120 60% 50%;
+    --success: 122 39% 59%;
     --success-foreground: 0 0% 100%;
-    --success-subtle: 120 60% 12%;
+    --success-subtle: 122 39% 15%;
 
-    --warning: 35 85% 60%;
+    --warning: 38 92% 60%;
     --warning-foreground: 0 0% 100%;
-    --warning-subtle: 35 85% 12%;
+    --warning-subtle: 38 92% 15%;
 
-    /* Form elements - Dark mobile */
-    --border: 220 20% 18%;
-    --input: 220 20% 18%;
-    --ring: 220 85% 60%;
+    /* Google Dark Form elements */
+    --border: 33 33% 18%;
+    --input: 33 33% 18%;
+    --ring: 214 100% 69%;
 
-    /* Enhanced gradients for dark mobile */
-    --gradient-primary: linear-gradient(135deg, hsl(220 85% 60%), hsl(220 85% 70%));
-    --gradient-balance: linear-gradient(135deg, hsl(220 85% 60%), hsl(220 85% 70%));
-    --gradient-income: linear-gradient(135deg, hsl(120 60% 50%), hsl(120 60% 60%));
-    --gradient-expense: linear-gradient(135deg, hsl(0 85% 65%), hsl(0 85% 75%));
-    --gradient-card: linear-gradient(135deg, hsl(220 20% 10%), hsl(220 20% 12%));
+    /* Google Dark gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(214 100% 69%), hsl(214 100% 79%));
+    --gradient-balance: linear-gradient(135deg, hsl(214 100% 69%), hsl(214 100% 79%));
+    --gradient-income: linear-gradient(135deg, hsl(122 39% 59%), hsl(122 39% 69%));
+    --gradient-expense: linear-gradient(135deg, hsl(4 90% 68%), hsl(4 90% 78%));
+    --gradient-card: linear-gradient(135deg, hsl(33 33% 11%), hsl(33 33% 13%));
     
-    /* Mobile-optimized dark shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.5);
-    --shadow-card: 0 2px 4px -1px hsl(0 0% 0% / 0.6), 0 1px 2px -1px hsl(0 0% 0% / 0.4);
-    --shadow-elevated: 0 4px 8px -2px hsl(0 0% 0% / 0.7), 0 2px 4px -2px hsl(0 0% 0% / 0.5);
-    --shadow-large: 0 8px 16px -4px hsl(0 0% 0% / 0.8), 0 4px 8px -4px hsl(0 0% 0% / 0.6);
+    /* Google Dark shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 4px 8px 3px rgba(0, 0, 0, 0.2);
+    --shadow-elevated: 0 2px 6px 2px rgba(0, 0, 0, 0.4), 0 8px 24px 4px rgba(0, 0, 0, 0.3);
+    --shadow-large: 0 4px 12px 6px rgba(0, 0, 0, 0.4), 0 20px 40px 6px rgba(0, 0, 0, 0.3);
 
-    --sidebar-background: 250 15% 10%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 228 75% 60%;
+    --sidebar-background: 33 33% 9%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 214 100% 69%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 250 15% 18%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 250 15% 20%;
-    --sidebar-ring: 228 75% 60%;
+    --sidebar-accent: 33 33% 15%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 33 33% 18%;
+    --sidebar-ring: 214 100% 69%;
   }
 }
 
@@ -182,44 +182,50 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-google;
     font-size: var(--text-base-mobile); /* 16px minimum for mobile */
-    line-height: 1.5; /* Industry standard for readability */
+    line-height: 1.5; /* Google Material standard */
+    font-weight: 400; /* Google Sans regular weight */
   }
 
-  /* Mobile typography hierarchy - Industry standards */
+  /* Google Material typography hierarchy */
   h1 {
     font-size: var(--text-3xl-mobile); /* 28px */
-    font-weight: 600; /* Semibold for mobile readability */
+    font-weight: 500; /* Google Sans medium for headings */
     line-height: 1.3;
+    font-family: 'Google Sans', sans-serif;
   }
 
   h2 {
     font-size: var(--text-2xl-mobile); /* 24px */
-    font-weight: 600;
+    font-weight: 500;
     line-height: 1.3;
+    font-family: 'Google Sans', sans-serif;
   }
 
   h3 {
     font-size: var(--text-xl-mobile); /* 20px */
-    font-weight: 500; /* Medium weight */
+    font-weight: 500;
     line-height: 1.4;
+    font-family: 'Google Sans', sans-serif;
   }
 
   h4 {
     font-size: var(--text-lg-mobile); /* 18px */
     font-weight: 500;
     line-height: 1.4;
+    font-family: 'Google Sans', sans-serif;
   }
 
-  /* Ensure minimum font sizes for mobile accessibility */
+  /* Google-style font sizes */
   .text-xs { font-size: var(--text-xs-mobile) !important; }
   .text-sm { font-size: var(--text-sm-mobile) !important; }
   .text-base { font-size: var(--text-base-mobile) !important; }
   .text-lg { font-size: var(--text-lg-mobile) !important; }
   .text-xl { font-size: var(--text-xl-mobile) !important; }
   
-  /* Industry standard font weights */
+  /* Google Material font weights */
+  .font-light { font-weight: 300; }
   .font-normal { font-weight: 400; }
   .font-medium { font-weight: 500; }
   .font-semibold { font-weight: 600; }
@@ -273,12 +279,14 @@ All colors MUST be HSL.
     @apply flex items-center justify-center;
   }
 
-  /* Mobile-friendly button styles - Industry standards */
+  /* Google Material button styles */
   .btn-mobile {
     height: var(--button-height-mobile);
     padding: var(--spacing-mobile-md) var(--spacing-mobile-lg);
-    @apply rounded-lg font-medium transition-all duration-200 touch-target;
-    font-size: var(--text-base-mobile);
+    @apply rounded-md font-medium transition-all duration-200 touch-target;
+    font-size: var(--text-sm-mobile);
+    font-family: 'Google Sans', sans-serif;
+    letter-spacing: 0.01em;
   }
 
   .btn-mobile-large {
