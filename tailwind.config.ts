@@ -13,6 +13,32 @@ export default {
       },
     },
     extend: {
+      fontSize: {
+        // Mobile-first font scale - Industry standards
+        'xs': ['0.75rem', { lineHeight: '1.4' }],    // 12px
+        'sm': ['0.875rem', { lineHeight: '1.4' }],   // 14px  
+        'base': ['1rem', { lineHeight: '1.5' }],     // 16px - minimum for mobile
+        'lg': ['1.125rem', { lineHeight: '1.4' }],   // 18px
+        'xl': ['1.25rem', { lineHeight: '1.4' }],    // 20px
+        '2xl': ['1.5rem', { lineHeight: '1.3' }],    // 24px
+        '3xl': ['1.75rem', { lineHeight: '1.3' }],   // 28px
+        '4xl': ['2rem', { lineHeight: '1.2' }],      // 32px
+      },
+      spacing: {
+        // Mobile spacing scale - Industry standards
+        '11': '2.75rem',  // 44px - minimum touch target
+        '13': '3.25rem',  // 52px
+        '15': '3.75rem',  // 60px
+        '18': '4.5rem',   // 72px
+      },
+      minHeight: {
+        'touch': '2.75rem',      // 44px minimum touch target
+        'touch-comfortable': '3rem', // 48px comfortable touch target
+      },
+      minWidth: {
+        'touch': '2.75rem',      // 44px minimum touch target  
+        'touch-comfortable': '3rem', // 48px comfortable touch target
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

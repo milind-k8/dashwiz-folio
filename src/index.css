@@ -73,21 +73,33 @@ All colors MUST be HSL.
     --shadow-elevated: 0 4px 8px -2px hsl(0 0% 0% / 0.15), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
     --shadow-large: 0 8px 16px -4px hsl(0 0% 0% / 0.18), 0 4px 8px -4px hsl(0 0% 0% / 0.12);
 
-    /* Mobile-specific spacing */
-    --spacing-mobile-xs: 0.25rem;
-    --spacing-mobile-sm: 0.5rem;
-    --spacing-mobile-md: 0.75rem;
-    --spacing-mobile-lg: 1rem;
-    --spacing-mobile-xl: 1.5rem;
+    /* Mobile-specific spacing - Industry standards */
+    --spacing-mobile-xs: 0.25rem;   /* 4px */
+    --spacing-mobile-sm: 0.5rem;    /* 8px */
+    --spacing-mobile-md: 0.75rem;   /* 12px */
+    --spacing-mobile-lg: 1rem;      /* 16px */
+    --spacing-mobile-xl: 1.5rem;    /* 24px */
+    --spacing-mobile-2xl: 2rem;     /* 32px */
 
-    --sidebar-background: 250 15% 90%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 228 75% 56%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 250 15% 85%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 250 15% 80%;
-    --sidebar-ring: 228 75% 56%;
+    /* Mobile typography scale - Industry standards */
+    --text-xs-mobile: 0.75rem;      /* 12px */
+    --text-sm-mobile: 0.875rem;     /* 14px */
+    --text-base-mobile: 1rem;       /* 16px - minimum for body text */
+    --text-lg-mobile: 1.125rem;     /* 18px */
+    --text-xl-mobile: 1.25rem;      /* 20px */
+    --text-2xl-mobile: 1.5rem;      /* 24px */
+    --text-3xl-mobile: 1.75rem;     /* 28px */
+    --text-4xl-mobile: 2rem;        /* 32px */
+
+    /* Touch target minimum - Accessibility standard */
+    --touch-target-min: 2.75rem;    /* 44px minimum */
+    --touch-target-comfortable: 3rem; /* 48px comfortable */
+
+    /* Mobile component heights - Industry standards */
+    --input-height-mobile: 3rem;    /* 48px */
+    --button-height-mobile: 2.75rem; /* 44px */
+    --card-padding-mobile: 1rem;    /* 16px */
+    --header-height-mobile: 3.5rem; /* 56px */
   }
 
   .dark {
@@ -171,7 +183,47 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-size: var(--text-base-mobile); /* 16px minimum for mobile */
+    line-height: 1.5; /* Industry standard for readability */
   }
+
+  /* Mobile typography hierarchy - Industry standards */
+  h1 {
+    font-size: var(--text-3xl-mobile); /* 28px */
+    font-weight: 600; /* Semibold for mobile readability */
+    line-height: 1.3;
+  }
+
+  h2 {
+    font-size: var(--text-2xl-mobile); /* 24px */
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: var(--text-xl-mobile); /* 20px */
+    font-weight: 500; /* Medium weight */
+    line-height: 1.4;
+  }
+
+  h4 {
+    font-size: var(--text-lg-mobile); /* 18px */
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  /* Ensure minimum font sizes for mobile accessibility */
+  .text-xs { font-size: var(--text-xs-mobile) !important; }
+  .text-sm { font-size: var(--text-sm-mobile) !important; }
+  .text-base { font-size: var(--text-base-mobile) !important; }
+  .text-lg { font-size: var(--text-lg-mobile) !important; }
+  .text-xl { font-size: var(--text-xl-mobile) !important; }
+  
+  /* Industry standard font weights */
+  .font-normal { font-weight: 400; }
+  .font-medium { font-weight: 500; }
+  .font-semibold { font-weight: 600; }
+  .font-bold { font-weight: 700; }
 }
 
 /* iOS PWA Safe Area Support */
@@ -208,23 +260,64 @@ All colors MUST be HSL.
     @apply bg-card-elevated shadow-elevated border-0;
   }
 
-  /* Mobile-optimized touch targets */
+  /* Mobile-optimized touch targets - Industry standard 44px minimum */
   .touch-target {
-    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+    @apply flex items-center justify-center;
   }
 
-  /* Mobile-friendly button styles */
+  .touch-target-comfortable {
+    min-height: var(--touch-target-comfortable);
+    min-width: var(--touch-target-comfortable);
+    @apply flex items-center justify-center;
+  }
+
+  /* Mobile-friendly button styles - Industry standards */
   .btn-mobile {
-    @apply touch-target px-4 py-3 rounded-lg text-base font-medium transition-all duration-200;
+    height: var(--button-height-mobile);
+    padding: var(--spacing-mobile-md) var(--spacing-mobile-lg);
+    @apply rounded-lg font-medium transition-all duration-200 touch-target;
+    font-size: var(--text-base-mobile);
   }
 
-  /* Mobile card styles */
+  .btn-mobile-large {
+    height: var(--touch-target-comfortable);
+    padding: var(--spacing-mobile-lg) var(--spacing-mobile-xl);
+    @apply rounded-lg font-medium transition-all duration-200;
+    font-size: var(--text-lg-mobile);
+  }
+
+  /* Mobile card styles - Industry standard spacing */
   .card-mobile {
-    @apply bg-card rounded-lg shadow-card border border-border/50 p-4 transition-all duration-200;
+    padding: var(--card-padding-mobile);
+    @apply bg-card rounded-lg shadow-card border border-border/50 transition-all duration-200;
   }
 
-  /* Mobile input styles */
+  .card-mobile-compact {
+    padding: var(--spacing-mobile-md);
+    @apply bg-card rounded-lg shadow-card border border-border/50 transition-all duration-200;
+  }
+
+  /* Mobile input styles - 48px height industry standard */
   .input-mobile {
-    @apply h-12 px-4 text-base rounded-lg border border-input bg-background;
+    height: var(--input-height-mobile);
+    padding: 0 var(--spacing-mobile-lg);
+    font-size: var(--text-base-mobile);
+    @apply rounded-lg border border-input bg-background;
+  }
+
+  /* Mobile navigation styles */
+  .nav-mobile {
+    height: var(--header-height-mobile);
+    padding: 0 var(--spacing-mobile-lg);
+    @apply flex items-center justify-between;
+  }
+
+  /* Mobile list item - proper touch target */
+  .list-item-mobile {
+    min-height: var(--touch-target-min);
+    padding: var(--spacing-mobile-md) var(--spacing-mobile-lg);
+    @apply flex items-center transition-colors duration-200;
   }
 }
