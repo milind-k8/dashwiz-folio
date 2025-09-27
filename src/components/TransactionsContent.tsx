@@ -57,6 +57,13 @@ export const TransactionsContent = () => {
   const [selectedCategory, setSelectedCategory] = useState<GroupedCategory | null>(null);
   const [modalSearchTerm, setModalSearchTerm] = useState('');
 
+  // Reset modal search when category changes
+  useEffect(() => {
+    if (selectedCategory) {
+      setModalSearchTerm('');
+    }
+  }, [selectedCategory]);
+
   // Set first bank as default when banks are loaded
   useEffect(() => {
     if (banks.length > 0 && !selectedBankId) {
@@ -404,8 +411,13 @@ export const TransactionsContent = () => {
       </div>
 
       {/* Bottom Modal for Category Details */}
-      <Sheet open={!!selectedCategory} onOpenChange={(open) => !open && setSelectedCategory(null)}>
-        <SheetContent side="bottom" className="max-h-[80vh] rounded-t-xl">
+      <Sheet open={!!selectedCategory} onOpenChange={(open) => {
+        if (!open) {
+          setSelectedCategory(null);
+          setModalSearchTerm('');
+        }
+      }}>
+        <SheetContent side="bottom" className="max-h-[80vh] rounded-t-xl" onInteractOutside={(e) => e.preventDefault()}>
           <SheetHeader className="pb-4">
             <SheetTitle className="text-left font-google">
               {selectedCategory?.category}
@@ -423,6 +435,7 @@ export const TransactionsContent = () => {
               value={modalSearchTerm}
               onChange={(e) => setModalSearchTerm(e.target.value)}
               className="pl-10 h-9 bg-muted/30 border border-border/50 rounded-full text-sm font-google"
+              onFocus={(e) => e.target.blur()}
             />
           </div>
           
