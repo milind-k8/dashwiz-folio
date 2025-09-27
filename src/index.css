@@ -9,14 +9,14 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Google Material Design Color Palette - More Contrasted */
-    --background: 0 0% 100%;
+    --background: 0 0% 98%;
     --foreground: 0 0% 9%;
 
     /* Google Card system - Enhanced contrast */
     --card: 0 0% 100%;
     --card-foreground: 0 0% 9%;
-    --card-subtle: 0 0% 97%;
-    --card-elevated: 0 0% 100%;
+    --card-subtle: 0 0% 96%;
+    --card-elevated: 0 0% 99%;
 
     /* Google Material Popover */
     --popover: 0 0% 100%;
