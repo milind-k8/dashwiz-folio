@@ -61,6 +61,7 @@ serve(async (req) => {
     }
 
     // Start background processing with Google token
+    // @ts-ignore EdgeRuntime is available in Deno Deploy
     EdgeRuntime.waitUntil(processTransactionsBackground(user.id, bankName, month, googleAccessToken));
 
     return new Response(JSON.stringify({ 
@@ -72,7 +73,9 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in process-transactions function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

@@ -70,12 +70,13 @@ serve(async (req) => {
     console.error('Error in refresh-google-token function:', error);
     
     // Check if it's a re-authentication needed error
-    const needsReauth = error.message.includes('refresh token') || 
-                       error.message.includes('re-authenticate') ||
-                       error.message.includes('invalid_grant');
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const needsReauth = errorMessage.includes('refresh token') || 
+                       errorMessage.includes('re-authenticate') ||
+                       errorMessage.includes('invalid_grant');
 
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: errorMessage,
       needsReauth 
     }), {
       status: needsReauth ? 401 : 500,

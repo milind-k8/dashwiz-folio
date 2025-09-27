@@ -95,7 +95,7 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in verify-bank function:', error);
-    return createErrorResponse(error.message);
+    return createErrorResponse(error instanceof Error ? error.message : 'Unknown error');
   }
 });
 
@@ -234,7 +234,7 @@ async function fetchBankEmails(accessToken: string, query: string): Promise<Bank
     console.error('Error fetching bank emails:', error);
     return {
       success: false,
-      error: error.message
+      error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
 }
@@ -302,7 +302,7 @@ function extractBankAccountNo(message: any, bankName: string): BankAccountExtrac
     console.error('Error extracting card number:', error);
     return {
       success: false,
-      error: error.message
+      error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
 }
