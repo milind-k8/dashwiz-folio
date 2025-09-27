@@ -11,6 +11,7 @@ interface ProcessTransactionsRequest {
   bankName: string;
   month: string; // format: "9/2025"
   googleAccessToken: string;
+  userId?: string; // Optional for scheduled calls
 }
 
 interface GmailMessage {
@@ -32,24 +33,34 @@ serve(async (req) => {
   }
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-    );
+    const { bankName, month, googleAccessToken, userId }: ProcessTransactionsRequest = await req.json();
+    
+    let authenticatedUserId: string;
+    
+    // If userId is provided (scheduled call), use service role and skip JWT validation
+    if (userId) {
+      authenticatedUserId = userId;
+      console.log(`Processing transactions via scheduled sync for user ${userId}`);
+    } else {
+      // Regular user call - validate JWT
+      const supabaseClient = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      );
 
-    // Get user from JWT
-    const authHeader = req.headers.get('Authorization')!;
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
+      const authHeader = req.headers.get('Authorization')!;
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
 
-    if (userError || !user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      if (userError || !user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
+      authenticatedUserId = user.id;
     }
-
-    const { bankName, month, googleAccessToken }: ProcessTransactionsRequest = await req.json();
 
     if (!googleAccessToken) {
       return new Response(JSON.stringify({ 
@@ -62,7 +73,18 @@ serve(async (req) => {
 
     // Start background processing with Google token
     // @ts-ignore EdgeRuntime is available in Deno Deploy
-    EdgeRuntime.waitUntil(processTransactionsBackground(user.id, bankName, month, googleAccessToken));
+    const result = await processTransactionsBackground(authenticatedUserId, bankName, month, googleAccessToken);
+    
+    // If called from scheduled sync, return the actual result
+    if (userId) {
+      return new Response(JSON.stringify(result), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    
+    // For regular calls, use background processing
+    // @ts-ignore EdgeRuntime is available in Deno Deploy
+    EdgeRuntime.waitUntil(processTransactionsBackground(authenticatedUserId, bankName, month, googleAccessToken));
 
     return new Response(JSON.stringify({ 
       success: true, 
@@ -90,6 +112,9 @@ async function processTransactionsBackground(userId: string, bankName: string, m
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     );
+    
+    let emailsProcessed = 0;
+    let transactionsCreated = 0;
 
     // Step 1: Check if bank exists for user
     const { data: bank, error: bankError } = await supabaseClient
@@ -156,6 +181,8 @@ async function processTransactionsBackground(userId: string, bankName: string, m
     // Step 5: Process emails and extract transactions
     const transactions = await parseTransactions(emails);
     console.log(`Parsed ${transactions.length} transactions`);
+    
+    emailsProcessed = emails.length;
 
     // Step 6: Store transactions in database
     const transactionsToInsert = transactions.map(tx => ({
@@ -180,11 +207,24 @@ async function processTransactionsBackground(userId: string, bankName: string, m
         console.error('Error inserting transactions:', insertError);
       } else {
         console.log(`Successfully stored ${transactionsToInsert.length} transactions`);
+        transactionsCreated = transactionsToInsert.length;
       }
     }
+    
+    return {
+      success: true,
+      emailsProcessed,
+      transactionsCreated
+    };
 
   } catch (error) {
     console.error('Error in background processing:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      emailsProcessed: 0,
+      transactionsCreated: 0
+    };
   }
 }
 

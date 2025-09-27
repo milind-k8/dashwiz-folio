@@ -160,11 +160,13 @@ async function processUserSync(supabase: any, userToken: any) {
         const month = fromDate.getMonth() + 1; // JavaScript months are 0-indexed
         
         // Call process-transactions function for this bank
+        console.log(`Calling process-transactions for ${bank.bank_name} with userId: ${userToken.user_id}`);
         const { data, error } = await supabase.functions.invoke('process-transactions', {
           body: {
             bankName: bank.bank_name,
             month: month,
-            googleAccessToken: accessToken
+            googleAccessToken: accessToken,
+            userId: userToken.user_id // Pass userId for scheduled calls
           }
         });
 
