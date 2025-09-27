@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from 'react';
 import { EnhancedMetricCard } from '@/components/EnhancedMetricCard';
-import { TransactionList } from '@/components/TransactionList';
+
 import { AdvancedCharts } from '@/components/AdvancedCharts';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
@@ -68,8 +68,6 @@ export function Dashboard() {
         expenseCategories={data.expenseCategoriesList}
       />
 
-      {/* Transaction Summary */}
-      <TransactionList expenseCategories={data.expenseCategoriesList} />
 
     </PageContent>
   );
