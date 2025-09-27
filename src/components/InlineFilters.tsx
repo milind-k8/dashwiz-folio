@@ -26,11 +26,16 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
 
   // Auto-select first bank if none is selected and banks are available
   useEffect(() => {
-    if (!selectedBank && availableBanks.length > 0) {
-      const firstBank = availableBanks[0];
-      setSelectedBank(firstBank);
-      if (onFiltersChange) {
-        onFiltersChange(firstBank, selectedDuration);
+    if (availableBanks.length > 0) {
+      // Check if current selectedBank is valid
+      const isValidBank = selectedBank && availableBanks.includes(selectedBank);
+      
+      if (!isValidBank) {
+        const firstBank = availableBanks[0];
+        setSelectedBank(firstBank);
+        if (onFiltersChange) {
+          onFiltersChange(firstBank, selectedDuration);
+        }
       }
     }
   }, [availableBanks, selectedBank, selectedDuration, setSelectedBank, onFiltersChange]);
