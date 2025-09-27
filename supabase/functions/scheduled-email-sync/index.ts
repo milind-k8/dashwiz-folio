@@ -21,14 +21,14 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Get all active users with tokens that need syncing (haven't synced in the last 3 hours)
-    const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString();
+    // Get all active users with tokens that need syncing (haven't synced in the last hour)
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
     
     const { data: userTokens, error: tokensError } = await supabase
       .from('user_tokens')
       .select('*')
       .eq('sync_status', 'active')
-      .or(`last_sync_at.is.null,last_sync_at.lt.${threeHoursAgo}`);
+      .or(`last_sync_at.is.null,last_sync_at.lt.${oneHourAgo}`);
 
     if (tokensError) {
       console.error('Error fetching user tokens:', tokensError);
@@ -152,10 +152,10 @@ async function processUserSync(supabase: any, userToken: any) {
 
     for (const bank of banks) {
       try {
-        // Calculate the date range - last 3 hours or since last sync
+        // Calculate the date range - last hour or since last sync
         const fromDate = userToken.last_sync_at 
           ? new Date(userToken.last_sync_at)
-          : new Date(Date.now() - 3 * 60 * 60 * 1000);
+          : new Date(Date.now() - 60 * 60 * 1000);
         
         const month = fromDate.getMonth() + 1; // JavaScript months are 0-indexed
         
