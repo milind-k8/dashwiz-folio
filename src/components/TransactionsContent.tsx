@@ -46,23 +46,23 @@ export const TransactionsContent = () => {
     return bank ? bank.bank_name : 'Unknown Bank';
   };
 
-  // Get category icon based on merchant or category
-  const getCategoryIcon = (merchant: string, category: string) => {
+  // Get category icon and color based on merchant or category
+  const getCategoryIconAndColor = (merchant: string, category: string) => {
     const merchantLower = merchant?.toLowerCase() || '';
     const categoryLower = category?.toLowerCase() || '';
     
     if (merchantLower.includes('coffee') || merchantLower.includes('starbucks') || merchantLower.includes('cafe')) {
-      return Coffee;
+      return { icon: Coffee, bgColor: 'bg-amber-100 dark:bg-amber-900/30', iconColor: 'text-amber-600 dark:text-amber-400' };
     } else if (merchantLower.includes('uber') || merchantLower.includes('taxi') || categoryLower.includes('transport')) {
-      return Car;
+      return { icon: Car, bgColor: 'bg-blue-100 dark:bg-blue-900/30', iconColor: 'text-blue-600 dark:text-blue-400' };
     } else if (merchantLower.includes('restaurant') || merchantLower.includes('food') || categoryLower.includes('food')) {
-      return Utensils;
+      return { icon: Utensils, bgColor: 'bg-orange-100 dark:bg-orange-900/30', iconColor: 'text-orange-600 dark:text-orange-400' };
     } else if (merchantLower.includes('shop') || merchantLower.includes('store') || categoryLower.includes('shopping')) {
-      return ShoppingBag;
+      return { icon: ShoppingBag, bgColor: 'bg-purple-100 dark:bg-purple-900/30', iconColor: 'text-purple-600 dark:text-purple-400' };
     } else if (categoryLower.includes('bank') || categoryLower.includes('atm')) {
-      return CreditCard;
+      return { icon: CreditCard, bgColor: 'bg-green-100 dark:bg-green-900/30', iconColor: 'text-green-600 dark:text-green-400' };
     } else {
-      return Store;
+      return { icon: Store, bgColor: 'bg-gray-100 dark:bg-gray-900/30', iconColor: 'text-gray-600 dark:text-gray-400' };
     }
   };
 
@@ -157,16 +157,16 @@ export const TransactionsContent = () => {
         ) : (
           <div className="divide-y divide-border/50">
             {filteredTransactions.map((transaction) => {
-              const CategoryIcon = getCategoryIcon(transaction.merchant, transaction.category);
+              const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor(transaction.merchant, transaction.category);
               const isCredit = transaction.transaction_type === 'credit';
               
               return (
                 <div key={transaction.id} className="p-4 hover:bg-muted/30 transition-colors">
                   <div className="flex items-center gap-3">
-                    {/* Icon Avatar */}
-                    <Avatar className="h-10 w-10 bg-muted">
-                      <AvatarFallback className="bg-muted">
-                        <CategoryIcon className="h-5 w-5 text-muted-foreground" />
+                    {/* Icon Avatar with category colors */}
+                    <Avatar className={`h-10 w-10 ${bgColor}`}>
+                      <AvatarFallback className={`${bgColor} border-0`}>
+                        <CategoryIcon className={`h-5 w-5 ${iconColor}`} />
                       </AvatarFallback>
                     </Avatar>
                     
