@@ -374,7 +374,7 @@ export const TransactionsContent = () => {
                 </TabsTrigger>
                 <TabsTrigger value="list" className="text-xs font-medium">
                   <List className="h-3 w-3 mr-1" />
-                  List
+                  Statements
                 </TabsTrigger>
               </TabsList>
             </Tabs>
@@ -459,7 +459,7 @@ export const TransactionsContent = () => {
                   const isCredit = transaction.transaction_type === 'credit';
                   
                   return (
-                    <div key={transaction.id} className="p-5 hover:bg-muted/30 transition-colors">
+                    <div key={transaction.id} className="p-5 hover:bg-muted/30 transition-colors bg-card">
                       <div className="flex items-center gap-4">
                         {/* Icon Avatar with category colors */}
                         <Avatar className={`h-12 w-12 ${bgColor}`}>
