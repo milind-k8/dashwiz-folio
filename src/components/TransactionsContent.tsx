@@ -313,42 +313,14 @@ export const TransactionsContent = () => {
       {/* Enhanced Header with Context */}
       <div className="bg-gradient-to-b from-card to-card/50 border-b border-border/50 sticky top-0 z-10 backdrop-blur-sm">
         <div className="max-w-2xl mx-auto">
-          {/* Page Title & Context */}
-          <div className="px-4 pt-6 pb-3">
-            <div className="flex items-center justify-between mb-2">
-              <h1 className="text-2xl font-bold text-foreground">Transactions</h1>
-              <Receipt className="h-6 w-6 text-muted-foreground" />
-            </div>
-            
-            {/* Active Filters Display - Hidden on mobile */}
+          {/* Active Filters Display - Hidden on mobile */}
+          <div className="px-4 pt-4 pb-3">
             <div className="hidden md:flex flex-wrap gap-2 mb-3">
               {getCurrentFilters().map((filter, index) => (
                 <Badge key={index} variant="secondary" className="text-xs font-medium">
                   {filter}
                 </Badge>
               ))}
-            </div>
-
-            {/* Summary Cards - Simplified on mobile */}
-            <div className="grid grid-cols-2 gap-2 md:gap-3 mb-3 md:mb-4">
-              <Card className="p-2 md:p-3 bg-gradient-to-br from-card to-muted/20 border border-border/50">
-                <div className="flex items-center gap-1 md:gap-2">
-                  <TrendingDown className="h-3 w-3 md:h-4 md:w-4 text-destructive" />
-                  <div>
-                    <p className="text-xs text-muted-foreground font-medium">Spent</p>
-                    <p className="text-sm md:text-lg font-bold text-foreground">₹{totalSpent.toLocaleString()}</p>
-                  </div>
-                </div>
-              </Card>
-              <Card className="p-2 md:p-3 bg-gradient-to-br from-card to-muted/20 border border-border/50">
-                <div className="flex items-center gap-1 md:gap-2">
-                  <ArrowUpRight className="h-3 w-3 md:h-4 md:w-4 text-success" />
-                  <div>
-                    <p className="text-xs text-muted-foreground font-medium">Earned</p>
-                    <p className="text-sm md:text-lg font-bold text-foreground">₹{totalEarned.toLocaleString()}</p>
-                  </div>
-                </div>
-              </Card>
             </div>
           </div>
 
