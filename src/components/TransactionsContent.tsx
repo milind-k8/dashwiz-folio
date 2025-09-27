@@ -32,8 +32,14 @@ import {
   ChevronRight,
   List,
   Grid3X3,
-  Calendar
+  Calendar,
+  Filter
 } from 'lucide-react';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 
 import { useGlobalStore } from '@/store/globalStore';
 import { TableLoader } from '@/components/ui/loader';
@@ -68,6 +74,7 @@ export const TransactionsContent = () => {
   const [activeTab, setActiveTab] = useState('group');
   const [selectedCategory, setSelectedCategory] = useState<GroupedCategory | null>(null);
   const [modalSearchTerm, setModalSearchTerm] = useState('');
+  const [filterOpen, setFilterOpen] = useState(false);
 
   // Reset modal search when category changes
   useEffect(() => {
@@ -254,53 +261,71 @@ export const TransactionsContent = () => {
       {/* Header - Google Pay style */}
       <div className="bg-card border-b border-border/50 sticky top-0 z-10">
         <div className="max-w-md mx-auto p-4 space-y-3">
-          {/* Search Bar - Full width */}
+          {/* Search Bar with Filter Icon */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-8 bg-muted/30 border border-border/50 rounded-full text-base font-medium"
+              className="pl-10 pr-10 h-8 bg-muted/30 border border-border/50 rounded-full text-base font-medium"
             />
-          </div>
-          
-          {/* Bank Filter and Month Filter on first row */}
-          <div className="flex items-center gap-2">
-            <div className="flex-1">
-              <Select value={selectedBankId} onValueChange={(value) => {
-                setSelectedBankId(value);
-                setSelectedBank(value);
-              }}>
-                <SelectTrigger className="h-8 px-3 bg-muted/30 border border-border/50 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors w-full">
-                  <SelectValue placeholder="Select Bank" />
-                </SelectTrigger>
-                <SelectContent className="bg-background border border-border shadow-lg z-50">
-                  <SelectItem value="all-time" className="text-xs py-1.5">All Time</SelectItem>
-                  {banks.map((bank) => (
-                    <SelectItem key={bank.id} value={bank.id} className="text-xs py-1.5">
-                      {bank.bank_name.toUpperCase()}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
             
-            <div className="flex-1">
-              <Select value={selectedDuration} onValueChange={setSelectedDuration}>
-                <SelectTrigger className="h-8 px-3 bg-muted/30 border border-border/50 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors w-full">
-                  <Calendar className="h-3 w-3 mr-1" />
-                  <SelectValue placeholder="Month" />
-                </SelectTrigger>
-                <SelectContent className="bg-background border border-border shadow-lg z-50">
-                  {getMonthOptions().map((option) => (
-                    <SelectItem key={option.value} value={option.value} className="text-xs py-1.5">
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {/* Filter Popover */}
+            <Popover open={filterOpen} onOpenChange={setFilterOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-muted/50 rounded-full"
+                >
+                  <Filter className="h-4 w-4 text-muted-foreground" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80 p-4 bg-background border border-border shadow-lg" align="end">
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Filters</h4>
+                  
+                  {/* Bank Filter */}
+                  <div className="space-y-2">
+                    <label className="text-xs text-muted-foreground">Bank</label>
+                    <Select value={selectedBankId} onValueChange={(value) => {
+                      setSelectedBankId(value);
+                      setSelectedBank(value);
+                    }}>
+                      <SelectTrigger className="h-8 bg-muted/30 border border-border/50 rounded-md">
+                        <SelectValue placeholder="Select Bank" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border border-border shadow-lg z-[100]">
+                        {banks.map((bank) => (
+                          <SelectItem key={bank.id} value={bank.id} className="text-xs py-1.5">
+                            {bank.bank_name.toUpperCase()}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  {/* Month Filter */}
+                  <div className="space-y-2">
+                    <label className="text-xs text-muted-foreground">Month</label>
+                    <Select value={selectedDuration} onValueChange={setSelectedDuration}>
+                      <SelectTrigger className="h-8 bg-muted/30 border border-border/50 rounded-md">
+                        <Calendar className="h-3 w-3 mr-2" />
+                        <SelectValue placeholder="Select Month" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border border-border shadow-lg z-[100]">
+                        {getMonthOptions().map((option) => (
+                          <SelectItem key={option.value} value={option.value} className="text-xs py-1.5">
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
           
           {/* Tabs for List/Group view */}
