@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -33,7 +33,10 @@ import {
   List,
   Grid3X3,
   Calendar,
-  SlidersHorizontal
+  SlidersHorizontal,
+  TrendingDown,
+  Receipt,
+  Filter
 } from 'lucide-react';
 import {
   Popover,
@@ -275,109 +278,183 @@ export const TransactionsContent = () => {
     );
   }
 
+  // Calculate summary metrics
+  const totalSpent = useMemo(() => {
+    return filteredTransactions
+      .filter(t => t.transaction_type === 'debit')
+      .reduce((sum, t) => sum + t.amount, 0);
+  }, [filteredTransactions]);
+
+  const totalEarned = useMemo(() => {
+    return filteredTransactions
+      .filter(t => t.transaction_type === 'credit')
+      .reduce((sum, t) => sum + t.amount, 0);
+  }, [filteredTransactions]);
+
+  const getDurationLabel = () => {
+    const options = getDurationOptions();
+    const current = options.find(opt => opt.value === selectedDuration);
+    return current?.label || 'Current Month';
+  };
+
+  const getCurrentFilters = () => {
+    const filters = [];
+    if (selectedBankId) {
+      filters.push(getBankName(selectedBankId));
+    }
+    if (selectedDuration) {
+      filters.push(getDurationLabel());
+    }
+    return filters;
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Header - Google Pay style */}
-      <div className="bg-card border-b border-border/50 sticky top-0 z-10">
-        <div className="max-w-2xl mx-auto p-4 space-y-3">
-          {/* Search Bar with Filter Icon */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search transactions, merchants..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-20 h-12 bg-muted/30 border border-border/50 rounded-full text-base font-normal placeholder:text-muted-foreground/70"
-            />
+      {/* Enhanced Header with Context */}
+      <div className="bg-gradient-to-b from-card to-card/50 border-b border-border/50 sticky top-0 z-10 backdrop-blur-sm">
+        <div className="max-w-2xl mx-auto">
+          {/* Page Title & Context */}
+          <div className="px-4 pt-6 pb-3">
+            <div className="flex items-center justify-between mb-2">
+              <h1 className="text-2xl font-bold text-foreground">Transactions</h1>
+              <Receipt className="h-6 w-6 text-muted-foreground" />
+            </div>
             
-            {/* Clear search button */}
-            {searchTerm && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSearchTerm('')}
-                className="absolute right-12 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-muted/50 rounded-full"
-              >
-                <X className="h-4 w-4 text-muted-foreground" />
-              </Button>
-            )}
-            
-            {/* Filter Popover */}
-            <Popover open={filterOpen} onOpenChange={setFilterOpen} modal={true}>
-              <PopoverTrigger asChild>
+            {/* Active Filters Display */}
+            <div className="flex flex-wrap gap-2 mb-3">
+              {getCurrentFilters().map((filter, index) => (
+                <Badge key={index} variant="secondary" className="text-xs font-medium">
+                  {filter}
+                </Badge>
+              ))}
+            </div>
+
+            {/* Summary Cards */}
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <Card className="p-3 bg-gradient-to-br from-card to-muted/20 border border-border/50">
+                <div className="flex items-center gap-2">
+                  <TrendingDown className="h-4 w-4 text-destructive" />
+                  <div>
+                    <p className="text-xs text-muted-foreground font-medium">Total Spent</p>
+                    <p className="text-lg font-bold text-foreground">₹{totalSpent.toLocaleString()}</p>
+                  </div>
+                </div>
+              </Card>
+              <Card className="p-3 bg-gradient-to-br from-card to-muted/20 border border-border/50">
+                <div className="flex items-center gap-2">
+                  <ArrowUpRight className="h-4 w-4 text-success" />
+                  <div>
+                    <p className="text-xs text-muted-foreground font-medium">Total Earned</p>
+                    <p className="text-lg font-bold text-foreground">₹{totalEarned.toLocaleString()}</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </div>
+
+          {/* Enhanced Search & Filters */}
+          <div className="px-4 pb-4 space-y-3">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                placeholder="Search transactions, merchants, amounts..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-12 pr-16 h-12 bg-background/60 border-2 border-border/30 rounded-2xl text-base font-medium placeholder:text-muted-foreground/60 focus:border-primary/50 focus:bg-background shadow-sm"
+              />
+              
+              {searchTerm && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-muted/50 rounded-full"
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-12 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0 hover:bg-muted/50 rounded-full"
                 >
-                  <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
+                  <X className="h-4 w-4 text-muted-foreground" />
                 </Button>
-              </PopoverTrigger>
-              <PopoverContent 
-                className="w-80 p-4 bg-background border border-border shadow-lg" 
-                align="end"
-                onOpenAutoFocus={(e) => e.preventDefault()}
-                onCloseAutoFocus={(e) => e.preventDefault()}
-              >
-                <div className="space-y-4">
-                  <h4 className="font-medium text-sm">Filters</h4>
-                  
-                  {/* Bank Filter */}
-                  <div className="space-y-2">
-                    <label className="text-xs text-muted-foreground">Bank</label>
-                    <Select value={selectedBankId} onValueChange={(value) => {
-                      setSelectedBankId(value);
-                      setSelectedBank(value);
-                    }}>
-                      <SelectTrigger className="h-10 bg-muted/30 border border-border/50 rounded-md">
-                        <SelectValue placeholder="Select Bank" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-background border border-border shadow-lg z-[100]">
-                        {banks.map((bank) => (
-                          <SelectItem key={bank.id} value={bank.id} className="text-xs py-1.5">
-                            {bank.bank_name.toUpperCase()}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+              )}
+              
+              {/* Enhanced Filter Button */}
+              <Popover open={filterOpen} onOpenChange={setFilterOpen} modal={true}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 px-3 bg-background/80 border-border/50 hover:bg-muted/50 rounded-xl"
+                  >
+                    <Filter className="h-4 w-4 text-muted-foreground" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent 
+                  className="w-80 p-4 bg-background/95 backdrop-blur-sm border border-border shadow-xl rounded-2xl" 
+                  align="end"
+                  onOpenAutoFocus={(e) => e.preventDefault()}
+                  onCloseAutoFocus={(e) => e.preventDefault()}
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      <Filter className="h-4 w-4 text-muted-foreground" />
+                      <h4 className="font-semibold text-base">Filters</h4>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-foreground">Bank Account</label>
+                        <Select value={selectedBankId} onValueChange={(value) => {
+                          setSelectedBankId(value);
+                          setSelectedBank(value);
+                        }}>
+                          <SelectTrigger className="h-11 bg-background border-border rounded-xl">
+                            <Building2 className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <SelectValue placeholder="Select Bank" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-background border border-border shadow-lg rounded-xl z-[100]">
+                            {banks.map((bank) => (
+                              <SelectItem key={bank.id} value={bank.id} className="text-sm py-2 rounded-lg">
+                                {bank.bank_name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-foreground">Time Period</label>
+                        <Select value={selectedDuration} onValueChange={setSelectedDuration}>
+                          <SelectTrigger className="h-11 bg-background border-border rounded-xl">
+                            <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <SelectValue placeholder="Select Month" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-background border border-border shadow-lg rounded-xl z-[100]">
+                            {getDurationOptions().map((option) => (
+                              <SelectItem key={option.value} value={option.value} className="text-sm py-2 rounded-lg">
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
                   </div>
-                  
-                  {/* Month Filter */}
-                  <div className="space-y-2">
-                    <label className="text-xs text-muted-foreground">Month</label>
-                    <Select value={selectedDuration} onValueChange={setSelectedDuration}>
-                      <SelectTrigger className="h-10 bg-muted/30 border border-border/50 rounded-md">
-                        <Calendar className="h-4 w-4 mr-2" />
-                        <SelectValue placeholder="Select Month" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-background border border-border shadow-lg z-[100]">
-                        {getDurationOptions().map((option) => (
-                          <SelectItem key={option.value} value={option.value} className="text-xs py-1.5">
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
-          </div>
-          
-          {/* Tabs for List/Group view */}
-          <div className="flex justify-center">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-muted/30 h-8">
-                <TabsTrigger value="group" className="text-xs font-medium">
-                  <Grid3X3 className="h-3 w-3 mr-1" />
-                  Group
-                </TabsTrigger>
-                <TabsTrigger value="list" className="text-xs font-medium">
-                  <List className="h-3 w-3 mr-1" />
-                  List
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+                </PopoverContent>
+              </Popover>
+            </div>
+            
+            {/* Enhanced View Toggle */}
+            <div className="flex justify-center">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-md">
+                <TabsList className="grid w-full grid-cols-2 bg-muted/40 h-10 p-1 rounded-xl">
+                  <TabsTrigger value="group" className="text-sm font-semibold rounded-lg">
+                    <Grid3X3 className="h-4 w-4 mr-2" />
+                    Categories
+                  </TabsTrigger>
+                  <TabsTrigger value="list" className="text-sm font-semibold rounded-lg">
+                    <List className="h-4 w-4 mr-2" />
+                    All Transactions
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
           </div>
         </div>
       </div>
@@ -386,56 +463,85 @@ export const TransactionsContent = () => {
       <div className="max-w-2xl mx-auto">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsContent value="group" className="mt-0">
-            {/* Grouped View - Categories with Enhanced Cards */}
+            {/* Enhanced Grouped View - Categories */}
             {groupedByCategory.length === 0 ? (
-              <div className="p-8 text-center">
-                <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground font-google">
-                  {searchTerm ? 'No transactions match your search' : 'No transactions found'}
+              <div className="p-12 text-center">
+                <div className="w-20 h-20 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Wallet className="h-10 w-10 text-muted-foreground" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  {searchTerm ? 'No matches found' : 'No transactions yet'}
+                </h3>
+                <p className="text-muted-foreground">
+                  {searchTerm 
+                    ? 'Try adjusting your search terms or filters' 
+                    : 'Your transaction categories will appear here'
+                  }
                 </p>
               </div>
             ) : (
-              <div className="p-4 space-y-3">
-                {groupedByCategory.map((group) => {
+              <div className="p-4 space-y-4">
+                {groupedByCategory.map((group, index) => {
                   const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor('', group.category);
+                  const percentageOfTotal = totalSpent > 0 ? (group.totalAmount / totalSpent) * 100 : 0;
                   
                   return (
                     <Card 
                       key={group.category} 
-                      className="p-4 hover:shadow-md transition-all cursor-pointer border border-border/50 rounded-2xl"
+                      className="group p-0 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer border border-border/50 rounded-3xl bg-gradient-to-br from-card to-card/50 overflow-hidden"
                       onClick={() => setSelectedCategory(group)}
                     >
-                      <div className="flex items-center gap-4">
-                        {/* Category Icon */}
-                        <div className={`p-3 rounded-2xl ${bgColor}`}>
-                          <CategoryIcon className={`h-6 w-6 ${iconColor}`} />
-                        </div>
-                        
-                        {/* Category Details */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <div className="min-w-0 flex-1">
-                              <h3 className="text-base font-semibold text-foreground font-google truncate">
-                                {group.category}
-                              </h3>
-                              <div className="flex items-center gap-2 mt-1">
-                                <Badge variant="outline" className="text-xs">
-                                  {group.merchantCount} merchant{group.merchantCount !== 1 ? 's' : ''}
-                                </Badge>
+                      <CardContent className="p-5">
+                        <div className="flex items-start gap-4">
+                          {/* Enhanced Category Icon */}
+                          <div className={`p-4 rounded-2xl ${bgColor} group-hover:scale-110 transition-transform duration-300`}>
+                            <CategoryIcon className={`h-7 w-7 ${iconColor}`} />
+                          </div>
+                          
+                          {/* Category Information */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between mb-3">
+                              <div className="min-w-0 flex-1">
+                                <h3 className="text-xl font-bold text-foreground mb-1 truncate">
+                                  {group.category}
+                                </h3>
+                                <div className="flex items-center gap-3">
+                                  <Badge variant="secondary" className="text-xs font-medium px-2 py-1">
+                                    {group.merchantCount} merchant{group.merchantCount !== 1 ? 's' : ''}
+                                  </Badge>
+                                  <Badge variant="outline" className="text-xs font-medium px-2 py-1">
+                                    {group.transactionCount} transaction{group.transactionCount !== 1 ? 's' : ''}
+                                  </Badge>
+                                </div>
+                              </div>
+                              
+                              <div className="flex items-center gap-3 ml-4">
+                                <div className="text-right">
+                                  <div className="text-2xl font-bold text-foreground mb-1">
+                                    ₹{group.totalAmount.toLocaleString()}
+                                  </div>
+                                  {percentageOfTotal > 0 && (
+                                    <div className="text-sm font-medium text-muted-foreground">
+                                      {percentageOfTotal.toFixed(1)}% of spending
+                                    </div>
+                                  )}
+                                </div>
+                                <ChevronRight className="h-6 w-6 text-muted-foreground group-hover:translate-x-1 transition-transform duration-300" />
                               </div>
                             </div>
                             
-                            <div className="flex items-center gap-2 ml-3">
-                              <div className="text-right">
-                                <div className="text-lg font-bold font-google text-foreground">
-                                  ₹{group.totalAmount.toLocaleString()}
-                                </div>
+                            {/* Progress Bar */}
+                            {percentageOfTotal > 0 && (
+                              <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
+                                <div 
+                                  className="h-full bg-gradient-to-r from-primary/60 to-primary rounded-full transition-all duration-1000 ease-out"
+                                  style={{ width: `${Math.min(percentageOfTotal, 100)}%` }}
+                                />
                               </div>
-                              <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                            </div>
+                            )}
                           </div>
                         </div>
-                      </div>
+                      </CardContent>
                     </Card>
                   );
                 })}
@@ -444,70 +550,113 @@ export const TransactionsContent = () => {
           </TabsContent>
           
           <TabsContent value="list" className="mt-0">
-            {/* Normal List View */}
+            {/* Enhanced List View */}
             {filteredTransactions.length === 0 ? (
-              <div className="p-8 text-center">
-                <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground font-google">
-                  {searchTerm ? 'No transactions match your search' : 'No transactions found'}
+              <div className="p-12 text-center">
+                <div className="w-20 h-20 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Wallet className="h-10 w-10 text-muted-foreground" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  {searchTerm ? 'No matches found' : 'No transactions yet'}
+                </h3>
+                <p className="text-muted-foreground">
+                  {searchTerm 
+                    ? 'Try adjusting your search terms or filters' 
+                    : 'Your transactions will appear here'
+                  }
                 </p>
               </div>
             ) : (
-              <div className="divide-y divide-border/50">
-                {filteredTransactions.map((transaction) => {
+              <div className="divide-y divide-border/30">
+                {filteredTransactions.map((transaction, index) => {
                   const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor(transaction.merchant, transaction.category);
                   const isCredit = transaction.transaction_type === 'credit';
+                  const transactionDate = new Date(transaction.mail_time);
+                  const isHighValue = transaction.amount > 5000;
                   
                   return (
-                    <div key={transaction.id} className="p-5 hover:bg-muted/30 transition-colors">
+                    <div 
+                      key={transaction.id} 
+                      className="group p-5 hover:bg-gradient-to-r hover:from-muted/20 hover:to-transparent transition-all duration-300 animate-fade-in"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
                       <div className="flex items-center gap-4">
-                        {/* Icon Avatar with category colors */}
-                        <Avatar className={`h-12 w-12 ${bgColor}`}>
-                          <AvatarFallback className={`${bgColor} border-0`}>
-                            <CategoryIcon className={`h-6 w-6 ${iconColor}`} />
-                          </AvatarFallback>
-                        </Avatar>
+                        {/* Enhanced Icon Avatar */}
+                        <div className="relative">
+                          <Avatar className={`h-14 w-14 ${bgColor} group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
+                            <AvatarFallback className={`${bgColor} border-0`}>
+                              <CategoryIcon className={`h-7 w-7 ${iconColor}`} />
+                            </AvatarFallback>
+                          </Avatar>
+                          {isHighValue && (
+                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-warning rounded-full flex items-center justify-center">
+                              <div className="w-2 h-2 bg-warning-foreground rounded-full" />
+                            </div>
+                          )}
+                        </div>
                         
-                        {/* Transaction Details */}
+                        {/* Enhanced Transaction Details */}
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-start justify-between">
                             <div className="min-w-0 flex-1">
-                              <p className="text-base font-medium text-foreground font-google truncate">
+                              <h3 className="text-lg font-bold text-foreground mb-1 truncate group-hover:text-primary transition-colors">
                                 {transaction.merchant || 'Unknown Merchant'}
-                              </p>
-                              <div className="flex items-center gap-2 mt-2">
-                                <p className="text-sm text-muted-foreground">
-                                  {new Date(transaction.mail_time).toLocaleDateString('en-US', { 
-                                    month: 'short', 
-                                    day: 'numeric'
-                                  })}
-                                </p>
-                                <span className="text-sm text-muted-foreground">•</span>
+                              </h3>
+                              <div className="flex items-center gap-3 mb-2">
                                 <div className="flex items-center gap-1">
-                                  <Tag className="h-4 w-4 text-muted-foreground" />
-                                  <p className="text-sm text-muted-foreground truncate">
-                                    {transaction.category || 'Other'}
+                                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                                  <p className="text-sm font-medium text-muted-foreground">
+                                    {transactionDate.toLocaleDateString('en-US', { 
+                                      month: 'short', 
+                                      day: 'numeric',
+                                      year: transactionDate.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
+                                    })}
                                   </p>
                                 </div>
+                                <span className="text-muted-foreground">•</span>
+                                <div className="flex items-center gap-1">
+                                  <Tag className="h-4 w-4 text-muted-foreground" />
+                                  <Badge variant="outline" className="text-xs font-medium px-2 py-0.5">
+                                    {transaction.category || 'Other'}
+                                  </Badge>
+                                </div>
                               </div>
+                              <p className="text-xs text-muted-foreground">
+                                {transactionDate.toLocaleDateString('en-US', { 
+                                  weekday: 'long',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </p>
                             </div>
                             
-                            {/* Amount */}
-                            <div className="text-right ml-4">
-                              <div className={`text-base font-semibold font-google ${
+                            {/* Enhanced Amount Display */}
+                            <div className="text-right ml-6">
+                              <div className={`text-xl font-bold mb-1 ${
                                 isCredit 
                                   ? 'text-success' 
                                   : 'text-foreground'
                               }`}>
                                 {isCredit ? '+' : '-'}₹{transaction.amount.toLocaleString()}
                               </div>
-                              <div className="flex items-center justify-end mt-2">
+                              <div className="flex items-center justify-end gap-1">
                                 {isCredit ? (
-                                  <ArrowUpRight className="h-4 w-4 text-success" />
+                                  <>
+                                    <ArrowUpRight className="h-4 w-4 text-success" />
+                                    <span className="text-xs font-medium text-success">Credit</span>
+                                  </>
                                 ) : (
-                                  <ArrowDownLeft className="h-4 w-4 text-muted-foreground" />
+                                  <>
+                                    <ArrowDownLeft className="h-4 w-4 text-muted-foreground" />
+                                    <span className="text-xs font-medium text-muted-foreground">Debit</span>
+                                  </>
                                 )}
                               </div>
+                              {isHighValue && (
+                                <Badge variant="secondary" className="text-xs mt-1">
+                                  High Value
+                                </Badge>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -520,14 +669,20 @@ export const TransactionsContent = () => {
           </TabsContent>
         </Tabs>
         
-        {/* Summary Footer */}
+        {/* Enhanced Summary Footer */}
         {(activeTab === 'group' ? groupedByCategory.length > 0 : filteredTransactions.length > 0) && (
-          <div className="p-4 text-center border-t border-border/50 bg-muted/20">
-            <p className="text-xs text-muted-foreground font-google">
-              {activeTab === 'group'
-                ? `${groupedByCategory.length} categor${groupedByCategory.length !== 1 ? 'ies' : 'y'} • ${getBankName(selectedBankId)}`
-                : `${filteredTransactions.length} transaction${filteredTransactions.length !== 1 ? 's' : ''} • ${getBankName(selectedBankId)}`
-              }
+          <div className="p-6 text-center border-t border-border/30 bg-gradient-to-t from-muted/30 to-transparent">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+              <p className="text-sm font-semibold text-foreground">
+                {activeTab === 'group'
+                  ? `${groupedByCategory.length} categor${groupedByCategory.length !== 1 ? 'ies' : 'y'} found`
+                  : `${filteredTransactions.length} transaction${filteredTransactions.length !== 1 ? 's' : ''} found`
+                }
+              </p>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Showing data from {getBankName(selectedBankId)} • {getDurationLabel()}
             </p>
           </div>
         )}
