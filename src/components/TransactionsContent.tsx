@@ -122,14 +122,14 @@ export const TransactionsContent = () => {
                 placeholder="Search"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-8 bg-muted/30 border-0 rounded-full text-xs font-medium"
+                className="pl-10 h-8 bg-muted/30 border border-border/50 rounded-full text-xs font-medium"
               />
             </div>
             
             {/* Bank Filter - Compact fixed width */}
             <div className="w-24">
               <Select value={selectedBankId} onValueChange={setSelectedBankId}>
-                <SelectTrigger className="h-8 px-3 bg-muted/30 border-0 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors w-full">
+                <SelectTrigger className="h-8 px-3 bg-muted/30 border border-border/50 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors w-full">
                   <SelectValue placeholder="Bank" />
                 </SelectTrigger>
                 <SelectContent className="bg-background border border-border shadow-lg">
