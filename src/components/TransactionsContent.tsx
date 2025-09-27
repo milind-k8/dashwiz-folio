@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Drawer } from 'vaul';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useFilterStore } from '@/store/filterStore';
 import {
   Select,
@@ -64,7 +65,7 @@ export const TransactionsContent = () => {
   
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBankId, setSelectedBankId] = useState<string>(selectedBank || '');
-  const [isGroupedView, setIsGroupedView] = useState(true);
+  const [activeTab, setActiveTab] = useState('group');
   const [selectedCategory, setSelectedCategory] = useState<GroupedCategory | null>(null);
   const [modalSearchTerm, setModalSearchTerm] = useState('');
 
@@ -295,169 +296,170 @@ export const TransactionsContent = () => {
             </div>
           </div>
           
-          {/* Toggle Group on second row */}
+          {/* Tabs for List/Group view */}
           <div className="flex justify-center">
-            <ToggleGroup 
-              type="single" 
-              value={isGroupedView ? "group" : "list"} 
-              onValueChange={(value) => {
-                if (value) setIsGroupedView(value === "group");
-              }}
-              variant="outline"
-              size="sm"
-            >
-              <ToggleGroupItem value="list" aria-label="List view" className="gap-1.5">
-                <List className="h-3 w-3" />
-                <span className="text-xs">List</span>
-              </ToggleGroupItem>
-              <ToggleGroupItem value="group" aria-label="Group view" className="gap-1.5">
-                <Grid3X3 className="h-3 w-3" />
-                <span className="text-xs">Group</span>
-              </ToggleGroupItem>
-            </ToggleGroup>
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-2 bg-muted/30 h-8">
+                <TabsTrigger value="group" className="text-xs font-medium">
+                  <Grid3X3 className="h-3 w-3 mr-1" />
+                  Group
+                </TabsTrigger>
+                <TabsTrigger value="list" className="text-xs font-medium">
+                  <List className="h-3 w-3 mr-1" />
+                  List
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
         </div>
       </div>
 
-      {/* Content Area */}
+      {/* Content Area with Tabs */}
       <div className="max-w-md mx-auto">
-        {isGroupedView ? (
-          /* Grouped View - Categories */
-          groupedByCategory.length === 0 ? (
-            <div className="p-8 text-center">
-              <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground font-google">
-                {searchTerm ? 'No transactions match your search' : 'No transactions found'}
-              </p>
-            </div>
-          ) : (
-            <div className="divide-y divide-border/50">
-              {groupedByCategory.map((group) => {
-                const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor('', group.category);
-                
-                return (
-                  <div 
-                    key={group.category} 
-                    className="p-4 hover:bg-muted/30 transition-colors cursor-pointer"
-                    onClick={() => setSelectedCategory(group)}
-            style={{ scrollbarWidth: 'thin' }}>
-                    <div className="flex items-center gap-3">
-                      {/* Category Icon */}
-                      <Avatar className={`h-10 w-10 ${bgColor}`}>
-                        <AvatarFallback className={`${bgColor} border-0`}>
-                          <CategoryIcon className={`h-5 w-5 ${iconColor}`} />
-                        </AvatarFallback>
-                      </Avatar>
-                      
-                      {/* Category Details */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium text-foreground font-google truncate">
-                              {group.category}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {group.transactionCount} transaction{group.transactionCount !== 1 ? 's' : ''} • {group.merchantCount} merchant{group.merchantCount !== 1 ? 's' : ''}
-                            </p>
-                          </div>
-                          
-                          <div className="flex items-center gap-2 ml-3">
-                            <div className="text-right">
-                              <div className="text-sm font-medium font-google text-foreground">
-                                ₹{group.totalAmount.toLocaleString()}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsContent value="group" className="mt-0">
+            {/* Grouped View - Categories with Enhanced Cards */}
+            {groupedByCategory.length === 0 ? (
+              <div className="p-8 text-center">
+                <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground font-google">
+                  {searchTerm ? 'No transactions match your search' : 'No transactions found'}
+                </p>
+              </div>
+            ) : (
+              <div className="p-4 space-y-3">
+                {groupedByCategory.map((group) => {
+                  const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor('', group.category);
+                  
+                  return (
+                    <Card 
+                      key={group.category} 
+                      className="p-4 hover:shadow-md transition-all cursor-pointer border border-border/50"
+                      onClick={() => setSelectedCategory(group)}
+                    >
+                      <div className="flex items-center gap-4">
+                        {/* Category Icon */}
+                        <div className={`p-3 rounded-xl ${bgColor}`}>
+                          <CategoryIcon className={`h-6 w-6 ${iconColor}`} />
+                        </div>
+                        
+                        {/* Category Details */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <div className="min-w-0 flex-1">
+                              <h3 className="text-base font-semibold text-foreground font-google truncate">
+                                {group.category}
+                              </h3>
+                              <div className="flex items-center gap-2 mt-1">
+                                <Badge variant="secondary" className="text-xs">
+                                  {group.transactionCount} transaction{group.transactionCount !== 1 ? 's' : ''}
+                                </Badge>
+                                <Badge variant="outline" className="text-xs">
+                                  {group.merchantCount} merchant{group.merchantCount !== 1 ? 's' : ''}
+                                </Badge>
                               </div>
                             </div>
-                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                            
+                            <div className="flex items-center gap-2 ml-3">
+                              <div className="text-right">
+                                <div className="text-lg font-bold font-google text-foreground">
+                                  ₹{group.totalAmount.toLocaleString()}
+                                </div>
+                              </div>
+                              <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )
-        ) : (
-          /* Normal List View */
-          filteredTransactions.length === 0 ? (
-            <div className="p-8 text-center">
-              <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground font-google">
-                {searchTerm ? 'No transactions match your search' : 'No transactions found'}
-              </p>
-            </div>
-          ) : (
-            <div className="divide-y divide-border/50">
-              {filteredTransactions.map((transaction) => {
-                const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor(transaction.merchant, transaction.category);
-                const isCredit = transaction.transaction_type === 'credit';
-                
-                return (
-                  <div key={transaction.id} className="p-4 hover:bg-muted/30 transition-colors">
-                    <div className="flex items-center gap-3">
-                      {/* Icon Avatar with category colors */}
-                      <Avatar className={`h-10 w-10 ${bgColor}`}>
-                        <AvatarFallback className={`${bgColor} border-0`}>
-                          <CategoryIcon className={`h-5 w-5 ${iconColor}`} />
-                        </AvatarFallback>
-                      </Avatar>
-                      
-                      {/* Transaction Details */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium text-foreground font-google truncate">
-                              {transaction.merchant || 'Unknown Merchant'}
-                            </p>
-                            <div className="flex items-center gap-2 mt-1">
-                              <p className="text-xs text-muted-foreground">
-                                {new Date(transaction.mail_time).toLocaleDateString('en-US', { 
-                                  month: 'short', 
-                                  day: 'numeric'
-                                })}
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+          </TabsContent>
+          
+          <TabsContent value="list" className="mt-0">
+            {/* Normal List View */}
+            {filteredTransactions.length === 0 ? (
+              <div className="p-8 text-center">
+                <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground font-google">
+                  {searchTerm ? 'No transactions match your search' : 'No transactions found'}
+                </p>
+              </div>
+            ) : (
+              <div className="divide-y divide-border/50">
+                {filteredTransactions.map((transaction) => {
+                  const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor(transaction.merchant, transaction.category);
+                  const isCredit = transaction.transaction_type === 'credit';
+                  
+                  return (
+                    <div key={transaction.id} className="p-4 hover:bg-muted/30 transition-colors">
+                      <div className="flex items-center gap-3">
+                        {/* Icon Avatar with category colors */}
+                        <Avatar className={`h-10 w-10 ${bgColor}`}>
+                          <AvatarFallback className={`${bgColor} border-0`}>
+                            <CategoryIcon className={`h-5 w-5 ${iconColor}`} />
+                          </AvatarFallback>
+                        </Avatar>
+                        
+                        {/* Transaction Details */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-medium text-foreground font-google truncate">
+                                {transaction.merchant || 'Unknown Merchant'}
                               </p>
-                              <span className="text-xs text-muted-foreground">•</span>
-                              <div className="flex items-center gap-1">
-                                <Tag className="h-3 w-3 text-muted-foreground" />
-                                <p className="text-xs text-muted-foreground truncate">
-                                  {transaction.category || 'Other'}
+                              <div className="flex items-center gap-2 mt-1">
+                                <p className="text-xs text-muted-foreground">
+                                  {new Date(transaction.mail_time).toLocaleDateString('en-US', { 
+                                    month: 'short', 
+                                    day: 'numeric'
+                                  })}
                                 </p>
+                                <span className="text-xs text-muted-foreground">•</span>
+                                <div className="flex items-center gap-1">
+                                  <Tag className="h-3 w-3 text-muted-foreground" />
+                                  <p className="text-xs text-muted-foreground truncate">
+                                    {transaction.category || 'Other'}
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                          
-                          {/* Amount */}
-                          <div className="text-right ml-3">
-                            <div className={`text-sm font-medium font-google ${
-                              isCredit 
-                                ? 'text-success' 
-                                : 'text-foreground'
-                            }`}>
-                              {isCredit ? '+' : '-'}₹{transaction.amount.toLocaleString()}
-                            </div>
-                            <div className="flex items-center justify-end mt-1">
-                              {isCredit ? (
-                                <ArrowUpRight className="h-3 w-3 text-success" />
-                              ) : (
-                                <ArrowDownLeft className="h-3 w-3 text-muted-foreground" />
-                              )}
+                            
+                            {/* Amount */}
+                            <div className="text-right ml-3">
+                              <div className={`text-sm font-medium font-google ${
+                                isCredit 
+                                  ? 'text-success' 
+                                  : 'text-foreground'
+                              }`}>
+                                {isCredit ? '+' : '-'}₹{transaction.amount.toLocaleString()}
+                              </div>
+                              <div className="flex items-center justify-end mt-1">
+                                {isCredit ? (
+                                  <ArrowUpRight className="h-3 w-3 text-success" />
+                                ) : (
+                                  <ArrowDownLeft className="h-3 w-3 text-muted-foreground" />
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          )
-        )}
+                  );
+                })}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
         
         {/* Summary Footer */}
-        {(isGroupedView ? groupedByCategory.length > 0 : filteredTransactions.length > 0) && (
+        {(activeTab === 'group' ? groupedByCategory.length > 0 : filteredTransactions.length > 0) && (
           <div className="p-4 text-center border-t border-border/50 bg-muted/20">
             <p className="text-xs text-muted-foreground font-google">
-              {isGroupedView 
+              {activeTab === 'group'
                 ? `${groupedByCategory.length} categor${groupedByCategory.length !== 1 ? 'ies' : 'y'} • ${getBankName(selectedBankId)}`
                 : `${filteredTransactions.length} transaction${filteredTransactions.length !== 1 ? 's' : ''} • ${getBankName(selectedBankId)}`
               }
