@@ -198,25 +198,31 @@ export const TransactionsContent = () => {
               Transactions
             </h1>
             
-            {/* Toggle Button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsGroupedView(!isGroupedView)}
-              className="flex items-center gap-2 text-xs"
-            >
-              {isGroupedView ? (
-                <>
-                  <ToggleRight className="h-4 w-4 text-primary" />
-                  <span>Grouped</span>
-                </>
-              ) : (
-                <>
-                  <ToggleLeft className="h-4 w-4 text-muted-foreground" />
-                  <span>List</span>
-                </>
-              )}
-            </Button>
+            {/* Google-style Toggle Switch */}
+            <div className="flex items-center gap-2">
+              <span className={`text-xs font-medium transition-colors ${!isGroupedView ? 'text-foreground' : 'text-muted-foreground'}`}>
+                List
+              </span>
+              <button
+                onClick={() => setIsGroupedView(!isGroupedView)}
+                className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20 ${
+                  isGroupedView 
+                    ? 'bg-primary' 
+                    : 'bg-muted-foreground/30'
+                }`}
+              >
+                <div
+                  className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${
+                    isGroupedView 
+                      ? 'translate-x-5' 
+                      : 'translate-x-0.5'
+                  }`}
+                />
+              </button>
+              <span className={`text-xs font-medium transition-colors ${isGroupedView ? 'text-foreground' : 'text-muted-foreground'}`}>
+                Group
+              </span>
+            </div>
           </div>
           
           <div className="flex items-center gap-2">
