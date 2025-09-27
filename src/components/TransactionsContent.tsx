@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Drawer } from 'vaul';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { useFilterStore } from '@/store/filterStore';
 import {
   Select,
   SelectContent,
@@ -29,7 +30,8 @@ import {
   X,
   ChevronRight,
   List,
-  Grid3X3
+  Grid3X3,
+  Calendar
 } from 'lucide-react';
 
 import { useGlobalStore } from '@/store/globalStore';
@@ -52,8 +54,9 @@ interface GroupedMerchant {
 
 export const TransactionsContent = () => {
   const { banks, transactions, loading } = useGlobalStore();
+  const { selectedBank, selectedDuration, setSelectedBank, setSelectedDuration } = useFilterStore();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBankId, setSelectedBankId] = useState<string>('');
+  const [selectedBankId, setSelectedBankId] = useState<string>(selectedBank || '');
   const [isGroupedView, setIsGroupedView] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<GroupedCategory | null>(null);
   const [modalSearchTerm, setModalSearchTerm] = useState('');
@@ -68,9 +71,29 @@ export const TransactionsContent = () => {
   // Set first bank as default when banks are loaded
   useEffect(() => {
     if (banks.length > 0 && !selectedBankId) {
-      setSelectedBankId(banks[0].id);
+      const defaultBank = selectedBank || banks[0].id;
+      setSelectedBankId(defaultBank);
+      if (!selectedBank) {
+        setSelectedBank(defaultBank);
+      }
     }
-  }, [banks, selectedBankId]);
+  }, [banks, selectedBankId, selectedBank, setSelectedBank]);
+
+  
+  // Get current date and generate month options
+  const getMonthOptions = () => {
+    const options = [];
+    const now = new Date();
+    
+    for (let i = 0; i < 12; i++) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      const label = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      options.push({ value, label });
+    }
+    
+    return options;
+  };
 
   // Get bank name by ID
   const getBankName = (bankId: string) => {
@@ -98,7 +121,7 @@ export const TransactionsContent = () => {
     }
   };
 
-  // Filter transactions based on search term and selected bank
+  // Filter transactions based on search term, selected bank, and month
   const filteredTransactions = useMemo(() => {
     if (!selectedBankId) {
       return [];
@@ -118,9 +141,18 @@ export const TransactionsContent = () => {
       
       const matchesBank = transaction.bank_id === selectedBankId;
       
-      return matchesSearch && matchesBank;
+      // Month filter
+      let matchesMonth = true;
+      if (selectedDuration && selectedDuration !== 'all-time') {
+        const transactionDate = new Date(transaction.mail_time);
+        const [year, month] = selectedDuration.split('-');
+        const transactionMonth = `${transactionDate.getFullYear()}-${String(transactionDate.getMonth() + 1).padStart(2, '0')}`;
+        matchesMonth = transactionMonth === selectedDuration;
+      }
+      
+      return matchesSearch && matchesBank && matchesMonth;
     });
-  }, [transactions, searchTerm, selectedBankId]);
+  }, [transactions, searchTerm, selectedBankId, selectedDuration]);
 
   // Group transactions by category
   const groupedByCategory = useMemo(() => {
@@ -212,10 +244,13 @@ export const TransactionsContent = () => {
             />
           </div>
           
-          {/* Bank Filter and Toggle Group on same row */}
-          <div className="flex items-center justify-between gap-3">
+          {/* Bank Filter and Month Filter on first row */}
+          <div className="flex items-center gap-2">
             <div className="flex-1">
-              <Select value={selectedBankId} onValueChange={setSelectedBankId}>
+              <Select value={selectedBankId} onValueChange={(value) => {
+                setSelectedBankId(value);
+                setSelectedBank(value);
+              }}>
                 <SelectTrigger className="h-8 px-3 bg-muted/30 border border-border/50 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors w-full">
                   <SelectValue placeholder="Select Bank" />
                 </SelectTrigger>
@@ -229,6 +264,26 @@ export const TransactionsContent = () => {
               </Select>
             </div>
             
+            <div className="flex-1">
+              <Select value={selectedDuration} onValueChange={setSelectedDuration}>
+                <SelectTrigger className="h-8 px-3 bg-muted/30 border border-border/50 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors w-full">
+                  <Calendar className="h-3 w-3 mr-1" />
+                  <SelectValue placeholder="Month" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border border-border shadow-lg z-50">
+                  <SelectItem value="all-time" className="text-xs py-1.5">All Time</SelectItem>
+                  {getMonthOptions().map((option) => (
+                    <SelectItem key={option.value} value={option.value} className="text-xs py-1.5">
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          
+          {/* Toggle Group on second row */}
+          <div className="flex justify-center">
             <ToggleGroup 
               type="single" 
               value={isGroupedView ? "group" : "list"} 
