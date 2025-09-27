@@ -115,7 +115,7 @@ export const TransactionsContent = () => {
           </h1>
           
           <div className="flex items-center gap-2">
-            {/* Search Bar - Compact */}
+            {/* Search Bar - Takes most space */}
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -126,19 +126,21 @@ export const TransactionsContent = () => {
               />
             </div>
             
-            {/* Bank Filter - Compact */}
-            <Select value={selectedBankId} onValueChange={setSelectedBankId}>
-              <SelectTrigger className="h-8 px-3 bg-muted/30 border-0 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors min-w-[100px]">
-                <SelectValue placeholder="Bank" />
-              </SelectTrigger>
-              <SelectContent className="bg-background border border-border shadow-lg">
-                {banks.map((bank) => (
-                  <SelectItem key={bank.id} value={bank.id} className="text-xs py-1.5">
-                    {bank.bank_name.toUpperCase()}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {/* Bank Filter - Compact fixed width */}
+            <div className="w-24">
+              <Select value={selectedBankId} onValueChange={setSelectedBankId}>
+                <SelectTrigger className="h-8 px-3 bg-muted/30 border-0 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors w-full">
+                  <SelectValue placeholder="Bank" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border border-border shadow-lg">
+                  {banks.map((bank) => (
+                    <SelectItem key={bank.id} value={bank.id} className="text-xs py-1.5">
+                      {bank.bank_name.toUpperCase()}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
       </div>
