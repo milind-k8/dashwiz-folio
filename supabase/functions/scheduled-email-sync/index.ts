@@ -157,7 +157,7 @@ async function processUserSync(supabase: any, userToken: any) {
           ? new Date(userToken.last_sync_at)
           : new Date(Date.now() - 60 * 60 * 1000);
         
-        const month = fromDate.getMonth() + 1; // JavaScript months are 0-indexed
+        const month = `${fromDate.getMonth() + 1}/${fromDate.getFullYear()}`; // Format as "M/YYYY"
         
         // Call process-transactions function for this bank
         console.log(`Calling process-transactions for ${bank.bank_name} with userId: ${userToken.user_id}`);
