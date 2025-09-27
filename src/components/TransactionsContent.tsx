@@ -285,7 +285,6 @@ export const TransactionsContent = () => {
                   <SelectValue placeholder="Month" />
                 </SelectTrigger>
                 <SelectContent className="bg-background border border-border shadow-lg z-50">
-                  <SelectItem value="all-time" className="text-xs py-1.5">All Time</SelectItem>
                   {getMonthOptions().map((option) => (
                     <SelectItem key={option.value} value={option.value} className="text-xs py-1.5">
                       {option.label}
@@ -351,9 +350,6 @@ export const TransactionsContent = () => {
                                 {group.category}
                               </h3>
                               <div className="flex items-center gap-2 mt-1">
-                                <Badge variant="secondary" className="text-xs">
-                                  {group.transactionCount} transaction{group.transactionCount !== 1 ? 's' : ''}
-                                </Badge>
                                 <Badge variant="outline" className="text-xs">
                                   {group.merchantCount} merchant{group.merchantCount !== 1 ? 's' : ''}
                                 </Badge>
