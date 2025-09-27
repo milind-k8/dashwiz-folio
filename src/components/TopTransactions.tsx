@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -44,39 +43,35 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
 
   if (topTransactions.length === 0) {
     return (
-      <Card className={cn("border border-border", className)}>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base font-medium flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-primary" />
-            Top 5 Highest Transactions
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-8">
-            <div className="w-12 h-12 rounded-full bg-muted/20 flex items-center justify-center mx-auto mb-3">
-              <TrendingUp className="w-6 h-6 text-muted-foreground" />
-            </div>
-            <p className="text-sm text-muted-foreground">No transactions found</p>
+      <div className={cn("space-y-4", className)}>
+        <h3 className="text-base font-medium flex items-center gap-2">
+          <TrendingUp className="w-4 h-4 text-primary" />
+          Top 5 Highest Transactions
+        </h3>
+        <div className="text-center py-8">
+          <div className="w-12 h-12 rounded-full bg-muted/20 flex items-center justify-center mx-auto mb-3">
+            <TrendingUp className="w-6 h-6 text-muted-foreground" />
           </div>
-        </CardContent>
-      </Card>
+          <p className="text-sm text-muted-foreground">No transactions found</p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Card className={cn("border border-border", className)}>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base font-medium flex items-center gap-2">
+    <div className={cn("space-y-4", className)}>
+      <div className="flex items-center gap-2">
+        <h3 className="text-base font-medium flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-primary" />
           Top 5 Highest Transactions
-        </CardTitle>
-        <p className="text-sm text-muted-foreground">Your largest transactions this period</p>
-      </CardHeader>
-      <CardContent className="space-y-3">
+        </h3>
+      </div>
+      
+      <div className="space-y-0 divide-y divide-border">
         {topTransactions.map((transaction, index) => (
           <div 
             key={transaction.id}
-            className="flex items-center justify-between p-3 bg-muted/20 border border-border/50 rounded-lg hover:bg-muted/30 transition-colors"
+            className="flex items-center justify-between py-3 hover:bg-muted/20 transition-colors first:pt-0 last:pb-0"
           >
             <div className="flex items-center gap-3 flex-1 min-w-0">
               <div className="flex-shrink-0">
@@ -116,7 +111,7 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
             </div>
           </div>
         ))}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
