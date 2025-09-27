@@ -131,17 +131,17 @@ export const TransactionsContent = () => {
     const categoryLower = category?.toLowerCase() || '';
     
     if (merchantLower.includes('coffee') || merchantLower.includes('starbucks') || merchantLower.includes('cafe')) {
-      return { icon: Coffee, bgColor: 'bg-amber-50', iconColor: 'text-amber-600' };
+      return { icon: Coffee, bgColor: 'bg-warning-subtle dark:bg-warning-subtle', iconColor: 'text-warning dark:text-warning' };
     } else if (merchantLower.includes('uber') || merchantLower.includes('taxi') || categoryLower.includes('transport')) {
-      return { icon: Car, bgColor: 'bg-blue-50', iconColor: 'text-blue-600' };
+      return { icon: Car, bgColor: 'bg-primary-subtle dark:bg-primary-subtle', iconColor: 'text-primary dark:text-primary' };
     } else if (merchantLower.includes('restaurant') || merchantLower.includes('food') || categoryLower.includes('food')) {
-      return { icon: Utensils, bgColor: 'bg-orange-50', iconColor: 'text-orange-600' };
+      return { icon: Utensils, bgColor: 'bg-muted dark:bg-muted', iconColor: 'text-muted-foreground dark:text-muted-foreground' };
     } else if (merchantLower.includes('shop') || merchantLower.includes('store') || categoryLower.includes('shopping')) {
-      return { icon: ShoppingBag, bgColor: 'bg-purple-50', iconColor: 'text-purple-600' };
+      return { icon: ShoppingBag, bgColor: 'bg-accent/10 dark:bg-accent/10', iconColor: 'text-accent dark:text-accent' };
     } else if (categoryLower.includes('bank') || categoryLower.includes('atm')) {
-      return { icon: CreditCard, bgColor: 'bg-green-50', iconColor: 'text-green-600' };
+      return { icon: CreditCard, bgColor: 'bg-success-subtle dark:bg-success-subtle', iconColor: 'text-success dark:text-success' };
     } else {
-      return { icon: Store, bgColor: 'bg-rose-50', iconColor: 'text-rose-600' };
+      return { icon: Store, bgColor: 'bg-destructive-subtle dark:bg-destructive-subtle', iconColor: 'text-destructive dark:text-destructive' };
     }
   };
 
@@ -402,12 +402,12 @@ export const TransactionsContent = () => {
                   return (
                     <Card 
                       key={group.category} 
-                      className="p-4 hover:shadow-md transition-all cursor-pointer border border-border/50"
+                      className="p-4 hover:shadow-md transition-all cursor-pointer border border-border/50 rounded-2xl"
                       onClick={() => setSelectedCategory(group)}
                     >
                       <div className="flex items-center gap-4">
                         {/* Category Icon */}
-                        <div className={`p-3 rounded-xl ${bgColor}`}>
+                        <div className={`p-3 rounded-2xl ${bgColor}`}>
                           <CategoryIcon className={`h-6 w-6 ${iconColor}`} />
                         </div>
                         
@@ -579,7 +579,7 @@ export const TransactionsContent = () => {
                   const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor(merchant.merchant, selectedCategory?.category || '');
                   
                   return (
-                    <div key={merchant.merchant} className="p-3 bg-muted/20 rounded-lg">
+                    <div key={merchant.merchant} className="p-3 bg-muted/20 rounded-2xl">
                       <div className="flex items-center gap-3">
                         <Avatar className={`h-8 w-8 ${bgColor}`}>
                           <AvatarFallback className={`${bgColor} border-0`}>
