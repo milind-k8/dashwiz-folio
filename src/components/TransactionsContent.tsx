@@ -154,9 +154,9 @@ export const TransactionsContent = () => {
       
       const matchesBank = transaction.bank_id === selectedBankId;
       
-      // Month filter
+      // Month filter - always filter by selected month since no "all-time" option
       let matchesMonth = true;
-      if (selectedDuration && selectedDuration !== 'all-time') {
+      if (selectedDuration) {
         const transactionDate = new Date(transaction.mail_time);
         const [year, month] = selectedDuration.split('-');
         const transactionMonth = `${transactionDate.getFullYear()}-${String(transactionDate.getMonth() + 1).padStart(2, '0')}`;
