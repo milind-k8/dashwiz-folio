@@ -250,7 +250,7 @@ export const BanksContent = () => {
   }
 
   return (
-    <div className="p-3 sm:p-4 md:p-6 space-y-6 animate-fade-in max-w-7xl mx-auto border border-border rounded-lg">
+    <div className="p-3 sm:p-4 md:p-6 space-y-6 animate-fade-in max-w-7xl mx-auto">
       {/* Connected Banks List */}
       <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -261,8 +261,8 @@ export const BanksContent = () => {
           
           <Dialog open={showAddBankDialog} onOpenChange={setShowAddBankDialog}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm" className="rounded-full border-primary text-primary bg-background hover:bg-primary/5 touch-target">
-                <Plus className="h-4 w-4 mr-2" />
+              <Button size="sm" className="touch-target">
+                <Plus className="h-4 w-4" />
                 Add Bank
               </Button>
             </DialogTrigger>
