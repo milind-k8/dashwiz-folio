@@ -48,7 +48,7 @@ export function NavUser() {
         >
           <Avatar className="h-8 w-8">
             <AvatarImage src={user.user_metadata?.avatar_url} alt={user.email || ''} />
-            <AvatarFallback className="bg-gradient-primary text-white text-sm font-medium">
+            <AvatarFallback className="bg-gradient-primary text-primary-foreground text-sm font-medium">
               {user.email ? getUserInitials(user.email) : <User className="h-4 w-4" />}
             </AvatarFallback>
           </Avatar>
@@ -85,7 +85,7 @@ export function NavUser() {
           {theme === 'system' && <span className="ml-auto">✓</span>}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut} className="text-red-600 focus:text-red-600">
+        <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>

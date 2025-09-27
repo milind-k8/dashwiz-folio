@@ -28,7 +28,7 @@ export function UserGreeting() {
       </span>
       <Avatar className="h-8 w-8">
         <AvatarImage src={user.user_metadata?.avatar_url} alt={user.email || ''} />
-        <AvatarFallback className="bg-gradient-primary text-white text-sm font-medium">
+        <AvatarFallback className="bg-gradient-primary text-primary-foreground text-sm font-medium">
           {user.email ? getUserInitials(user.email) : <User className="h-4 w-4" />}
         </AvatarFallback>
       </Avatar>

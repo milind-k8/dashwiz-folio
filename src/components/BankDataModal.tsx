@@ -149,9 +149,9 @@ export function BankDataModal({
         </DialogHeader>
 
         {/* Total Section */}
-        <Card className="p-4 sm:p-6 bg-gradient-card text-white border-0">
+        <Card className="p-4 sm:p-6 bg-gradient-card text-primary-foreground border-0">
           <div className="text-center">
-            <p className="text-white/80 text-xs sm:text-sm font-medium mb-2">Total {title}</p>
+            <p className="text-primary-foreground/80 text-xs sm:text-sm font-medium mb-2">Total {title}</p>
             <p className="text-2xl sm:text-3xl font-bold">
               {formatCurrency(totalValue)}
             </p>

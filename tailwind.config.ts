@@ -78,6 +78,14 @@ export default {
           DEFAULT: "var(--card)",
           foreground: "var(--card-foreground)",
         },
+        success: {
+          DEFAULT: "var(--success)",
+          foreground: "var(--success-foreground)",
+        },
+        warning: {
+          DEFAULT: "var(--warning)",
+          foreground: "var(--warning-foreground)",
+        },
         sidebar: {
           DEFAULT: "var(--sidebar)",
           foreground: "var(--sidebar-foreground)",
@@ -107,6 +115,10 @@ export default {
         'gradient-balance': 'var(--gradient-balance)',
         'gradient-income': 'var(--gradient-income)',
         'gradient-expense': 'var(--gradient-expense)',
+      },
+      backgroundColor: {
+        'overlay': 'var(--overlay)',
+        'overlay-light': 'var(--overlay-light)',
       },
       boxShadow: {
         'sm': 'var(--shadow-sm)',
