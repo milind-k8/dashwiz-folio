@@ -459,12 +459,12 @@ export const TransactionsContent = () => {
                   const isCredit = transaction.transaction_type === 'credit';
                   
                   return (
-                    <div key={transaction.id} className="p-4 hover:bg-muted/30 transition-colors">
-                      <div className="flex items-center gap-3">
+                    <div key={transaction.id} className="p-5 hover:bg-muted/30 transition-colors">
+                      <div className="flex items-center gap-4">
                         {/* Icon Avatar with category colors */}
-                        <Avatar className={`h-10 w-10 ${bgColor}`}>
+                        <Avatar className={`h-12 w-12 ${bgColor}`}>
                           <AvatarFallback className={`${bgColor} border-0`}>
-                            <CategoryIcon className={`h-5 w-5 ${iconColor}`} />
+                            <CategoryIcon className={`h-6 w-6 ${iconColor}`} />
                           </AvatarFallback>
                         </Avatar>
                         
@@ -472,20 +472,20 @@ export const TransactionsContent = () => {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
                             <div className="min-w-0 flex-1">
-                              <p className="text-sm font-medium text-foreground font-google truncate">
+                              <p className="text-base font-medium text-foreground font-google truncate">
                                 {transaction.merchant || 'Unknown Merchant'}
                               </p>
-                              <div className="flex items-center gap-2 mt-1">
-                                <p className="text-xs text-muted-foreground">
+                              <div className="flex items-center gap-2 mt-2">
+                                <p className="text-sm text-muted-foreground">
                                   {new Date(transaction.mail_time).toLocaleDateString('en-US', { 
                                     month: 'short', 
                                     day: 'numeric'
                                   })}
                                 </p>
-                                <span className="text-xs text-muted-foreground">•</span>
+                                <span className="text-sm text-muted-foreground">•</span>
                                 <div className="flex items-center gap-1">
-                                  <Tag className="h-3 w-3 text-muted-foreground" />
-                                  <p className="text-xs text-muted-foreground truncate">
+                                  <Tag className="h-4 w-4 text-muted-foreground" />
+                                  <p className="text-sm text-muted-foreground truncate">
                                     {transaction.category || 'Other'}
                                   </p>
                                 </div>
@@ -493,19 +493,19 @@ export const TransactionsContent = () => {
                             </div>
                             
                             {/* Amount */}
-                            <div className="text-right ml-3">
-                              <div className={`text-sm font-medium font-google ${
+                            <div className="text-right ml-4">
+                              <div className={`text-base font-semibold font-google ${
                                 isCredit 
                                   ? 'text-success' 
                                   : 'text-foreground'
                               }`}>
                                 {isCredit ? '+' : '-'}₹{transaction.amount.toLocaleString()}
                               </div>
-                              <div className="flex items-center justify-end mt-1">
+                              <div className="flex items-center justify-end mt-2">
                                 {isCredit ? (
-                                  <ArrowUpRight className="h-3 w-3 text-success" />
+                                  <ArrowUpRight className="h-4 w-4 text-success" />
                                 ) : (
-                                  <ArrowDownLeft className="h-3 w-3 text-muted-foreground" />
+                                  <ArrowDownLeft className="h-4 w-4 text-muted-foreground" />
                                 )}
                               </div>
                             </div>
