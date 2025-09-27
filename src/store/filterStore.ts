@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface FilterStore {
   // Filter state
-  selectedBank: string;
+  selectedBank: string; // Bank ID now, not bank name
   selectedDuration: string;
   
   // Actions
@@ -41,6 +41,15 @@ export const useFilterStore = create<FilterStore>()(
         selectedBank: state.selectedBank,
         selectedDuration: state.selectedDuration,
       }),
+      // Clear invalid data on hydration
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          // Reset invalid bank selections
+          if (state.selectedBank && typeof state.selectedBank !== 'string') {
+            state.selectedBank = '';
+          }
+        }
+      },
     }
   )
 );

@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/select';
 import { useFinancialData } from '@/hooks/useFinancialData';
 import { useFilterStore } from '@/store/filterStore';
+import { useGlobalStore } from '@/store/globalStore';
 import { Loader } from '@/components/ui/loader';
 import { format, subMonths, startOfMonth } from 'date-fns';
 
@@ -17,6 +18,7 @@ interface InlineFiltersProps {
 
 export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
   const { availableBanks, isLoading } = useFinancialData();
+  const { banks } = useGlobalStore();
   const { 
     selectedBank, 
     selectedDuration, 
@@ -47,21 +49,25 @@ export function InlineFilters({ onFiltersChange }: InlineFiltersProps) {
     }
   }, [selectedBank, selectedDuration, onFiltersChange]);
 
-  const getBankLabel = (bankCode: string) => {
+  const getBankLabel = (bankId: string) => {
+    const bank = banks.find(b => b.id === bankId);
+    if (!bank) return bankId;
+    
+    const bankName = bank.bank_name.toLowerCase();
     const labels: Record<string, string> = {
       'hdfc': 'HDFC Bank',
-      'chase': 'Chase Bank',
+      'chase': 'Chase Bank', 
       'bofa': 'Bank of America',
       'wells': 'Wells Fargo',
       'citi': 'Citibank',
       'capital': 'Capital One'
     };
-    return labels[bankCode] || bankCode.toUpperCase();
+    return labels[bankName] || bank.bank_name.toUpperCase();
   };
 
-  const bankOptions = availableBanks.map(bank => ({
-    value: bank,
-    label: getBankLabel(bank)
+  const bankOptions = availableBanks.map(bankId => ({
+    value: bankId,
+    label: getBankLabel(bankId)
   }));
 
   // Generate duration options for last 3 months

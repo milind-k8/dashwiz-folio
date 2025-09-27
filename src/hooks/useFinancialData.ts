@@ -219,8 +219,8 @@ export const useFinancialData = () => {
     return { expenseCategoryTotals, expenseCategoriesList };
   };
 
-  const getFilteredData = useCallback((selectedBank: string, monthFilter: string) => {
-    const bank_id = banks.find(b => b.bank_name === selectedBank)?.id;
+  const getFilteredData = useCallback((selectedBankId: string, monthFilter: string) => {
+    const bank_id = selectedBankId;
     const { startDate, endDate } = getDateRange(monthFilter);
 
     // Filter transactions by selected banks and date range
@@ -265,7 +265,7 @@ export const useFinancialData = () => {
   }, [banks, transactions]);
 
   const availableBanks = useMemo(() => {
-    return banks.map(bank => bank.bank_name);
+    return banks.map(bank => bank.id);
   }, [banks]);
 
   return {
