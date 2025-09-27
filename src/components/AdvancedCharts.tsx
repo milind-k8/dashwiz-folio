@@ -111,10 +111,6 @@ export function AdvancedCharts({ transactions, expenseCategories }: AdvancedChar
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="px-1">
-        <h3 className="text-lg font-semibold text-foreground mb-1 sm:mb-2">Advanced Analytics</h3>
-        <p className="text-sm text-muted-foreground">Detailed charts and trends</p>
-      </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Daily Spending Trend */}
