@@ -1,17 +1,19 @@
 import { useMemo, useCallback } from 'react';
 import { EnhancedMetricCard } from '@/components/EnhancedMetricCard';
-
+import { TopTransactions } from '@/components/TopTransactions';
 import { AdvancedCharts } from '@/components/AdvancedCharts';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
 import { DashboardSkeleton } from '@/components/DashboardSkeleton';
 import { useFinancialData } from '@/hooks/useFinancialData';
 import { useFilterStore } from '@/store/filterStore';
+import { useGlobalStore } from '@/store/globalStore';
 import { Wallet, CreditCard as CreditCardIcon } from 'lucide-react';
 
 export function Dashboard() {
   const { getFilteredData, isLoading } = useFinancialData();
   const { selectedBank, selectedDuration, setFilters } = useFilterStore();
+  const { banks } = useGlobalStore();
 
   const handleFiltersChange = useCallback((bank: string, duration: string) => {
     setFilters(bank, duration);
@@ -61,6 +63,12 @@ export function Dashboard() {
         />
       </div>
 
+      {/* Top Transactions */}
+      <TopTransactions 
+        transactions={data.transactions}
+        banks={banks}
+        className="mb-6"
+      />
 
       {/* Advanced Charts */}
       <AdvancedCharts 

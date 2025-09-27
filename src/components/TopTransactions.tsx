@@ -1,0 +1,142 @@
+import { useMemo } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { TrendingUp, TrendingDown, Building } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+
+interface Transaction {
+  id: string;
+  amount: number;
+  transaction_type: string;
+  mail_time: string;
+  merchant?: string;
+  bank_id: string;
+  snippet?: string;
+}
+
+interface Bank {
+  id: string;
+  bank_name: string;
+}
+
+interface TopTransactionsProps {
+  transactions: Transaction[];
+  banks: Bank[];
+  className?: string;
+}
+
+export function TopTransactions({ transactions, banks, className }: TopTransactionsProps) {
+  const topTransactions = useMemo(() => {
+    // Filter out balance transactions and sort by amount descending
+    const filteredTransactions = transactions
+      .filter(t => t.transaction_type !== 'balance')
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, 5);
+
+    return filteredTransactions.map(transaction => {
+      const bank = banks.find(b => b.id === transaction.bank_id);
+      return {
+        ...transaction,
+        bankName: bank?.bank_name || 'Unknown Bank'
+      };
+    });
+  }, [transactions, banks]);
+
+  if (topTransactions.length === 0) {
+    return (
+      <Card className={cn("border border-border", className)}>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-medium flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-primary" />
+            Top 5 Highest Transactions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <div className="w-12 h-12 rounded-full bg-muted/20 flex items-center justify-center mx-auto mb-3">
+              <TrendingUp className="w-6 h-6 text-muted-foreground" />
+            </div>
+            <p className="text-sm text-muted-foreground">No transactions found</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className={cn("border border-border", className)}>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-medium flex items-center gap-2">
+          <TrendingUp className="w-4 h-4 text-primary" />
+          Top 5 Highest Transactions
+        </CardTitle>
+        <p className="text-sm text-muted-foreground">Your largest transactions this period</p>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {topTransactions.map((transaction, index) => (
+          <div 
+            key={transaction.id}
+            className="flex items-center justify-between p-3 bg-muted/20 border border-border/50 rounded-lg hover:bg-muted/30 transition-colors"
+          >
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <div className="flex-shrink-0">
+                <div className={cn(
+                  "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
+                  index === 0 && "bg-primary/10 text-primary",
+                  index === 1 && "bg-success/10 text-success", 
+                  index === 2 && "bg-warning/10 text-warning",
+                  index > 2 && "bg-muted/50 text-muted-foreground"
+                )}>
+                  #{index + 1}
+                </div>
+              </div>
+              
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="font-medium text-sm text-foreground truncate">
+                    {transaction.merchant || 'Unknown Merchant'}
+                  </p>
+                  <Badge 
+                    variant="outline" 
+                    className={cn(
+                      "text-xs px-1.5 py-0.5 border-0",
+                      transaction.transaction_type === 'debit' 
+                        ? "bg-destructive/10 text-destructive" 
+                        : "bg-success/10 text-success"
+                    )}
+                  >
+                    {transaction.transaction_type === 'debit' ? (
+                      <TrendingDown className="w-3 h-3 mr-1" />
+                    ) : (
+                      <TrendingUp className="w-3 h-3 mr-1" />
+                    )}
+                    {transaction.transaction_type}
+                  </Badge>
+                </div>
+                
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Building className="w-3 h-3" />
+                  <span className="truncate">{transaction.bankName}</span>
+                  <span>•</span>
+                  <span>{format(new Date(transaction.mail_time), 'MMM dd, yyyy')}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex-shrink-0 text-right">
+              <p className={cn(
+                "font-bold text-sm",
+                transaction.transaction_type === 'debit' 
+                  ? "text-destructive" 
+                  : "text-success"
+              )}>
+                {transaction.transaction_type === 'debit' ? '-' : '+'}₹{transaction.amount.toLocaleString()}
+              </p>
+            </div>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
