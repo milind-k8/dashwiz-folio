@@ -21,7 +21,8 @@ import {
   Utensils,
   CreditCard,
   Wallet,
-  Building2
+  Building2,
+  Tag
 } from 'lucide-react';
 
 import { useGlobalStore } from '@/store/globalStore';
@@ -113,26 +114,26 @@ export const TransactionsContent = () => {
             Transactions
           </h1>
           
-          {/* Search Bar - Google Pay style */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search transactions"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-10 bg-background border border-border/50 rounded-full text-sm font-google"
-            />
-          </div>
-          
-          {/* Bank Filter */}
-          <div className="mt-3">
+          <div className="flex items-center gap-2">
+            {/* Search Bar - Compact */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 h-8 bg-muted/30 border-0 rounded-full text-xs font-medium"
+              />
+            </div>
+            
+            {/* Bank Filter - Compact */}
             <Select value={selectedBankId} onValueChange={setSelectedBankId}>
-              <SelectTrigger className="h-9 bg-muted/30 border-0 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors">
-                <SelectValue placeholder="Select Bank" />
+              <SelectTrigger className="h-8 px-3 bg-muted/30 border-0 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors min-w-[100px]">
+                <SelectValue placeholder="Bank" />
               </SelectTrigger>
               <SelectContent className="bg-background border border-border shadow-lg">
                 {banks.map((bank) => (
-                  <SelectItem key={bank.id} value={bank.id} className="text-sm py-2">
+                  <SelectItem key={bank.id} value={bank.id} className="text-xs py-1.5">
                     {bank.bank_name.toUpperCase()}
                   </SelectItem>
                 ))}
@@ -182,9 +183,12 @@ export const TransactionsContent = () => {
                               })}
                             </p>
                             <span className="text-xs text-muted-foreground">•</span>
-                            <p className="text-xs text-muted-foreground truncate">
-                              {getBankName(transaction.bank_id)}
-                            </p>
+                            <div className="flex items-center gap-1">
+                              <Tag className="h-3 w-3 text-muted-foreground" />
+                              <p className="text-xs text-muted-foreground truncate">
+                                {transaction.category || 'Other'}
+                              </p>
+                            </div>
                           </div>
                         </div>
                         
