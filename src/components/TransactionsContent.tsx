@@ -78,11 +78,19 @@ export const TransactionsContent = () => {
 
   // Set defaults when banks are loaded and components mount
   useEffect(() => {
-    if (banks.length > 0 && !selectedBankId) {
-      const defaultBank = selectedBank || banks[0].id;
-      setSelectedBankId(defaultBank);
-      if (!selectedBank) {
+    if (banks.length > 0) {
+      // Validate that the selected bank from store is still valid
+      const validBankIds = banks.map(bank => bank.id);
+      const currentSelectedBank = selectedBank || selectedBankId;
+      
+      if (!currentSelectedBank || !validBankIds.includes(currentSelectedBank)) {
+        // If no valid bank is selected, use the first bank
+        const defaultBank = banks[0].id;
+        setSelectedBankId(defaultBank);
         setSelectedBank(defaultBank);
+      } else if (!selectedBankId) {
+        // If store has valid bank but local state doesn't, sync it
+        setSelectedBankId(currentSelectedBank);
       }
     }
     
