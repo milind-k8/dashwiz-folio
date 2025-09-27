@@ -21,7 +21,7 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
           disabled={refreshing}
           className="flex items-center hover:opacity-80 transition-opacity disabled:opacity-50"
         >
-          <span className="text-3xl font-bold text-foreground font-google tracking-tight">
+          <span className="text-2xl font-bold text-foreground font-google tracking-tight">
             Mona<span className="text-primary">ro</span>
           </span>
         </button>
