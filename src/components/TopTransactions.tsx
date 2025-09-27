@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -43,75 +44,80 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
 
   if (topTransactions.length === 0) {
     return (
-      <div className={cn("space-y-4", className)}>
-        <h3 className="text-base font-medium flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-primary" />
-          Top 5 Highest Transactions
-        </h3>
-        <div className="text-center py-8">
-          <div className="w-12 h-12 rounded-full bg-muted/20 flex items-center justify-center mx-auto mb-3">
-            <TrendingUp className="w-6 h-6 text-muted-foreground" />
+      <Card className={cn("", className)}>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-medium flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-primary" />
+            Top 5 Highest Transactions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <div className="w-12 h-12 rounded-full bg-muted/20 flex items-center justify-center mx-auto mb-3">
+              <TrendingUp className="w-6 h-6 text-muted-foreground" />
+            </div>
+            <p className="text-sm text-muted-foreground">No transactions found</p>
           </div>
-          <p className="text-sm text-muted-foreground">No transactions found</p>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className={cn("space-y-4", className)}>
-      <div className="flex items-center gap-2">
-        <h3 className="text-base font-medium flex items-center gap-2">
+    <Card className={cn("", className)}>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-medium flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-primary" />
           Top 5 Highest Transactions
-        </h3>
-      </div>
-      
-      <div className="space-y-0 divide-y divide-border">
-        {topTransactions.map((transaction, index) => (
-          <div 
-            key={transaction.id}
-            className="flex items-center justify-between py-3 hover:bg-muted/20 transition-colors first:pt-0 last:pb-0"
-          >
-            <div className="flex items-center gap-3 flex-1 min-w-0">
-              <div className="flex-shrink-0">
-                <div className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
-                  index === 0 && "bg-primary/10 text-primary",
-                  index === 1 && "bg-success/10 text-success", 
-                  index === 2 && "bg-warning/10 text-warning",
-                  index > 2 && "bg-muted/50 text-muted-foreground"
-                )}>
-                  #{index + 1}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-0 divide-y divide-border">
+          {topTransactions.map((transaction, index) => (
+            <div 
+              key={transaction.id}
+              className="flex items-center justify-between py-3 hover:bg-muted/20 transition-colors first:pt-0 last:pb-0"
+            >
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="flex-shrink-0">
+                  <div className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
+                    index === 0 && "bg-primary/10 text-primary",
+                    index === 1 && "bg-success/10 text-success", 
+                    index === 2 && "bg-warning/10 text-warning",
+                    index > 2 && "bg-muted/50 text-muted-foreground"
+                  )}>
+                    #{index + 1}
+                  </div>
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="font-medium text-sm text-foreground truncate">
+                      {transaction.merchant || 'Unknown Merchant'}
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span>{format(new Date(transaction.mail_time), 'MMM dd, yyyy')}</span>
+                  </div>
                 </div>
               </div>
               
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <p className="font-medium text-sm text-foreground truncate">
-                    {transaction.merchant || 'Unknown Merchant'}
-                  </p>
-                </div>
-                
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <span>{format(new Date(transaction.mail_time), 'MMM dd, yyyy')}</span>
-                </div>
+              <div className="flex-shrink-0 text-right">
+                <p className={cn(
+                  "font-bold text-sm",
+                  transaction.transaction_type === 'debit' 
+                    ? "text-destructive" 
+                    : "text-success"
+                )}>
+                  {transaction.transaction_type === 'debit' ? '-' : '+'}₹{transaction.amount.toLocaleString()}
+                </p>
               </div>
             </div>
-            
-            <div className="flex-shrink-0 text-right">
-              <p className={cn(
-                "font-bold text-sm",
-                transaction.transaction_type === 'debit' 
-                  ? "text-destructive" 
-                  : "text-success"
-              )}>
-                {transaction.transaction_type === 'debit' ? '-' : '+'}₹{transaction.amount.toLocaleString()}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
