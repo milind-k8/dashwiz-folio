@@ -260,7 +260,7 @@ export const TransactionsContent = () => {
     <div className="min-h-screen bg-background">
       {/* Header - Google Pay style */}
       <div className="bg-card border-b border-border/50 sticky top-0 z-10">
-        <div className="max-w-md mx-auto p-4 space-y-3">
+        <div className="max-w-2xl mx-auto p-4 space-y-3">
           {/* Search Bar with Filter Icon */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -268,7 +268,7 @@ export const TransactionsContent = () => {
               placeholder="Search"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-10 h-8 bg-muted/30 border border-border/50 rounded-full text-base font-medium"
+              className="pl-10 pr-10 h-10 bg-muted/30 border border-border/50 rounded-full text-base font-medium"
             />
             
             {/* Filter Popover */}
@@ -277,7 +277,7 @@ export const TransactionsContent = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-muted/50 rounded-full"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0 hover:bg-muted/50 rounded-full"
                 >
                   <Filter className="h-4 w-4 text-muted-foreground" />
                 </Button>
@@ -293,7 +293,7 @@ export const TransactionsContent = () => {
                       setSelectedBankId(value);
                       setSelectedBank(value);
                     }}>
-                      <SelectTrigger className="h-8 bg-muted/30 border border-border/50 rounded-md">
+                      <SelectTrigger className="h-10 bg-muted/30 border border-border/50 rounded-md">
                         <SelectValue placeholder="Select Bank" />
                       </SelectTrigger>
                       <SelectContent className="bg-background border border-border shadow-lg z-[100]">
@@ -310,8 +310,8 @@ export const TransactionsContent = () => {
                   <div className="space-y-2">
                     <label className="text-xs text-muted-foreground">Month</label>
                     <Select value={selectedDuration} onValueChange={setSelectedDuration}>
-                      <SelectTrigger className="h-8 bg-muted/30 border border-border/50 rounded-md">
-                        <Calendar className="h-3 w-3 mr-2" />
+                      <SelectTrigger className="h-10 bg-muted/30 border border-border/50 rounded-md">
+                        <Calendar className="h-4 w-4 mr-2" />
                         <SelectValue placeholder="Select Month" />
                       </SelectTrigger>
                       <SelectContent className="bg-background border border-border shadow-lg z-[100]">
@@ -347,7 +347,7 @@ export const TransactionsContent = () => {
       </div>
 
       {/* Content Area with Tabs */}
-      <div className="max-w-md mx-auto">
+      <div className="max-w-2xl mx-auto">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsContent value="group" className="mt-0">
             {/* Grouped View - Categories with Enhanced Cards */}
