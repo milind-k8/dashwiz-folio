@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { showAndroidToast, showSuccessToast, showErrorToast } from '@/utils/android-toast';
 import { useGlobalStore } from '@/store/globalStore';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -79,11 +80,7 @@ export const BanksContent = () => {
       
       // Check if user has Google access token
       if (!session?.provider_token) {
-        toast({
-          title: "Google Authentication Required",
-          description: "Please sign out and sign in with Google to verify your bank account.",
-          variant: "destructive",
-        });
+        showErrorToast("Google Authentication Required");
         return;
       }
       
@@ -99,21 +96,14 @@ export const BanksContent = () => {
       }
 
       if (data.success) {
-        toast({
-          title: "Success",
-          description: data.message,
-        });
+        showSuccessToast(data.message);
         setShowAddBankDialog(false);
         // Add the new bank to global store
         if (data.bank) {
           addBank(data.bank);
         }
       } else {
-        toast({
-          title: "Verification Failed",
-          description: data.message || "Could not verify your bank account.",
-          variant: "destructive",
-        });
+        showErrorToast(data.message || "Could not verify your bank account.");
       }
     } catch (error: any) {
       console.error('Error verifying bank:', error);
@@ -138,20 +128,13 @@ export const BanksContent = () => {
         throw new Error('Failed to delete bank');
       }
 
-      toast({
-        title: "Success",
-        description: `${bankName} bank has been removed.`,
-      });
+      showSuccessToast(`${bankName} bank has been removed.`);
       
       // Remove from global store
       removeBank(bankId);
     } catch (error: any) {
       console.error('Error deleting bank:', error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to delete bank. Please try again.",
-        variant: "destructive",
-      });
+      showErrorToast(error.message || "Failed to delete bank. Please try again.");
     }
   };
 

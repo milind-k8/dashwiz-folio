@@ -328,4 +328,13 @@ All colors MUST be HSL.
     padding: var(--spacing-mobile-md) var(--spacing-mobile-lg);
     @apply flex items-center transition-colors duration-200;
   }
+
+  /* Android-style toast chip */
+  .toaster {
+    @apply fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50;
+  }
+  
+  .toast {
+    @apply animate-fade-in;
+  }
 }
