@@ -240,7 +240,7 @@ export const TransactionsContent = () => {
                 placeholder="Search"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-8 bg-muted/30 border border-border/50 rounded-full text-xs font-medium"
+                className="pl-10 h-8 bg-muted/30 border border-border/50 rounded-full text-base font-medium"
               />
             </div>
             
@@ -446,7 +446,7 @@ export const TransactionsContent = () => {
                   placeholder="Search merchants"
                   value={modalSearchTerm}
                   onChange={(e) => setModalSearchTerm(e.target.value)}
-                  className="pl-10 h-9 bg-muted/30 border border-border/50 rounded-full text-sm font-google"
+                  className="pl-10 h-9 bg-muted/30 border border-border/50 rounded-full text-base font-google"
                 />
               </div>
               
