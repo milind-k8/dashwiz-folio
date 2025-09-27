@@ -56,7 +56,7 @@ export function EnhancedMetricCard({
     switch (metricType) {
       case 'balance':
         return {
-          cardClass: 'bg-card-balance text-card-balance-foreground border border-card-balance',
+          cardClass: 'bg-card-balance text-card-balance-foreground border-2 border-card-balance-foreground/30',
           iconBg: 'bg-card-balance-foreground/10',
           iconColor: 'text-card-balance-foreground',
           textColor: 'text-card-balance-foreground',
@@ -66,7 +66,7 @@ export function EnhancedMetricCard({
         };
       case 'expenses':
         return {
-          cardClass: 'bg-card-expenses text-card-expenses-foreground border border-card-expenses',
+          cardClass: 'bg-card-expenses text-card-expenses-foreground border-2 border-card-expenses-foreground/30',
           iconBg: 'bg-card-expenses-foreground/10',
           iconColor: 'text-card-expenses-foreground',
           textColor: 'text-card-expenses-foreground',
@@ -76,7 +76,7 @@ export function EnhancedMetricCard({
         };
       case 'income':
         return {
-          cardClass: 'bg-card-income text-card-income-foreground border border-card-income',
+          cardClass: 'bg-card-income text-card-income-foreground border-2 border-card-income-foreground/30',
           iconBg: 'bg-card-income-foreground/10',
           iconColor: 'text-card-income-foreground',
           textColor: 'text-card-income-foreground',
@@ -86,7 +86,7 @@ export function EnhancedMetricCard({
         };
       case 'spending':
         return {
-          cardClass: 'bg-card-spending text-card-spending-foreground border border-card-spending',
+          cardClass: 'bg-card-spending text-card-spending-foreground border-2 border-card-spending-foreground/30',
           iconBg: 'bg-card-spending-foreground/10',
           iconColor: 'text-card-spending-foreground',
           textColor: 'text-card-spending-foreground',
