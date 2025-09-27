@@ -22,10 +22,10 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 15%;
 
-    /* Google Blue - Primary color used in Gmail, Google Drive etc */
-    --primary: 214 100% 59%;
+    /* Google Blue #1a73e8 - Exact Google brand color */
+    --primary: 214 89% 52%;
     --primary-foreground: 0 0% 100%;
-    --primary-subtle: 214 100% 96%;
+    --primary-subtle: 214 89% 96%;
 
     /* Google Secondary - Material Grey */
     --secondary: 0 0% 96%;
@@ -35,8 +35,8 @@ All colors MUST be HSL.
     --muted: 0 0% 96%;
     --muted-foreground: 0 0% 45%;
 
-    /* Google Accent - Same as primary for Google consistency */
-    --accent: 214 100% 59%;
+    /* Google Accent - Same Google blue */
+    --accent: 214 89% 52%;
     --accent-foreground: 0 0% 100%;
 
     /* Google Status colors */
@@ -53,13 +53,13 @@ All colors MUST be HSL.
     --warning-subtle: 38 92% 96%;
 
     /* Google Form elements */
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 214 100% 59%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 214 89% 52%;
 
-    /* Google Material gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(214 100% 59%), hsl(214 100% 69%));
-    --gradient-balance: linear-gradient(135deg, hsl(214 100% 59%), hsl(214 100% 69%));
+    /* Google Material gradients with correct blue */
+    --gradient-primary: linear-gradient(135deg, hsl(214 89% 52%), hsl(214 89% 62%));
+    --gradient-balance: linear-gradient(135deg, hsl(214 89% 52%), hsl(214 89% 62%));
     --gradient-income: linear-gradient(135deg, hsl(122 39% 49%), hsl(122 39% 59%));
     --gradient-expense: linear-gradient(135deg, hsl(4 90% 58%), hsl(4 90% 68%));
     --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 98%));
@@ -117,10 +117,10 @@ All colors MUST be HSL.
     --popover: 33 33% 11%;
     --popover-foreground: 0 0% 90%;
 
-    /* Google Blue Dark - Enhanced for dark mode */
-    --primary: 214 100% 69%;
+    /* Google Blue Dark mode */
+    --primary: 214 89% 62%;
     --primary-foreground: 0 0% 100%;
-    --primary-subtle: 214 100% 15%;
+    --primary-subtle: 214 89% 15%;
 
     /* Google Dark Secondary */
     --secondary: 33 33% 15%;
@@ -131,7 +131,7 @@ All colors MUST be HSL.
     --muted-foreground: 0 0% 65%;
 
     /* Google Dark Accent */
-    --accent: 214 100% 69%;
+    --accent: 214 89% 62%;
     --accent-foreground: 0 0% 100%;
 
     /* Google Dark Status colors */
@@ -150,11 +150,11 @@ All colors MUST be HSL.
     /* Google Dark Form elements */
     --border: 33 33% 18%;
     --input: 33 33% 18%;
-    --ring: 214 100% 69%;
+    --ring: 214 89% 62%;
 
-    /* Google Dark gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(214 100% 69%), hsl(214 100% 79%));
-    --gradient-balance: linear-gradient(135deg, hsl(214 100% 69%), hsl(214 100% 79%));
+    /* Google Dark gradients with correct blue */
+    --gradient-primary: linear-gradient(135deg, hsl(214 89% 62%), hsl(214 89% 72%));
+    --gradient-balance: linear-gradient(135deg, hsl(214 89% 62%), hsl(214 89% 72%));
     --gradient-income: linear-gradient(135deg, hsl(122 39% 59%), hsl(122 39% 69%));
     --gradient-expense: linear-gradient(135deg, hsl(4 90% 68%), hsl(4 90% 78%));
     --gradient-card: linear-gradient(135deg, hsl(33 33% 11%), hsl(33 33% 13%));
@@ -167,12 +167,12 @@ All colors MUST be HSL.
 
     --sidebar-background: 33 33% 9%;
     --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 214 100% 69%;
+    --sidebar-primary: 214 89% 62%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 33 33% 15%;
     --sidebar-accent-foreground: 0 0% 90%;
     --sidebar-border: 33 33% 18%;
-    --sidebar-ring: 214 100% 69%;
+    --sidebar-ring: 214 89% 62%;
   }
 }
 
