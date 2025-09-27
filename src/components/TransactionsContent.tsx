@@ -33,7 +33,7 @@ import {
   List,
   Grid3X3,
   Calendar,
-  Filter
+  SlidersHorizontal
 } from 'lucide-react';
 import {
   Popover,
@@ -265,10 +265,10 @@ export const TransactionsContent = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search"
+              placeholder="Search transactions, merchants..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-10 h-10 bg-muted/30 border border-border/50 rounded-full text-base font-medium"
+              className="pl-10 pr-12 h-12 bg-muted/30 border border-border/50 rounded-full text-base font-normal placeholder:text-muted-foreground/70"
             />
             
             {/* Filter Popover */}
@@ -277,9 +277,9 @@ export const TransactionsContent = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0 hover:bg-muted/50 rounded-full"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-muted/50 rounded-full"
                 >
-                  <Filter className="h-4 w-4 text-muted-foreground" />
+                  <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-80 p-4 bg-background border border-border shadow-lg" align="end">
