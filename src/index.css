@@ -8,69 +8,77 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Pastel color palette inspired by design notes */
-    --background: 250 15% 92%;
-    --foreground: 220 9% 15%;
+    /* Mobile-optimized color palette with enhanced contrast */
+    --background: 248 20% 94%;
+    --foreground: 220 15% 12%;
 
-    /* Card system - Clean modern white cards */
+    /* Card system - Enhanced for mobile readability */
     --card: 0 0% 100%;
-    --card-foreground: 220 9% 15%;
-    --card-subtle: 0 0% 99%;
+    --card-foreground: 220 15% 12%;
+    --card-subtle: 0 0% 98%;
     --card-elevated: 0 0% 100%;
 
     /* Interactive elements */
     --popover: 0 0% 100%;
-    --popover-foreground: 220 9% 15%;
+    --popover-foreground: 220 15% 12%;
 
-    /* Modern primary colors - Blue theme */
-    --primary: 228 75% 56%;
+    /* Modern primary colors - Vibrant blue for mobile */
+    --primary: 220 85% 55%;
     --primary-foreground: 0 0% 100%;
-    --primary-subtle: 228 75% 95%;
+    --primary-subtle: 220 85% 96%;
 
     /* Secondary system */
-    --secondary: 250 15% 90%;
-    --secondary-foreground: 220 9% 15%;
+    --secondary: 248 20% 88%;
+    --secondary-foreground: 220 15% 12%;
 
-    /* Muted elements */
-    --muted: 250 15% 90%;
-    --muted-foreground: 220 9% 46%;
+    /* Muted elements - Better contrast for mobile */
+    --muted: 248 20% 88%;
+    --muted-foreground: 220 15% 35%;
 
-    /* Accent colors - Primary blue */
-    --accent: 228 75% 56%;
+    /* Accent colors - Enhanced primary */
+    --accent: 220 85% 55%;
     --accent-foreground: 0 0% 100%;
 
-    /* Status colors - Pastel tones */
-    --destructive: 15 85% 65%;
+    /* Status colors - Mobile-optimized with better contrast */
+    --destructive: 0 85% 60%;
     --destructive-foreground: 0 0% 100%;
-    --destructive-subtle: 15 85% 95%;
+    --destructive-subtle: 0 85% 96%;
 
-    --success: 75 60% 55%;
+    --success: 120 60% 45%;
     --success-foreground: 0 0% 100%;
-    --success-subtle: 75 60% 95%;
+    --success-subtle: 120 60% 96%;
 
-    --warning: 25 80% 70%;
+    --warning: 35 85% 55%;
     --warning-foreground: 0 0% 100%;
-    --warning-subtle: 25 80% 95%;
+    --warning-subtle: 35 85% 96%;
 
-    /* Form elements */
-    --border: 250 15% 85%;
-    --input: 250 15% 85%;
-    --ring: 228 75% 56%;
+    /* Form elements - Mobile-friendly */
+    --border: 248 20% 82%;
+    --input: 248 20% 82%;
+    --ring: 220 85% 55%;
 
-    /* Soft blue gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(228 75% 56%), hsl(228 75% 66%));
-    --gradient-balance: linear-gradient(135deg, hsl(228 75% 56%), hsl(228 75% 66%));
-    --gradient-income: linear-gradient(135deg, hsl(75 60% 55%), hsl(75 60% 65%));
-    --gradient-expense: linear-gradient(135deg, hsl(15 85% 65%), hsl(15 85% 75%));
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 99%));
+    /* Enhanced gradients for mobile displays */
+    --gradient-primary: linear-gradient(135deg, hsl(220 85% 55%), hsl(220 85% 65%));
+    --gradient-balance: linear-gradient(135deg, hsl(220 85% 55%), hsl(220 85% 65%));
+    --gradient-income: linear-gradient(135deg, hsl(120 60% 45%), hsl(120 60% 55%));
+    --gradient-expense: linear-gradient(135deg, hsl(0 85% 60%), hsl(0 85% 70%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 98%));
     
-    --radius: 1rem;
+    /* Mobile-optimized border radius */
+    --radius: 0.75rem;
     
-    /* Modern shadows - softer and more pronounced */
-    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.1);
-    --shadow-card: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
-    --shadow-elevated: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -4px hsl(0 0% 0% / 0.1);
-    --shadow-large: 0 20px 25px -5px hsl(0 0% 0% / 0.1), 0 8px 10px -6px hsl(0 0% 0% / 0.1);
+    /* Mobile-optimized shadows - subtle but visible */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.08);
+    --shadow-card: 0 2px 4px -1px hsl(0 0% 0% / 0.12), 0 1px 2px -1px hsl(0 0% 0% / 0.08);
+    --shadow-elevated: 0 4px 8px -2px hsl(0 0% 0% / 0.15), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
+    --shadow-large: 0 8px 16px -4px hsl(0 0% 0% / 0.18), 0 4px 8px -4px hsl(0 0% 0% / 0.12);
+
+    /* Mobile-specific spacing */
+    --spacing-mobile-xs: 0.25rem;
+    --spacing-mobile-sm: 0.5rem;
+    --spacing-mobile-md: 0.75rem;
+    --spacing-mobile-lg: 1rem;
+    --spacing-mobile-xl: 1.5rem;
 
     --sidebar-background: 250 15% 90%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -83,67 +91,67 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Dark theme with pastel accents */
-    --background: 250 15% 8%;
+    /* Mobile-optimized dark theme */
+    --background: 220 20% 6%;
     --foreground: 0 0% 98%;
 
-    /* Card system - Modern dark cards */
-    --card: 250 15% 12%;
+    /* Card system - Enhanced dark cards for mobile */
+    --card: 220 20% 10%;
     --card-foreground: 0 0% 98%;
-    --card-subtle: 250 15% 15%;
-    --card-elevated: 250 15% 14%;
+    --card-subtle: 220 20% 12%;
+    --card-elevated: 220 20% 11%;
 
     /* Interactive elements */
-    --popover: 250 15% 12%;
+    --popover: 220 20% 10%;
     --popover-foreground: 0 0% 98%;
 
-    /* Blue theme for dark mode */
-    --primary: 228 75% 60%;
+    /* Enhanced primary for dark mobile */
+    --primary: 220 85% 60%;
     --primary-foreground: 0 0% 100%;
-    --primary-subtle: 228 75% 15%;
+    --primary-subtle: 220 85% 12%;
 
     /* Secondary system */
-    --secondary: 250 15% 18%;
+    --secondary: 220 20% 14%;
     --secondary-foreground: 0 0% 98%;
 
-    /* Muted elements */
-    --muted: 250 15% 18%;
-    --muted-foreground: 250 15% 70%;
+    /* Muted elements - Better mobile contrast */
+    --muted: 220 20% 14%;
+    --muted-foreground: 220 15% 65%;
 
-    /* Primary blue accent for dark mode */
-    --accent: 228 75% 60%;
+    /* Enhanced accent for dark mobile */
+    --accent: 220 85% 60%;
     --accent-foreground: 0 0% 100%;
 
-    /* Status colors - Dark mode with pastel tones */
-    --destructive: 15 85% 70%;
+    /* Status colors - Mobile dark mode optimized */
+    --destructive: 0 85% 65%;
     --destructive-foreground: 0 0% 100%;
-    --destructive-subtle: 15 85% 15%;
+    --destructive-subtle: 0 85% 12%;
 
-    --success: 75 60% 60%;
+    --success: 120 60% 50%;
     --success-foreground: 0 0% 100%;
-    --success-subtle: 75 60% 15%;
+    --success-subtle: 120 60% 12%;
 
-    --warning: 25 80% 75%;
+    --warning: 35 85% 60%;
     --warning-foreground: 0 0% 100%;
-    --warning-subtle: 25 80% 15%;
+    --warning-subtle: 35 85% 12%;
 
-    /* Form elements */
-    --border: 250 15% 22%;
-    --input: 250 15% 22%;
-    --ring: 228 75% 60%;
+    /* Form elements - Dark mobile */
+    --border: 220 20% 18%;
+    --input: 220 20% 18%;
+    --ring: 220 85% 60%;
 
-    /* Soft blue gradients for dark mode */
-    --gradient-primary: linear-gradient(135deg, hsl(228 75% 60%), hsl(228 75% 70%));
-    --gradient-balance: linear-gradient(135deg, hsl(228 75% 60%), hsl(228 75% 70%));
-    --gradient-income: linear-gradient(135deg, hsl(75 60% 60%), hsl(75 60% 70%));
-    --gradient-expense: linear-gradient(135deg, hsl(15 85% 70%), hsl(15 85% 80%));
-    --gradient-card: linear-gradient(135deg, hsl(250 15% 12%), hsl(250 15% 15%));
+    /* Enhanced gradients for dark mobile */
+    --gradient-primary: linear-gradient(135deg, hsl(220 85% 60%), hsl(220 85% 70%));
+    --gradient-balance: linear-gradient(135deg, hsl(220 85% 60%), hsl(220 85% 70%));
+    --gradient-income: linear-gradient(135deg, hsl(120 60% 50%), hsl(120 60% 60%));
+    --gradient-expense: linear-gradient(135deg, hsl(0 85% 65%), hsl(0 85% 75%));
+    --gradient-card: linear-gradient(135deg, hsl(220 20% 10%), hsl(220 20% 12%));
     
-    /* Modern dark shadows */
-    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.4);
-    --shadow-card: 0 4px 6px -1px hsl(0 0% 0% / 0.5), 0 2px 4px -2px hsl(0 0% 0% / 0.5);
-    --shadow-elevated: 0 10px 15px -3px hsl(0 0% 0% / 0.6), 0 4px 6px -4px hsl(0 0% 0% / 0.4);
-    --shadow-large: 0 20px 25px -5px hsl(0 0% 0% / 0.7), 0 8px 10px -6px hsl(0 0% 0% / 0.5);
+    /* Mobile-optimized dark shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.5);
+    --shadow-card: 0 2px 4px -1px hsl(0 0% 0% / 0.6), 0 1px 2px -1px hsl(0 0% 0% / 0.4);
+    --shadow-elevated: 0 4px 8px -2px hsl(0 0% 0% / 0.7), 0 2px 4px -2px hsl(0 0% 0% / 0.5);
+    --shadow-large: 0 8px 16px -4px hsl(0 0% 0% / 0.8), 0 4px 8px -4px hsl(0 0% 0% / 0.6);
 
     --sidebar-background: 250 15% 10%;
     --sidebar-foreground: 0 0% 98%;
@@ -198,5 +206,25 @@ All colors MUST be HSL.
   
   .card-elevated {
     @apply bg-card-elevated shadow-elevated border-0;
+  }
+
+  /* Mobile-optimized touch targets */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+
+  /* Mobile-friendly button styles */
+  .btn-mobile {
+    @apply touch-target px-4 py-3 rounded-lg text-base font-medium transition-all duration-200;
+  }
+
+  /* Mobile card styles */
+  .card-mobile {
+    @apply bg-card rounded-lg shadow-card border border-border/50 p-4 transition-all duration-200;
+  }
+
+  /* Mobile input styles */
+  .input-mobile {
+    @apply h-12 px-4 text-base rounded-lg border border-input bg-background;
   }
 }
