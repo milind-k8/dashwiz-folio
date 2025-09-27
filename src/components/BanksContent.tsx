@@ -268,78 +268,67 @@ export const BanksContent = () => {
 
   return (
     <div className="p-3 sm:p-4 md:p-6 space-y-6 animate-fade-in max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-2xl md:text-3xl font-semibold text-foreground">
-            Banks
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            Connect your bank accounts to track transactions
-          </p>
-        </div>
-        
-        <Dialog open={showAddBankDialog} onOpenChange={setShowAddBankDialog}>
-          <DialogTrigger asChild>
-            <Button className="card-elevated touch-target">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Bank
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle className="text-lg font-medium">Add Bank Account</DialogTitle>
-              <DialogDescription className="text-sm text-muted-foreground">
-                Select a bank to connect. We'll verify your account using your email.
-              </DialogDescription>
-            </DialogHeader>
-            
-            <div className="space-y-3">
-              {AVAILABLE_BANKS.map((bank) => (
-                <div key={bank.name} className="card-minimal p-4 hover:shadow-material-light transition-all duration-200 rounded-xl">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <CreditCard className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-sm">{bank.displayName}</h3>
-                        <p className="text-xs text-muted-foreground">{bank.description}</p>
-                      </div>
-                    </div>
-                    <Button 
-                      onClick={() => handleVerifyBank(bank.name)}
-                      disabled={isVerifying}
-                      size="sm"
-                      className="touch-target"
-                    >
-                      {isVerifying ? (
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      ) : (
-                        <CheckCircle className="h-4 w-4 mr-2" />
-                      )}
-                      {isVerifying ? 'Verifying...' : 'Connect'}
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <DialogFooter className="pt-4">
-              <Button variant="outline" onClick={() => setShowAddBankDialog(false)}>
-                Cancel
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-      </div>
-
       {/* Connected Banks List */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Building className="h-5 w-5 text-primary" />
-          <h2 className="text-lg font-medium">Connected Banks</h2>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Building className="h-5 w-5 text-primary" />
+            <h2 className="text-lg font-medium">Connected Banks</h2>
+          </div>
+          
+          <Dialog open={showAddBankDialog} onOpenChange={setShowAddBankDialog}>
+            <DialogTrigger asChild>
+              <Button className="card-elevated touch-target">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Bank
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="text-lg font-medium">Add Bank Account</DialogTitle>
+                <DialogDescription className="text-sm text-muted-foreground">
+                  Select a bank to connect. We'll verify your account using your email.
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-3">
+                {AVAILABLE_BANKS.map((bank) => (
+                  <div key={bank.name} className="card-minimal p-4 hover:shadow-material-light transition-all duration-200 rounded-xl">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <CreditCard className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-medium text-sm">{bank.displayName}</h3>
+                          <p className="text-xs text-muted-foreground">{bank.description}</p>
+                        </div>
+                      </div>
+                      <Button 
+                        onClick={() => handleVerifyBank(bank.name)}
+                        disabled={isVerifying}
+                        size="sm"
+                        className="touch-target"
+                      >
+                        {isVerifying ? (
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        ) : (
+                          <CheckCircle className="h-4 w-4 mr-2" />
+                        )}
+                        {isVerifying ? 'Verifying...' : 'Connect'}
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <DialogFooter className="pt-4">
+                <Button variant="outline" onClick={() => setShowAddBankDialog(false)}>
+                  Cancel
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
         
         {isLoading ? (
