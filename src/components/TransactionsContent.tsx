@@ -212,24 +212,23 @@ export const TransactionsContent = () => {
             />
           </div>
           
-          {/* Bank Filter - Full width */}
-          <div>
-            <Select value={selectedBankId} onValueChange={setSelectedBankId}>
-              <SelectTrigger className="h-8 px-3 bg-muted/30 border border-border/50 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors w-full">
-                <SelectValue placeholder="Select Bank" />
-              </SelectTrigger>
-              <SelectContent className="bg-background border border-border shadow-lg z-50">
-                {banks.map((bank) => (
-                  <SelectItem key={bank.id} value={bank.id} className="text-xs py-1.5">
-                    {bank.bank_name.toUpperCase()}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          {/* Toggle Group for List/Group view */}
-          <div className="flex justify-end">
+          {/* Bank Filter and Toggle Group on same row */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex-1">
+              <Select value={selectedBankId} onValueChange={setSelectedBankId}>
+                <SelectTrigger className="h-8 px-3 bg-muted/30 border border-border/50 rounded-full text-xs font-medium hover:bg-muted/50 transition-colors w-full">
+                  <SelectValue placeholder="Select Bank" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border border-border shadow-lg z-50">
+                  {banks.map((bank) => (
+                    <SelectItem key={bank.id} value={bank.id} className="text-xs py-1.5">
+                      {bank.bank_name.toUpperCase()}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
             <ToggleGroup 
               type="single" 
               value={isGroupedView ? "group" : "list"} 
