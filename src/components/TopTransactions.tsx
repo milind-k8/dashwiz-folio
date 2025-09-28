@@ -26,14 +26,14 @@ interface TopTransactionsProps {
 }
 
 export function TopTransactions({ transactions, banks, className }: TopTransactionsProps) {
-  const topTransactions = useMemo(() => {
-    // Filter out balance transactions and sort by amount descending
-    const filteredTransactions = transactions
-      .filter(t => t.transaction_type !== 'balance')
+  const topExpenses = useMemo(() => {
+    // Filter to only debit transactions and sort by amount descending
+    const expenseTransactions = transactions
+      .filter(t => t.transaction_type === 'debit')
       .sort((a, b) => b.amount - a.amount)
       .slice(0, 5);
 
-    return filteredTransactions.map(transaction => {
+    return expenseTransactions.map(transaction => {
       const bank = banks.find(b => b.id === transaction.bank_id);
       return {
         ...transaction,
@@ -42,13 +42,13 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
     });
   }, [transactions, banks]);
 
-  if (topTransactions.length === 0) {
+  if (topExpenses.length === 0) {
     return (
       <Card className={cn("", className)}>
         <CardHeader>
           <CardTitle className="text-base font-medium flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-primary" />
-            Top 5 Highest Transactions
+            Top 5 Highest Expenses
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -56,7 +56,7 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
             <div className="w-12 h-12 rounded-full bg-muted/20 flex items-center justify-center mx-auto mb-3">
               <TrendingUp className="w-6 h-6 text-muted-foreground" />
             </div>
-            <p className="text-sm text-muted-foreground">No transactions found</p>
+            <p className="text-sm text-muted-foreground">No expenses found</p>
           </div>
         </CardContent>
       </Card>
@@ -67,12 +67,12 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
     <Card className={cn("", className)}>
       <CardHeader>
         <CardTitle className="text-base font-medium flex items-center gap-2">
-          Top 5 Highest Transactions
+          Top 5 Highest Expenses
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-0 divide-y divide-border">
-          {topTransactions.map((transaction, index) => (
+          {topExpenses.map((transaction, index) => (
             <div 
               key={transaction.id}
               className="flex items-center justify-between py-3 hover:bg-muted/20 transition-colors first:pt-0 last:pb-0"
@@ -99,13 +99,8 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
               </div>
               
               <div className="flex-shrink-0 text-right">
-                <p className={cn(
-                  "font-bold text-sm",
-                  transaction.transaction_type === 'debit' 
-                    ? "text-destructive" 
-                    : "text-success"
-                )}>
-                  {transaction.transaction_type === 'debit' ? '-' : '+'}₹{transaction.amount.toLocaleString()}
+                <p className="font-bold text-sm text-red-600">
+                  -₹{transaction.amount.toLocaleString()}
                 </p>
               </div>
             </div>
