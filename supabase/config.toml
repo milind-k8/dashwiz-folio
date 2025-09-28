@@ -12,7 +12,7 @@ verify_jwt = true
 [functions.refresh-google-token]
 verify_jwt = true
 
-[functions.scheduled-email-sync]
+[functions.gmail-webhook]
 verify_jwt = false
 
 [functions.store-user-token]
