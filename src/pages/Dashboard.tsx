@@ -5,6 +5,7 @@ import { AdvancedCharts } from '@/components/AdvancedCharts';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
 import { DashboardSkeleton } from '@/components/DashboardSkeleton';
+import { CategoryGrouping } from '@/components/CategoryGrouping';
 import { useFinancialData } from '@/hooks/useFinancialData';
 import { useFilterStore } from '@/store/filterStore';
 import { useGlobalStore } from '@/store/globalStore';
@@ -95,12 +96,20 @@ export function Dashboard() {
         className="pb-2"
       />
 
+      {/* Category Grouping */}
+      <div className="pb-2">
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold text-foreground font-google">Spending Categories</h2>
+          <p className="text-sm text-muted-foreground">View your expenses grouped by category</p>
+        </div>
+        <CategoryGrouping />
+      </div>
+
       {/* Advanced Charts */}
       <AdvancedCharts 
         transactions={data.transactions}
         expenseCategories={data.expenseCategoriesList}
       />
-
 
     </PageContent>
   );
