@@ -42,19 +42,20 @@ export const CategoryGrouping = () => {
     }
   }, [selectedCategory]);
 
+  const getInitials = (text: string) => {
+    return text
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase())
+      .join('')
+      .slice(0, 2);
+  };
+
   // Get category initials and color based on merchant or category
   const getCategoryInitialsAndColor = (merchant: string, category: string) => {
     const merchantLower = merchant?.toLowerCase() || '';
     const categoryLower = category?.toLowerCase() || '';
     
-    // Generate initials from category name
-    const getInitials = (text: string) => {
-      return text
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase())
-        .join('')
-        .slice(0, 2);
-    };
+    // Generate initials from category nam
     
     const initials = getInitials(category);
     
@@ -310,7 +311,7 @@ export const CategoryGrouping = () => {
                         <Avatar className={`h-8 w-8 ${bgColor}`}>
                           <AvatarFallback className={`${bgColor} border-0 flex items-center justify-center`}>
                             <span className={`text-xs font-bold ${textColor}`}>
-                              {initials}
+                              {getInitials(merchant.merchant)}
                             </span>
                           </AvatarFallback>
                         </Avatar>
