@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -18,117 +17,26 @@ export default function AuthPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  useEffect(() => {
-    // Check if user is already logged in
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        navigate('/');
-      }
-    };
-    checkAuth();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        navigate('/');
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
+  const handleDemoLogin = () => {
+    setIsLoading(true);
+    // Simulate loading for demo purposes
+    setTimeout(() => {
+      navigate('/');
+      toast({
+        title: "Welcome to Demo",
+        description: "You're now logged in to the demo dashboard",
+      });
+      setIsLoading(false);
+    }, 1000);
+  };
 
   const handleGoogleSignIn = async () => {
-    setIsLoading(true);
-    try {
-      // Check if user has previously gone through consent
-      const hasConsented = localStorage.getItem('google_consent_given') === 'true';
-      const promptValue = hasConsented ? 'select_account' : 'consent';
-
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          scopes: 'https://www.googleapis.com/auth/gmail.readonly',
-          queryParams: {
-            access_type: 'offline',
-            prompt: promptValue,
-            include_granted_scopes: 'true',
-          },
-        }
-      });
-
-      if (error) {
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    handleDemoLogin();
   };
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password
-        });
-
-        if (error) {
-          if (error.message.includes('already registered')) {
-            toast({
-              title: "Account exists",
-              description: "This email is already registered. Try signing in instead.",
-              variant: "destructive",
-            });
-          } else {
-            toast({
-              title: "Error",
-              description: error.message,
-              variant: "destructive",
-            });
-          }
-        } else {
-          toast({
-            title: "Check your email",
-            description: "We've sent you a confirmation link.",
-          });
-        }
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (error) {
-          toast({
-            title: "Error",
-            description: error.message,
-            variant: "destructive",
-          });
-        }
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    handleDemoLogin();
   };
 
   return (
@@ -136,13 +44,10 @@ export default function AuthPage() {
       <Card className="w-full max-w-md shadow-elevated">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold">
-            {isSignUp ? 'Create account' : 'Welcome back'}
+            Demo Dashboard
           </CardTitle>
           <CardDescription>
-            {isSignUp 
-              ? 'Sign up to get started with your financial dashboard' 
-              : 'Sign in to your account to continue'
-            }
+            Click any button below to access the demo dashboard with sample financial data
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -154,7 +59,7 @@ export default function AuthPage() {
             className="w-full h-12"
           >
             <GoogleIcon className="mr-2" size={16} />
-            Continue with Google
+            Demo with Google
           </Button>
 
           <div className="relative">
@@ -163,7 +68,7 @@ export default function AuthPage() {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">
-                Or continue with email
+                Or demo with email
               </span>
             </div>
           </div>
@@ -201,33 +106,17 @@ export default function AuthPage() {
                 "Loading..."
               ) : (
                 <>
-                  {isSignUp ? (
-                    <>
-                      <UserPlus className="mr-2 h-4 w-4" />
-                      Sign up
-                    </>
-                  ) : (
-                    <>
-                      <LogIn className="mr-2 h-4 w-4" />
-                      Sign in
-                    </>
-                  )}
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Enter Demo
                 </>
               )}
             </Button>
           </form>
 
           <div className="text-center text-sm">
-            <button
-              type="button"
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-primary hover:underline"
-            >
-              {isSignUp 
-                ? 'Already have an account? Sign in' 
-                : "Don't have an account? Sign up"
-              }
-            </button>
+            <span className="text-muted-foreground">
+              This is a demo version with sample data
+            </span>
           </div>
         </CardContent>
       </Card>

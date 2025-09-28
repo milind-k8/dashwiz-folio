@@ -11,7 +11,6 @@ interface DashboardHeaderProps {
 export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProps) {
   const isMobile = useIsMobile();
   const { refreshData, refreshing } = useGlobalStore();
-  const { autoProcessing } = useGlobalData();
 
   return (
     <header className="sticky top-0 z-50 flex items-center gap-3 px-3 sm:px-4 h-14 bg-card border-b border-border">        
@@ -34,12 +33,6 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
       </div>
       
       <div className="flex items-center gap-2">
-        {autoProcessing && (
-          <div className="flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full">
-            <Loader2 className="w-3 h-3 animate-spin text-primary" />
-            <span className="text-xs text-primary font-medium">Processing transactions...</span>
-          </div>
-        )}
         <NavUser />
       </div>
     </header>

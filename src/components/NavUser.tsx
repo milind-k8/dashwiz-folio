@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LogOut, Moon, Sun, Monitor, User } from 'lucide-react';
+import { Moon, Sun, Monitor, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -10,34 +10,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/components/ThemeProvider';
 
 export function NavUser() {
-  const { user, signOut } = useAuth();
   const { theme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-
-  const handleSignOut = async () => {
-    await signOut();
-    setIsOpen(false);
-  };
 
   const handleThemeChange = (newTheme: 'light' | 'dark' | 'system') => {
     setTheme(newTheme);
     setIsOpen(false);
   };
-
-  const getUserInitials = (email: string) => {
-    return email
-      .split('@')[0]
-      .split('.')
-      .map(part => part.charAt(0).toUpperCase())
-      .join('')
-      .slice(0, 2);
-  };
-
-  if (!user) return null;
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -47,9 +29,8 @@ export function NavUser() {
           className="relative h-8 w-8 rounded-full p-0 hover:bg-accent"
         >
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user.user_metadata?.avatar_url} alt={user.email || ''} />
             <AvatarFallback className="bg-gradient-primary text-white text-sm font-medium">
-              {user.email ? getUserInitials(user.email) : <User className="h-4 w-4" />}
+              <User className="h-4 w-4" />
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -58,10 +39,10 @@ export function NavUser() {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
-              {user.user_metadata?.name || ''}
+              Demo User
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              {user.email}
+              demo@example.com
             </p>
           </div>
         </DropdownMenuLabel>
@@ -85,9 +66,8 @@ export function NavUser() {
           {theme === 'system' && <span className="ml-auto">✓</span>}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut} className="text-red-600 focus:text-red-600">
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+        <DropdownMenuItem disabled className="text-muted-foreground">
+          <span>Demo Mode - No logout needed</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

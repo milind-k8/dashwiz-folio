@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import demoData from '@/data/get_user_transactions_with_details.json';
 
 export interface Bank {
   id: string;
@@ -91,26 +91,8 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
     try {
       set({ refreshing: true });
       
-      // Get current user from auth
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      
-      // Call the database function to get all data at once
-      const { data, error } = await supabase
-        .rpc('get_user_transactions_with_details', { 
-          user_uuid: user.id, 
-          months_back: 3 
-        });
-
-      if (error) {
-        console.error('Error refreshing data:', error);
-        toast({
-          title: "Error",
-          description: "Failed to refresh data",
-          variant: "destructive",
-        });
-        return;
-      }
+      // Use hardcoded demo data
+      const data = demoData as any[];
 
       // Extract unique banks from the transaction data
       const uniqueBanks = new Map();
@@ -118,7 +100,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
         if (!uniqueBanks.has(item.bank_id)) {
           uniqueBanks.set(item.bank_id, {
             id: item.bank_id,
-            user_id: user.id,
+            user_id: 'demo-user-id',
             bank_name: item.bank_name,
             bank_account_no: item.bank_account_no,
             created_at: new Date().toISOString(),
@@ -129,7 +111,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
 
       const banks = Array.from(uniqueBanks.values());
 
-      // Process transactions from the function result
+      // Process transactions from the demo data
       const processedTransactions = (data || []).map(item => ({
         id: item.transaction_id,
         bank_id: item.bank_id,
@@ -151,14 +133,14 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
       });
       
       toast({
-        title: "Success",
-        description: "Data refreshed successfully",
+        title: "Demo Data Loaded",
+        description: "Sample financial data loaded successfully",
       });
     } catch (error) {
-      console.error('Error refreshing data:', error);
+      console.error('Error loading demo data:', error);
       toast({
         title: "Error", 
-        description: "Failed to refresh data",
+        description: "Failed to load demo data",
         variant: "destructive",
       });
     } finally {
