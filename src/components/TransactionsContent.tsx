@@ -159,7 +159,7 @@ export const TransactionsContent = () => {
     });
   }, [transactions, searchTerm, selectedBankId, selectedDuration]);
 
-  // Calculate net amount for the month (Debits - Credits)
+  // Calculate net amount for the month (Credits - Debits)
   const monthNetAmount = useMemo(() => {
     const debits = filteredTransactions
       .filter(t => t.transaction_type === 'debit')
@@ -169,7 +169,7 @@ export const TransactionsContent = () => {
       .filter(t => t.transaction_type === 'credit')
       .reduce((sum, t) => sum + t.amount, 0);
     
-    return debits - credits;
+    return credits - debits;
   }, [filteredTransactions]);
 
   // Get month display text
