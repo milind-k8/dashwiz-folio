@@ -92,7 +92,6 @@ export function Dashboard() {
       <TopTransactions 
         transactions={data.transactions}
         banks={banks}
-        className="pb-2"
       />
 
       {/* Category Grouping */}

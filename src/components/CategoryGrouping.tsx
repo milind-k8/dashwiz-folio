@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -7,16 +7,11 @@ import { Drawer } from 'vaul';
 import { useFilterStore } from '@/store/filterStore';
 import { 
   Search, 
-  Store,
-  Coffee,
-  ShoppingBag,
-  Car,
-  Utensils,
-  CreditCard,
   Wallet,
   ChevronRight
 } from 'lucide-react';
 import { useGlobalStore } from '@/store/globalStore';
+import { cn } from '@/lib/utils';
 
 interface GroupedCategory {
   category: string;
@@ -47,35 +42,46 @@ export const CategoryGrouping = () => {
     }
   }, [selectedCategory]);
 
-  // Get category icon and color based on merchant or category
-  const getCategoryIconAndColor = (merchant: string, category: string) => {
+  // Get category initials and color based on merchant or category
+  const getCategoryInitialsAndColor = (merchant: string, category: string) => {
     const merchantLower = merchant?.toLowerCase() || '';
     const categoryLower = category?.toLowerCase() || '';
     
+    // Generate initials from category name
+    const getInitials = (text: string) => {
+      return text
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase())
+        .join('')
+        .slice(0, 2);
+    };
+    
+    const initials = getInitials(category);
+    
     if (merchantLower.includes('coffee') || merchantLower.includes('starbucks') || merchantLower.includes('cafe')) {
-      return { icon: Coffee, bgColor: 'bg-warning-subtle dark:bg-warning-subtle', iconColor: 'text-warning dark:text-warning' };
+      return { initials, bgColor: 'bg-warning-subtle dark:bg-warning-subtle', textColor: 'text-warning dark:text-warning' };
     } else if (merchantLower.includes('uber') || merchantLower.includes('taxi') || categoryLower.includes('transport')) {
-      return { icon: Car, bgColor: 'bg-primary-subtle dark:bg-primary-subtle', iconColor: 'text-primary dark:text-primary' };
+      return { initials, bgColor: 'bg-primary-subtle dark:bg-primary-subtle', textColor: 'text-primary dark:text-primary' };
     } else if (merchantLower.includes('restaurant') || merchantLower.includes('food') || categoryLower.includes('food')) {
-      return { icon: Utensils, bgColor: 'bg-muted dark:bg-muted', iconColor: 'text-muted-foreground dark:text-muted-foreground' };
+      return { initials, bgColor: 'bg-muted dark:bg-muted', textColor: 'text-muted-foreground dark:text-muted-foreground' };
     } else if (merchantLower.includes('shop') || merchantLower.includes('store') || categoryLower.includes('shopping')) {
-      return { icon: ShoppingBag, bgColor: 'bg-accent/10 dark:bg-accent/10', iconColor: 'text-accent dark:text-accent' };
+      return { initials, bgColor: 'bg-accent/10 dark:bg-accent/10', textColor: 'text-accent dark:text-accent' };
     } else if (categoryLower.includes('bank') || categoryLower.includes('atm')) {
-      return { icon: CreditCard, bgColor: 'bg-success-subtle dark:bg-success-subtle', iconColor: 'text-success dark:text-success' };
+      return { initials, bgColor: 'bg-success-subtle dark:bg-success-subtle', textColor: 'text-success dark:text-success' };
     } else {
-      return { icon: Store, bgColor: 'bg-destructive-subtle dark:bg-destructive-subtle', iconColor: 'text-destructive dark:text-destructive' };
+      return { initials, bgColor: 'bg-destructive-subtle dark:bg-destructive-subtle', textColor: 'text-destructive dark:text-destructive' };
     }
   };
 
-  // Filter transactions based on selected bank and duration
+  // Filter transactions based on selected bank and duration - only debit transactions
   const filteredTransactions = useMemo(() => {
     if (!selectedBank) {
       return [];
     }
     
     return transactions.filter(transaction => {
-      // Exclude balance transactions
-      if (transaction.transaction_type === 'balance') {
+      // Only include debit transactions, exclude balance and credit transactions
+      if (transaction.transaction_type !== 'debit') {
         return false;
       }
       
@@ -178,73 +184,79 @@ export const CategoryGrouping = () => {
 
   if (groupedByCategory.length === 0) {
     return (
-      <Card className="p-6">
-        <div className="mb-4">
-          <h2 className="text-lg font-semibold text-foreground font-google">Spending Categories</h2>
-          <p className="text-sm text-muted-foreground">View your expenses grouped by category</p>
-        </div>
-        <div className="text-center py-4">
-          <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-muted-foreground font-google">
-            No spending categories found
-          </p>
-        </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base font-medium flex items-center gap-2">
+            <Wallet className="w-4 h-4 text-primary" />
+            Spending Categories
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <div className="w-12 h-12 rounded-full bg-muted/20 flex items-center justify-center mx-auto mb-3">
+              <Wallet className="w-6 h-6 text-muted-foreground" />
+            </div>
+            <p className="text-sm text-muted-foreground">No spending categories found</p>
+          </div>
+        </CardContent>
       </Card>
     );
   }
 
   return (
     <>
-      <Card className="p-6">
-        <div className="mb-4">
-          <h2 className="text-lg font-semibold text-foreground font-google">Spending Categories</h2>
-          <p className="text-sm text-muted-foreground">View your expenses grouped by category</p>
-        </div>
-        <div className="space-y-3">
-        {groupedByCategory.map((group) => {
-          const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor('', group.category);
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base font-medium flex items-center gap-2">
+            Spending Categories
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pb-2">
+          <div className="space-y-0 divide-y divide-border">
+        {groupedByCategory.map((group, index) => {
+          const { initials, bgColor, textColor } = getCategoryInitialsAndColor('', group.category);
           
           return (
-            <Card 
-              key={group.category} 
-              className="p-4 hover:shadow-md transition-all cursor-pointer border border-border/50 rounded-2xl"
+            <div 
+              key={group.category}
+              className="flex items-center justify-between py-3 hover:bg-muted/20 transition-colors first:pt-0 last:pb-0 cursor-pointer"
               onClick={() => setSelectedCategory(group)}
             >
-              <div className="flex items-center gap-4">
-                {/* Category Icon */}
-                <div className={`p-3 rounded-2xl ${bgColor}`}>
-                  <CategoryIcon className={`h-6 w-6 ${iconColor}`} />
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="flex-shrink-0">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${bgColor}`}>
+                    <span className={textColor}>
+                      {initials}
+                    </span>
+                  </div>
                 </div>
                 
-                {/* Category Details */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-base font-semibold text-foreground font-google truncate">
-                        {group.category}
-                      </h3>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Badge variant="outline" className="text-xs">
-                          {group.merchantCount} merchant{group.merchantCount !== 1 ? 's' : ''}
-                        </Badge>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 ml-3">
-                      <div className="text-right">
-                        <div className="text-lg font-bold font-google text-foreground">
-                          ₹{group.totalAmount.toLocaleString()}
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                    </div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="font-medium text-sm text-foreground truncate">
+                      {group.category}
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span>{group.merchantCount} merchant{group.merchantCount !== 1 ? 's' : ''}</span>
                   </div>
                 </div>
               </div>
-            </Card>
+              
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="text-right">
+                  <p className="font-bold text-sm text-foreground">
+                    ₹{group.totalAmount.toLocaleString()}
+                  </p>
+                </div>
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </div>
           );
         })}
-        </div>
+          </div>
+        </CardContent>
       </Card>
 
       {/* Bottom Modal for Category Details - Draggable with Vaul */}
@@ -290,14 +302,16 @@ export const CategoryGrouping = () => {
               {/* Grouped Merchants - Scrollable */}
               <div className="space-y-2 overflow-y-auto flex-1" style={{ scrollbarWidth: 'thin' }}>
                 {groupedMerchants.map((merchant) => {
-                  const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor(merchant.merchant, selectedCategory?.category || '');
+                  const { initials, bgColor, textColor } = getCategoryInitialsAndColor(merchant.merchant, selectedCategory?.category || '');
                   
                   return (
                     <div key={merchant.merchant} className="p-3 bg-muted/80 rounded-2xl">
                       <div className="flex items-center gap-3">
                         <Avatar className={`h-8 w-8 ${bgColor}`}>
-                          <AvatarFallback className={`${bgColor} border-0`}>
-                            <CategoryIcon className={`h-4 w-4 ${iconColor}`} />
+                          <AvatarFallback className={`${bgColor} border-0 flex items-center justify-center`}>
+                            <span className={`text-xs font-bold ${textColor}`}>
+                              {initials}
+                            </span>
                           </AvatarFallback>
                         </Avatar>
                         

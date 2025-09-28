@@ -45,8 +45,6 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
     });
   }, [transactions, banks]);
 
-  // Get current month name
-  const currentMonth = new Date().toLocaleDateString('en-US', { month: 'long' });
   
   // Determine which transactions to display
   const displayedTransactions = showMore ? topExpenses : topExpenses.slice(0, 5);
@@ -58,7 +56,7 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
         <CardHeader>
           <CardTitle className="text-base font-medium flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-primary" />
-            Top High Transactions This {currentMonth}
+            Top Transactions this Month
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -77,10 +75,10 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
     <Card className={cn("", className)}>
       <CardHeader>
         <CardTitle className="text-base font-medium flex items-center gap-2">
-          Top High Transactions This {currentMonth}
+          Top Transactions this Month
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className='pb-2'>
         <div className="space-y-0 divide-y divide-border">
           {displayedTransactions.map((transaction, index) => (
             <div 
@@ -119,12 +117,12 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
         
         {/* Show More/Less Button */}
         {hasMoreTransactions && (
-          <div className="mt-4 flex justify-center">
+          <div className="mt-4 flex justify-end">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowMore(!showMore)}
-              className="text-sm text-muted-foreground hover:text-foreground"
+              className="text-sm p-0 text-muted-foreground hover:text-foreground hover:bg-transparent focus:bg-transparent active:bg-transparent border-0 hover:border-0 focus:border-0 active:border-0 shadow-none hover:shadow-none focus:shadow-none active:shadow-none"
             >
               {showMore ? (
                 <>
