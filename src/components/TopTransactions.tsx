@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { TrendingUp, ChevronDown, ChevronUp } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -26,12 +27,14 @@ interface TopTransactionsProps {
 }
 
 export function TopTransactions({ transactions, banks, className }: TopTransactionsProps) {
+  const [showMore, setShowMore] = useState(false);
+  
   const topExpenses = useMemo(() => {
     // Filter to only debit transactions and sort by amount descending
     const expenseTransactions = transactions
       .filter(t => t.transaction_type === 'debit')
       .sort((a, b) => b.amount - a.amount)
-      .slice(0, 5);
+      .slice(0, 10); // Get top 10 instead of 5
 
     return expenseTransactions.map(transaction => {
       const bank = banks.find(b => b.id === transaction.bank_id);
@@ -42,13 +45,20 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
     });
   }, [transactions, banks]);
 
+  // Get current month name
+  const currentMonth = new Date().toLocaleDateString('en-US', { month: 'long' });
+  
+  // Determine which transactions to display
+  const displayedTransactions = showMore ? topExpenses : topExpenses.slice(0, 5);
+  const hasMoreTransactions = topExpenses.length > 5;
+
   if (topExpenses.length === 0) {
     return (
       <Card className={cn("", className)}>
         <CardHeader>
           <CardTitle className="text-base font-medium flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-primary" />
-            Top 5 Highest Expenses
+            Top High Transactions This {currentMonth}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -67,12 +77,12 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
     <Card className={cn("", className)}>
       <CardHeader>
         <CardTitle className="text-base font-medium flex items-center gap-2">
-          Top 5 Highest Expenses
+          Top High Transactions This {currentMonth}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-0 divide-y divide-border">
-          {topExpenses.map((transaction, index) => (
+          {displayedTransactions.map((transaction, index) => (
             <div 
               key={transaction.id}
               className="flex items-center justify-between py-3 hover:bg-muted/20 transition-colors first:pt-0 last:pb-0"
@@ -106,6 +116,30 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
             </div>
           ))}
         </div>
+        
+        {/* Show More/Less Button */}
+        {hasMoreTransactions && (
+          <div className="mt-4 flex justify-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowMore(!showMore)}
+              className="text-sm text-muted-foreground hover:text-foreground"
+            >
+              {showMore ? (
+                <>
+                  Show Less
+                  <ChevronUp className="ml-1 h-4 w-4" />
+                </>
+              ) : (
+                <>
+                  Show More ({topExpenses.length - 5} more)
+                  <ChevronDown className="ml-1 h-4 w-4" />
+                </>
+              )}
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
