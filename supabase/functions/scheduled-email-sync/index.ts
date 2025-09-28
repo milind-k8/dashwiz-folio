@@ -14,33 +14,62 @@ serve(async (req) => {
   }
 
   try {
-    console.log('Starting scheduled email sync...');
+    const requestBody = req.method === 'POST' ? await req.json() : {};
+    const specificUserId = requestBody.userId; // Optional user ID for targeted sync
+
+    console.log(specificUserId 
+      ? `Starting email sync for user: ${specificUserId}` 
+      : 'Starting scheduled email sync for all users...'
+    );
 
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Get all active users with tokens that need syncing (haven't synced in the last hour)
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    let userTokens;
     
-    const { data: userTokens, error: tokensError } = await supabase
-      .from('user_tokens')
-      .select('*')
-      .eq('sync_status', 'active')
-      .or(`last_sync_at.is.null,last_sync_at.lt.${oneHourAgo}`);
+    if (specificUserId) {
+      // Process specific user (called from webhook)
+      const { data, error: tokensError } = await supabase
+        .from('user_tokens')
+        .select('*')
+        .eq('user_id', specificUserId)
+        .eq('sync_status', 'active')
+        .single();
 
-    if (tokensError) {
-      console.error('Error fetching user tokens:', tokensError);
-      throw new Error('Failed to fetch user tokens');
+      if (tokensError) {
+        console.error('Error fetching user token:', tokensError);
+        throw new Error('Failed to fetch user token');
+      }
+
+      userTokens = data ? [data] : [];
+    } else {
+      // Get all active users with tokens that need syncing (haven't synced in the last hour)
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+      
+      const { data, error: tokensError } = await supabase
+        .from('user_tokens')
+        .select('*')
+        .eq('sync_status', 'active')
+        .or(`last_sync_at.is.null,last_sync_at.lt.${oneHourAgo}`);
+
+      if (tokensError) {
+        console.error('Error fetching user tokens:', tokensError);
+        throw new Error('Failed to fetch user tokens');
+      }
+
+      userTokens = data || [];
     }
 
-    console.log(`Found ${userTokens?.length || 0} users to sync`);
+    console.log(`Found ${userTokens.length} users to sync`);
 
-    if (!userTokens || userTokens.length === 0) {
+    if (userTokens.length === 0) {
       return new Response(JSON.stringify({
         success: true,
-        message: 'No users need syncing at this time',
+        message: specificUserId 
+          ? 'User does not need syncing or is not active'
+          : 'No users need syncing at this time',
         users_synced: 0
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -53,7 +82,9 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({
       success: true,
-      message: 'Email sync initiated for all eligible users',
+      message: specificUserId 
+        ? `Email sync initiated for user ${specificUserId}`
+        : 'Email sync initiated for all eligible users',
       users_to_sync: userTokens.length
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

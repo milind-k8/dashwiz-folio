@@ -111,55 +111,27 @@ serve(async (req) => {
     // In production, you'd want to store the Gmail email address with the user token
     console.log(`Processing Gmail notification for ${userTokens.length} active users`);
 
-    // Process each user's banks
+    // Process each user by calling scheduled-email-sync with their user ID
+    let processedUsers = 0;
     for (const userToken of userTokens) {
       try {
-        // Get user's banks
-        const { data: userBanks, error: banksError } = await supabase
-          .from('user_banks')
-          .select('id, bank_name')
-          .eq('user_id', userToken.user_id);
-
-        if (banksError) {
-          console.error('Error fetching user banks:', banksError);
-          continue;
-        }
-
-        if (!userBanks || userBanks.length === 0) {
-          console.log(`No banks found for user ${userToken.user_id}`);
-          continue;
-        }
-
-        // Process each bank
-        for (const bank of userBanks) {
-          try {
-            console.log(`Processing bank ${bank.bank_name} for user ${userToken.user_id}`);
-            
-            // Get current month for processing
-            const now = new Date();
-            const month = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-
-            // Call the existing process-transactions function
-            const { data: processResult, error: processError } = await supabase.functions.invoke(
-              'process-transactions',
-              {
-                body: {
-                  bankName: bank.bank_name,
-                  month: month,
-                  googleAccessToken: userToken.google_access_token,
-                  userId: userToken.user_id
-                }
-              }
-            );
-
-            if (processError) {
-              console.error(`Error processing transactions for bank ${bank.bank_name}:`, processError);
-            } else {
-              console.log(`Successfully processed transactions for bank ${bank.bank_name}:`, processResult);
+        console.log(`Calling scheduled-email-sync for user ${userToken.user_id}`);
+        
+        // Call scheduled-email-sync function with specific user ID
+        const { data: syncResult, error: syncError } = await supabase.functions.invoke(
+          'scheduled-email-sync',
+          {
+            body: {
+              userId: userToken.user_id
             }
-          } catch (bankError) {
-            console.error(`Error processing bank ${bank.bank_name}:`, bankError);
           }
+        );
+
+        if (syncError) {
+          console.error(`Error syncing user ${userToken.user_id}:`, syncError);
+        } else {
+          console.log(`Successfully initiated sync for user ${userToken.user_id}:`, syncResult);
+          processedUsers++;
         }
       } catch (userError) {
         console.error(`Error processing user ${userToken.user_id}:`, userError);
@@ -168,7 +140,8 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ 
       message: 'Gmail notification processed successfully',
-      processedUsers: userTokens.length 
+      totalUsers: userTokens.length,
+      processedUsers: processedUsers
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...corsHeaders }
