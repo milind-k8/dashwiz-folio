@@ -34,12 +34,6 @@ export const TransactionsContent = () => {
   const { banks, transactions, loading } = useGlobalStore();
   const { selectedBank, selectedDuration, setSelectedBank, setSelectedDuration } = useFilterStore();
   
-  // Get current month as default
-  const getCurrentMonth = () => {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-  };
-  
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBankId, setSelectedBankId] = useState<string>(selectedBank || '');
   const [filterOpen, setFilterOpen] = useState(false);
@@ -68,7 +62,6 @@ export const TransactionsContent = () => {
     }
   }, [banks, selectedBankId, selectedBank, setSelectedBank, selectedDuration, setSelectedDuration]);
 
-  
   // Get current date and generate duration options
   const getDurationOptions = () => {
     const options = [
@@ -165,6 +158,52 @@ export const TransactionsContent = () => {
       return matchesSearch && matchesBank && matchesMonth;
     });
   }, [transactions, searchTerm, selectedBankId, selectedDuration]);
+
+  // Calculate net amount for the month (Debits - Credits)
+  const monthNetAmount = useMemo(() => {
+    const debits = filteredTransactions
+      .filter(t => t.transaction_type === 'debit')
+      .reduce((sum, t) => sum + t.amount, 0);
+    
+    const credits = filteredTransactions
+      .filter(t => t.transaction_type === 'credit')
+      .reduce((sum, t) => sum + t.amount, 0);
+    
+    return debits - credits;
+  }, [filteredTransactions]);
+
+  // Get month display text
+  const getMonthDisplay = () => {
+    const now = new Date();
+    let targetYear: number, targetMonth: number;
+    
+    switch (selectedDuration) {
+      case 'current-month':
+        targetYear = now.getFullYear();
+        targetMonth = now.getMonth();
+        break;
+      case 'previous-month':
+        const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        targetYear = prevMonth.getFullYear();
+        targetMonth = prevMonth.getMonth();
+        break;
+      case 'month-before-previous':
+        const monthBefore = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+        targetYear = monthBefore.getFullYear();
+        targetMonth = monthBefore.getMonth();
+        break;
+      default:
+        targetYear = now.getFullYear();
+        targetMonth = now.getMonth();
+    }
+    
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    
+    return `${monthNames[targetMonth]} ${targetYear}`;
+  };
 
 
   if (loading) {
@@ -276,76 +315,93 @@ export const TransactionsContent = () => {
 
       {/* Content Area */}
       <div className="max-w-2xl mx-auto">
-            {/* Normal List View */}
-            {filteredTransactions.length === 0 ? (
-              <div className="p-8 text-center">
-                <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground font-google">
-                  {searchTerm ? 'No transactions match your search' : 'No transactions found'}
-                </p>
+        {/* Normal List View */}
+        {filteredTransactions.length === 0 ? (
+          <div className="p-8 text-center">
+            <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground font-google">
+              {searchTerm ? 'No transactions match your search' : 'No transactions found'}
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* Month Header */}
+            <div className="bg-card border-b border-border/50 px-4 py-3 sticky top-[76px] z-10">
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-semibold text-foreground font-google">
+                  {getMonthDisplay()}
+                </h3>
+                <div className={`text-base font-semibold font-google ${
+                  monthNetAmount >= 0 ? 'text-green-600' : 'text-red-600'
+                }`}>
+                  {monthNetAmount >= 0 ? '+' : ''}₹{Math.abs(monthNetAmount).toLocaleString()}
+                </div>
               </div>
-            ) : (
-              <div className="divide-y divide-border/50">
-                {filteredTransactions.map((transaction) => {
-                  const { initial, colorClass } = getMerchantInitial(transaction.merchant);
-                  const isCredit = transaction.transaction_type === 'credit';
-                  
-                  return (
-                    <div key={transaction.id} className="px-4 py-3 hover:bg-muted/30 transition-colors bg-card">
-                      <div className="flex items-center gap-3">
-                        {/* Merchant Initial Avatar */}
-                        <Avatar className="h-10 w-10">
-                          <AvatarFallback className={`${colorClass} border-0 text-sm font-semibold`}>
-                            {initial}
-                          </AvatarFallback>
-                        </Avatar>
-                        
-                        {/* Transaction Details */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <div className="min-w-0 flex-1">
-                              <p className="text-sm font-medium text-foreground font-google truncate">
-                                {transaction.merchant || 'Unknown Merchant'}
+            </div>
+
+            {/* Transaction List */}
+            <div className="divide-y divide-border/50">
+              {filteredTransactions.map((transaction) => {
+                const { initial, colorClass } = getMerchantInitial(transaction.merchant);
+                const isCredit = transaction.transaction_type === 'credit';
+                
+                return (
+                  <div key={transaction.id} className="px-4 py-4 hover:bg-muted/30 transition-colors bg-card">
+                    <div className="flex items-center gap-3">
+                      {/* Merchant Initial Avatar */}
+                      <Avatar className="h-10 w-10">
+                        <AvatarFallback className={`${colorClass} border-0 text-sm font-semibold`}>
+                          {initial}
+                        </AvatarFallback>
+                      </Avatar>
+                      
+                      {/* Transaction Details */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium text-foreground font-google truncate">
+                              {transaction.merchant || 'Unknown Merchant'}
+                            </p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <p className="text-xs text-muted-foreground">
+                                {new Date(transaction.mail_time).toLocaleDateString('en-US', { 
+                                  month: 'short', 
+                                  day: 'numeric'
+                                })}
                               </p>
-                              <div className="flex items-center gap-2 mt-0.5">
-                                <p className="text-xs text-muted-foreground">
-                                  {new Date(transaction.mail_time).toLocaleDateString('en-US', { 
-                                    month: 'short', 
-                                    day: 'numeric'
-                                  })}
-                                </p>
-                                <span className="text-xs text-muted-foreground">•</span>
-                                <p className="text-xs text-muted-foreground truncate">
-                                  {transaction.category || 'Other'}
-                                </p>
-                              </div>
+                              <span className="text-xs text-muted-foreground">•</span>
+                              <p className="text-xs text-muted-foreground truncate">
+                                {transaction.category || 'Other'}
+                              </p>
                             </div>
-                            
-                            {/* Amount */}
-                            <div className="text-right ml-3">
-                              <div className={`text-sm font-semibold font-google ${
-                                isCredit 
-                                  ? 'text-green-600' 
-                                  : 'text-red-600'
-                              }`}>
-                                {isCredit ? '+' : '-'}₹{transaction.amount.toLocaleString()}
-                              </div>
-                              <div className="flex items-center justify-end mt-0.5">
-                                {isCredit ? (
-                                  <ArrowUpRight className="h-3 w-3 text-green-600" />
-                                ) : (
-                                  <ArrowDownLeft className="h-3 w-3 text-red-600" />
-                                )}
-                              </div>
+                          </div>
+                          
+                          {/* Amount */}
+                          <div className="text-right ml-3">
+                            <div className={`text-sm font-semibold font-google ${
+                              isCredit 
+                                ? 'text-green-600' 
+                                : 'text-red-600'
+                            }`}>
+                              {isCredit ? '+' : '-'}₹{transaction.amount.toLocaleString()}
+                            </div>
+                            <div className="flex items-center justify-end mt-1">
+                              {isCredit ? (
+                                <ArrowUpRight className="h-3 w-3 text-green-600" />
+                              ) : (
+                                <ArrowDownLeft className="h-3 w-3 text-red-600" />
+                              )}
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            )}
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
         
         {/* Summary Footer */}
         {filteredTransactions.length > 0 && (
