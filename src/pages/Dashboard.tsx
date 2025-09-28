@@ -1,7 +1,6 @@
 import { useMemo, useCallback } from 'react';
 import { EnhancedMetricCard } from '@/components/EnhancedMetricCard';
 import { TopTransactions } from '@/components/TopTransactions';
-import { AdvancedCharts } from '@/components/AdvancedCharts';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
 import { DashboardSkeleton } from '@/components/DashboardSkeleton';
@@ -97,19 +96,7 @@ export function Dashboard() {
       />
 
       {/* Category Grouping */}
-      <div className="pb-2">
-        <div className="mb-4">
-          <h2 className="text-lg font-semibold text-foreground font-google">Spending Categories</h2>
-          <p className="text-sm text-muted-foreground">View your expenses grouped by category</p>
-        </div>
-        <CategoryGrouping />
-      </div>
-
-      {/* Advanced Charts */}
-      <AdvancedCharts 
-        transactions={data.transactions}
-        expenseCategories={data.expenseCategoriesList}
-      />
+      <CategoryGrouping />
 
     </PageContent>
   );

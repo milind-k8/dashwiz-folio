@@ -178,18 +178,29 @@ export const CategoryGrouping = () => {
 
   if (groupedByCategory.length === 0) {
     return (
-      <div className="p-8 text-center">
-        <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-        <p className="text-muted-foreground font-google">
-          No spending categories found
-        </p>
-      </div>
+      <Card className="p-6">
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold text-foreground font-google">Spending Categories</h2>
+          <p className="text-sm text-muted-foreground">View your expenses grouped by category</p>
+        </div>
+        <div className="text-center py-4">
+          <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <p className="text-muted-foreground font-google">
+            No spending categories found
+          </p>
+        </div>
+      </Card>
     );
   }
 
   return (
     <>
-      <div className="space-y-3">
+      <Card className="p-6">
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold text-foreground font-google">Spending Categories</h2>
+          <p className="text-sm text-muted-foreground">View your expenses grouped by category</p>
+        </div>
+        <div className="space-y-3">
         {groupedByCategory.map((group) => {
           const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor('', group.category);
           
@@ -233,7 +244,8 @@ export const CategoryGrouping = () => {
             </Card>
           );
         })}
-      </div>
+        </div>
+      </Card>
 
       {/* Bottom Modal for Category Details - Draggable with Vaul */}
       <Drawer.Root 
