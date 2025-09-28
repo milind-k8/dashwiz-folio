@@ -15,14 +15,7 @@ import {
   Search, 
   ArrowUpRight,
   ArrowDownLeft,
-  Store,
-  Coffee,
-  ShoppingBag,
-  Car,
-  Utensils,
-  CreditCard,
   Wallet,
-  Tag,
   X,
   Calendar,
   SlidersHorizontal
@@ -93,24 +86,28 @@ export const TransactionsContent = () => {
     return bank ? bank.bank_name : 'Unknown Bank';
   };
 
-  // Get category icon and color based on merchant or category
-  const getCategoryIconAndColor = (merchant: string, category: string) => {
-    const merchantLower = merchant?.toLowerCase() || '';
-    const categoryLower = category?.toLowerCase() || '';
+  // Get merchant initial and random background color
+  const getMerchantInitial = (merchant: string) => {
+    const name = merchant || 'Unknown';
+    const initial = name.charAt(0).toUpperCase();
     
-    if (merchantLower.includes('coffee') || merchantLower.includes('starbucks') || merchantLower.includes('cafe')) {
-      return { icon: Coffee, bgColor: 'bg-warning-subtle dark:bg-warning-subtle', iconColor: 'text-warning dark:text-warning' };
-    } else if (merchantLower.includes('uber') || merchantLower.includes('taxi') || categoryLower.includes('transport')) {
-      return { icon: Car, bgColor: 'bg-primary-subtle dark:bg-primary-subtle', iconColor: 'text-primary dark:text-primary' };
-    } else if (merchantLower.includes('restaurant') || merchantLower.includes('food') || categoryLower.includes('food')) {
-      return { icon: Utensils, bgColor: 'bg-muted dark:bg-muted', iconColor: 'text-muted-foreground dark:text-muted-foreground' };
-    } else if (merchantLower.includes('shop') || merchantLower.includes('store') || categoryLower.includes('shopping')) {
-      return { icon: ShoppingBag, bgColor: 'bg-accent/10 dark:bg-accent/10', iconColor: 'text-accent dark:text-accent' };
-    } else if (categoryLower.includes('bank') || categoryLower.includes('atm')) {
-      return { icon: CreditCard, bgColor: 'bg-success-subtle dark:bg-success-subtle', iconColor: 'text-success dark:text-success' };
-    } else {
-      return { icon: Store, bgColor: 'bg-destructive-subtle dark:bg-destructive-subtle', iconColor: 'text-destructive dark:text-destructive' };
-    }
+    // Generate consistent background color based on first character
+    const colors = [
+      'bg-blue-100 text-blue-700',
+      'bg-green-100 text-green-700', 
+      'bg-purple-100 text-purple-700',
+      'bg-orange-100 text-orange-700',
+      'bg-pink-100 text-pink-700',
+      'bg-indigo-100 text-indigo-700',
+      'bg-cyan-100 text-cyan-700',
+      'bg-red-100 text-red-700'
+    ];
+    
+    const colorIndex = initial.charCodeAt(0) % colors.length;
+    return {
+      initial,
+      colorClass: colors[colorIndex]
+    };
   };
 
   // Filter transactions based on search term, selected bank, and month
@@ -290,16 +287,16 @@ export const TransactionsContent = () => {
             ) : (
               <div className="divide-y divide-border/50">
                 {filteredTransactions.map((transaction) => {
-                  const { icon: CategoryIcon, bgColor, iconColor } = getCategoryIconAndColor(transaction.merchant, transaction.category);
+                  const { initial, colorClass } = getMerchantInitial(transaction.merchant);
                   const isCredit = transaction.transaction_type === 'credit';
                   
                   return (
-                    <div key={transaction.id} className="p-5 hover:bg-muted/30 transition-colors bg-card">
-                      <div className="flex items-center gap-4">
-                        {/* Icon Avatar with category colors */}
-                        <Avatar className={`h-12 w-12 ${bgColor}`}>
-                          <AvatarFallback className={`${bgColor} border-0`}>
-                            <CategoryIcon className={`h-6 w-6 ${iconColor}`} />
+                    <div key={transaction.id} className="px-4 py-3 hover:bg-muted/30 transition-colors bg-card">
+                      <div className="flex items-center gap-3">
+                        {/* Merchant Initial Avatar */}
+                        <Avatar className="h-10 w-10">
+                          <AvatarFallback className={`${colorClass} border-0 text-sm font-semibold`}>
+                            {initial}
                           </AvatarFallback>
                         </Avatar>
                         
@@ -307,40 +304,37 @@ export const TransactionsContent = () => {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
                             <div className="min-w-0 flex-1">
-                              <p className="text-base font-medium text-foreground font-google truncate">
+                              <p className="text-sm font-medium text-foreground font-google truncate">
                                 {transaction.merchant || 'Unknown Merchant'}
                               </p>
-                              <div className="flex items-center gap-2 mt-2">
-                                <p className="text-sm text-muted-foreground">
+                              <div className="flex items-center gap-2 mt-0.5">
+                                <p className="text-xs text-muted-foreground">
                                   {new Date(transaction.mail_time).toLocaleDateString('en-US', { 
                                     month: 'short', 
                                     day: 'numeric'
                                   })}
                                 </p>
-                                <span className="text-sm text-muted-foreground">•</span>
-                                <div className="flex items-center gap-1">
-                                  <Tag className="h-4 w-4 text-muted-foreground" />
-                                  <p className="text-sm text-muted-foreground truncate">
-                                    {transaction.category || 'Other'}
-                                  </p>
-                                </div>
+                                <span className="text-xs text-muted-foreground">•</span>
+                                <p className="text-xs text-muted-foreground truncate">
+                                  {transaction.category || 'Other'}
+                                </p>
                               </div>
                             </div>
                             
                             {/* Amount */}
-                            <div className="text-right ml-4">
-                              <div className={`text-base font-semibold font-google ${
+                            <div className="text-right ml-3">
+                              <div className={`text-sm font-semibold font-google ${
                                 isCredit 
-                                  ? 'text-success' 
-                                  : 'text-foreground'
+                                  ? 'text-green-600' 
+                                  : 'text-red-600'
                               }`}>
                                 {isCredit ? '+' : '-'}₹{transaction.amount.toLocaleString()}
                               </div>
-                              <div className="flex items-center justify-end mt-2">
+                              <div className="flex items-center justify-end mt-0.5">
                                 {isCredit ? (
-                                  <ArrowUpRight className="h-4 w-4 text-success" />
+                                  <ArrowUpRight className="h-3 w-3 text-green-600" />
                                 ) : (
-                                  <ArrowDownLeft className="h-4 w-4 text-muted-foreground" />
+                                  <ArrowDownLeft className="h-3 w-3 text-red-600" />
                                 )}
                               </div>
                             </div>
