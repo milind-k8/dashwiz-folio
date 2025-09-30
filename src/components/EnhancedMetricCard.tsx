@@ -56,43 +56,43 @@ export function EnhancedMetricCard({
     switch (metricType) {
       case 'balance':
         return {
-          cardClass: 'bg-google-blue-light border-l-4 border-l-google-blue border-y border-r border-border/50',
-          iconBg: 'bg-google-blue/10',
-          iconColor: 'text-google-blue',
-          textColor: 'text-google-blue',
-          mutedColor: 'text-google-blue/70',
-          borderColor: 'border-google-blue/20',
-          breakdown: 'bg-google-blue/5'
+          cardClass: 'bg-google-blue border-0',
+          iconBg: 'bg-white/20',
+          iconColor: 'text-white',
+          textColor: 'text-white',
+          mutedColor: 'text-white/90',
+          borderColor: 'border-white/20',
+          breakdown: 'bg-white/10'
         };
       case 'expenses':
         return {
-          cardClass: 'bg-google-red-light border-l-4 border-l-google-red border-y border-r border-border/50',
-          iconBg: 'bg-google-red/10',
-          iconColor: 'text-google-red',
-          textColor: 'text-google-red',
-          mutedColor: 'text-google-red/70',
-          borderColor: 'border-google-red/20',
-          breakdown: 'bg-google-red/5'
+          cardClass: 'bg-google-red border-0',
+          iconBg: 'bg-white/20',
+          iconColor: 'text-white',
+          textColor: 'text-white',
+          mutedColor: 'text-white/90',
+          borderColor: 'border-white/20',
+          breakdown: 'bg-white/10'
         };
       case 'income':
         return {
-          cardClass: 'bg-google-green-light border-l-4 border-l-google-green border-y border-r border-border/50',
-          iconBg: 'bg-google-green/10',
-          iconColor: 'text-google-green',
-          textColor: 'text-google-green',
-          mutedColor: 'text-google-green/70',
-          borderColor: 'border-google-green/20',
-          breakdown: 'bg-google-green/5'
+          cardClass: 'bg-google-green border-0',
+          iconBg: 'bg-white/20',
+          iconColor: 'text-white',
+          textColor: 'text-white',
+          mutedColor: 'text-white/90',
+          borderColor: 'border-white/20',
+          breakdown: 'bg-white/10'
         };
       case 'spending':
         return {
-          cardClass: 'bg-google-yellow-light border-l-4 border-l-google-yellow border-y border-r border-border/50',
-          iconBg: 'bg-google-yellow/10',
-          iconColor: 'text-google-yellow',
-          textColor: 'text-google-yellow',
-          mutedColor: 'text-google-yellow/70',
-          borderColor: 'border-google-yellow/20',
-          breakdown: 'bg-google-yellow/5'
+          cardClass: 'bg-google-yellow border-0',
+          iconBg: 'bg-white/20',
+          iconColor: 'text-white',
+          textColor: 'text-white',
+          mutedColor: 'text-white/90',
+          borderColor: 'border-white/20',
+          breakdown: 'bg-white/10'
         };
       default:
         return {

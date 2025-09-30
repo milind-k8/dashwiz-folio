@@ -52,15 +52,15 @@ All colors MUST be HSL.
     --warning-foreground: 0 0% 100%;
     --warning-subtle: 38 92% 96%;
 
-    /* Google Material Design 3 - Brand Colors */
-    --google-blue: 217 80% 51%;         /* #1a73e8 */
-    --google-blue-light: 218 89% 95%;   /* #e8f0fe */
-    --google-red: 4 82% 56%;            /* #ea4335 */
-    --google-red-light: 5 79% 95%;      /* #fce8e6 */
-    --google-green: 136 52% 43%;        /* #34a853 */
-    --google-green-light: 137 38% 93%;  /* #e6f4ea */
-    --google-yellow: 45 98% 50%;        /* #fbbc04 */
-    --google-yellow-light: 46 88% 94%;  /* #fef7e0 */
+    /* Custom Brand Colors */
+    --google-blue: 213 97% 57%;         /* #2584fc */
+    --google-blue-light: 213 97% 57%;   /* Same as main */
+    --google-red: 6 76% 51%;            /* #e03422 */
+    --google-red-light: 6 76% 51%;      /* Same as main */
+    --google-green: 145 98% 34%;        /* #02ad48 */
+    --google-green-light: 145 98% 34%;  /* Same as main */
+    --google-yellow: 44 100% 50%;       /* #ffba00 */
+    --google-yellow-light: 44 100% 50%; /* Same as main */
     
     /* Dashboard card backgrounds - Google Material Design 3 */
     --card-balance: var(--google-blue-light);
@@ -167,15 +167,15 @@ All colors MUST be HSL.
     --warning-foreground: 0 0% 100%;
     --warning-subtle: 38 92% 15%;
 
-    /* Google Material Design 3 - Brand Colors (Dark Mode) */
-    --google-blue: 217 80% 60%;         /* Lighter blue for dark mode */
-    --google-blue-light: 217 50% 20%;   /* Dark background */
-    --google-red: 4 82% 65%;            /* Lighter red for dark mode */
-    --google-red-light: 4 50% 20%;      /* Dark background */
-    --google-green: 136 52% 55%;        /* Lighter green for dark mode */
-    --google-green-light: 136 30% 20%;  /* Dark background */
-    --google-yellow: 45 98% 60%;        /* Lighter yellow for dark mode */
-    --google-yellow-light: 45 60% 20%;  /* Dark background */
+    /* Custom Brand Colors (Dark Mode) */
+    --google-blue: 213 97% 57%;         /* #2584fc */
+    --google-blue-light: 213 97% 57%;   /* Same as main */
+    --google-red: 6 76% 51%;            /* #e03422 */
+    --google-red-light: 6 76% 51%;      /* Same as main */
+    --google-green: 145 98% 34%;        /* #02ad48 */
+    --google-green-light: 145 98% 34%;  /* Same as main */
+    --google-yellow: 44 100% 50%;       /* #ffba00 */
+    --google-yellow-light: 44 100% 50%; /* Same as main */
     
     /* Dashboard card backgrounds - dark mode versions */
     --card-balance: var(--google-blue-light);
