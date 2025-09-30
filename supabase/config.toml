@@ -1,19 +1,1 @@
 project_id = "yudnrvzjeqtyldrpbunw"
-
-[functions.gmail]
-verify_jwt = true
-
-[functions.verify-bank]
-verify_jwt = true
-
-[functions.process-transactions]
-verify_jwt = true
-
-[functions.refresh-google-token]
-verify_jwt = true
-
-[functions.gmail-webhook]
-verify_jwt = false
-
-[functions.store-user-token]
-verify_jwt = true
