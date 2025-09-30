@@ -58,15 +58,15 @@ export function MetricCard({
       
       <div>
         <p className={cn(
-          "text-sm font-medium mb-1.5 font-roboto",
+          "text-sm font-medium mb-2",
           isHighlighted 
-            ? 'text-white/90' 
+            ? 'text-white/80' 
             : 'text-muted-foreground'
         )}>
           {title}
         </p>
         <p className={cn(
-          "text-2xl font-normal font-google",
+          "text-2xl font-bold",
           isHighlighted 
             ? 'text-white' 
             : 'text-foreground'

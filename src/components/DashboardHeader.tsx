@@ -21,7 +21,7 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
           disabled={refreshing}
           className="flex items-center hover:opacity-80 transition-opacity disabled:opacity-50"
         >
-          <span className="text-2xl font-medium text-foreground font-google tracking-tight">
+          <span className="text-2xl font-bold text-foreground font-google tracking-tight">
             Mona<span className="text-primary">ro</span>
           </span>
         </button>
@@ -29,15 +29,15 @@ export function DashboardHeader({ pageTitle = "Dashboard" }: DashboardHeaderProp
       
       <div className="flex-1">
         {!isMobile && (
-          <h1 className="text-lg font-medium text-foreground font-google">{pageTitle}</h1>
+          <h1 className="text-base sm:text-lg font-semibold text-foreground">{pageTitle}</h1>
         )}
       </div>
       
       <div className="flex items-center gap-2">
         {autoProcessing && (
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-full">
-            <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
-            <span className="text-xs text-primary font-medium font-roboto">Processing transactions...</span>
+          <div className="flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full">
+            <Loader2 className="w-3 h-3 animate-spin text-primary" />
+            <span className="text-xs text-primary font-medium">Processing transactions...</span>
           </div>
         )}
         <NavUser />

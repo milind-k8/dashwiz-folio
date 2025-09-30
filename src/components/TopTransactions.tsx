@@ -53,9 +53,9 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
   if (topExpenses.length === 0) {
     return (
       <Card className={cn("", className)}>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base font-medium flex items-center gap-2 font-google text-foreground">
-            <TrendingUp className="w-5 h-5 text-muted-foreground" />
+        <CardHeader>
+          <CardTitle className="text-base font-medium flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-primary" />
             Top Transactions this Month
           </CardTitle>
         </CardHeader>
@@ -64,7 +64,7 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
             <div className="w-12 h-12 rounded-full bg-muted/20 flex items-center justify-center mx-auto mb-3">
               <TrendingUp className="w-6 h-6 text-muted-foreground" />
             </div>
-            <p className="text-sm text-muted-foreground font-roboto">No expenses found</p>
+            <p className="text-sm text-muted-foreground">No expenses found</p>
           </div>
         </CardContent>
       </Card>
@@ -73,38 +73,41 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
 
   return (
     <Card className={cn("", className)}>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base font-medium flex items-center gap-2 font-google text-foreground">
-          <TrendingUp className="w-5 h-5 text-muted-foreground" />
+      <CardHeader>
+        <CardTitle className="text-base font-medium flex items-center gap-2">
           Top Transactions this Month
         </CardTitle>
       </CardHeader>
-      <CardContent className='pb-3'>
-        <div className="space-y-1">
+      <CardContent className='pb-2'>
+        <div className="space-y-0 divide-y divide-border">
           {displayedTransactions.map((transaction, index) => (
             <div 
               key={transaction.id}
-              className="flex items-center justify-between py-2.5 px-2 hover:bg-muted/30 rounded-lg transition-all active:scale-[0.98]"
+              className="flex items-center justify-between py-3 hover:bg-muted/20 transition-colors first:pt-0 last:pb-0"
             >
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium bg-muted/40 text-muted-foreground font-google">
+                  <div className=
+                    "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-muted/50 text-muted-foreground">
                     #{index + 1}
                   </div>
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm text-foreground truncate font-roboto">
-                    {transaction.merchant || 'Unknown Merchant'}
-                  </p>
-                  <p className="text-xs text-muted-foreground font-roboto mt-0.5">
-                    {format(new Date(transaction.mail_time), 'MMM dd, yyyy')}
-                  </p>
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="font-medium text-sm text-foreground truncate">
+                      {transaction.merchant || 'Unknown Merchant'}
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span>{format(new Date(transaction.mail_time), 'MMM dd, yyyy')}</span>
+                  </div>
                 </div>
               </div>
               
               <div className="flex-shrink-0 text-right">
-                <p className="font-medium text-sm text-destructive font-roboto">
+                <p className="font-bold text-sm text-red-600">
                   -₹{transaction.amount.toLocaleString()}
                 </p>
               </div>
@@ -114,22 +117,22 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
         
         {/* Show More/Less Button */}
         {hasMoreTransactions && (
-          <div className="mt-3 flex justify-center">
+          <div className="mt-4 flex justify-end">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowMore(!showMore)}
-              className="text-sm px-4 py-2 text-primary hover:text-primary/80 hover:bg-primary/10 font-google font-medium"
+              className="text-sm p-0 text-muted-foreground hover:text-foreground hover:bg-transparent focus:bg-transparent active:bg-transparent border-0 hover:border-0 focus:border-0 active:border-0 shadow-none hover:shadow-none focus:shadow-none active:shadow-none"
             >
               {showMore ? (
                 <>
                   Show Less
-                  <ChevronUp className="ml-1.5 h-4 w-4" />
+                  <ChevronUp className="ml-1 h-4 w-4" />
                 </>
               ) : (
                 <>
                   Show More ({topExpenses.length - 5} more)
-                  <ChevronDown className="ml-1.5 h-4 w-4" />
+                  <ChevronDown className="ml-1 h-4 w-4" />
                 </>
               )}
             </Button>
