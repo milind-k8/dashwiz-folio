@@ -88,14 +88,14 @@ export function Dashboard() {
         />
       </div>
 
+       {/* Category Grouping */}
+       <CategoryGrouping />
+
       {/* Top Transactions */}
       <TopTransactions 
         transactions={data.transactions}
         banks={banks}
       />
-
-      {/* Category Grouping */}
-      <CategoryGrouping />
 
     </PageContent>
   );
