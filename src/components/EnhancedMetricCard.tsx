@@ -51,55 +51,55 @@ export function EnhancedMetricCard({
   const isPositiveTrend = trendValue && trendValue > 0;
   const isNegativeTrend = trendValue && trendValue < 0;
 
-  // Define metric-specific styles based on design system - colorful card backgrounds
+  // Material Design 3 styles with Google colors and left accent border
   const getMetricStyles = () => {
     switch (metricType) {
       case 'balance':
         return {
-          cardClass: 'bg-card-balance text-card-balance-foreground border border-card-balance-foreground/30',
-          iconBg: 'bg-card-balance-foreground/10',
-          iconColor: 'text-card-balance-foreground',
-          textColor: 'text-card-balance-foreground',
-          mutedColor: 'text-card-balance-foreground/70',
-          borderColor: 'border-card-balance-foreground/20',
-          breakdown: 'bg-card-balance-foreground/5'
+          cardClass: 'bg-gradient-blue border-0',
+          iconBg: 'bg-white/20',
+          iconColor: 'text-white',
+          textColor: 'text-white',
+          mutedColor: 'text-white/90',
+          borderColor: 'border-white/20',
+          breakdown: 'bg-white/10'
         };
       case 'expenses':
         return {
-          cardClass: 'bg-card-expenses text-card-expenses-foreground border border-card-expenses-foreground/30',
-          iconBg: 'bg-card-expenses-foreground/10',
-          iconColor: 'text-card-expenses-foreground',
-          textColor: 'text-card-expenses-foreground',
-          mutedColor: 'text-card-expenses-foreground/70',
-          borderColor: 'border-card-expenses-foreground/20',
-          breakdown: 'bg-card-expenses-foreground/5'
+          cardClass: 'bg-gradient-red border-0',
+          iconBg: 'bg-white/20',
+          iconColor: 'text-white',
+          textColor: 'text-white',
+          mutedColor: 'text-white/90',
+          borderColor: 'border-white/20',
+          breakdown: 'bg-white/10'
         };
       case 'income':
         return {
-          cardClass: 'bg-card-income text-card-income-foreground border border-card-income-foreground/30',
-          iconBg: 'bg-card-income-foreground/10',
-          iconColor: 'text-card-income-foreground',
-          textColor: 'text-card-income-foreground',
-          mutedColor: 'text-card-income-foreground/70',
-          borderColor: 'border-card-income-foreground/20',
-          breakdown: 'bg-card-income-foreground/5'
+          cardClass: 'bg-gradient-green border-0',
+          iconBg: 'bg-white/20',
+          iconColor: 'text-white',
+          textColor: 'text-white',
+          mutedColor: 'text-white/90',
+          borderColor: 'border-white/20',
+          breakdown: 'bg-white/10'
         };
       case 'spending':
         return {
-          cardClass: 'bg-card-spending text-card-spending-foreground border border-card-spending-foreground/30',
-          iconBg: 'bg-card-spending-foreground/10',
-          iconColor: 'text-card-spending-foreground',
-          textColor: 'text-card-spending-foreground',
-          mutedColor: 'text-card-spending-foreground/70',
-          borderColor: 'border-card-spending-foreground/20',
-          breakdown: 'bg-card-spending-foreground/5'
+          cardClass: 'bg-gradient-yellow border-0',
+          iconBg: 'bg-white/20',
+          iconColor: 'text-white',
+          textColor: 'text-white',
+          mutedColor: 'text-white/90',
+          borderColor: 'border-white/20',
+          breakdown: 'bg-white/10'
         };
       default:
         return {
-          cardClass: 'bg-card text-card-foreground border border-border',
+          cardClass: 'bg-card border border-border',
           iconBg: 'bg-primary/10',
           iconColor: 'text-primary',
-          textColor: 'text-card-foreground',
+          textColor: 'text-foreground',
           mutedColor: 'text-muted-foreground',
           borderColor: 'border-border',
           breakdown: 'bg-muted/30'
@@ -112,19 +112,19 @@ export function EnhancedMetricCard({
   return (
     <Card
       className={cn(
-        "group relative overflow-hidden transition-all duration-300 rounded-2xl",
+        "group relative overflow-hidden transition-all duration-300 rounded-xl shadow-md hover:shadow-lg",
         "active:scale-[0.98] active:transition-transform active:duration-150",
         styles.cardClass,
         className
       )}
     >
-      <CardContent className="relative p-5 space-y-4">
+      <CardContent className="relative p-4 space-y-3">
         {/* Icon and value section */}
         <div className="space-y-3">
-          {/* Icon */}
+          {/* Circular Icon Container - Material Design 3 */}
           <div className="flex justify-start">
             <div className={cn(
-              "p-2.5 rounded-lg transition-all duration-300",
+              "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300",
               "group-hover:scale-110",
               styles.iconBg
             )}>
@@ -135,16 +135,16 @@ export function EnhancedMetricCard({
             </div>
           </div>
 
-          {/* Value */}
+          {/* Value and Title - Google Sans Typography */}
           <div className="space-y-1">
             <p className={cn(
-              "text-xl font-bold tracking-tight",
+              "text-2xl font-bold font-google tracking-tight leading-tight",
               styles.textColor
             )}>
               {value}
             </p>
             <h3 className={cn(
-              "text-sm font-medium",
+              "text-sm font-medium font-roboto",
               styles.mutedColor
             )}>
               {title}

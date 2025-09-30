@@ -52,15 +52,31 @@ All colors MUST be HSL.
     --warning-foreground: 0 0% 100%;
     --warning-subtle: 38 92% 96%;
 
-    /* Dashboard card backgrounds - exact user specified colors */
-    --card-balance: 226 67% 97%;        /* #eaf0fe */
-    --card-balance-foreground: 226 67% 25%;
-    --card-expenses: 28 73% 95%;        /* #fcf0e4 */
-    --card-expenses-foreground: 28 73% 25%;
-    --card-income: 107 41% 95%;         /* #ecf5e8 */
-    --card-income-foreground: 107 41% 25%;
-    --card-spending: 46 100% 92%;       /* #fff5d6 */
-    --card-spending-foreground: 46 100% 25%;
+    /* Custom Brand Colors */
+    --google-blue: 213 97% 57%;         /* #2584fc */
+    --google-blue-light: 213 97% 57%;   /* Same as main */
+    --google-red: 6 76% 51%;            /* #e03422 */
+    --google-red-light: 6 76% 51%;      /* Same as main */
+    --google-green: 145 98% 34%;        /* #02ad48 */
+    --google-green-light: 145 98% 34%;  /* Same as main */
+    --google-yellow: 44 100% 50%;       /* #ffba00 */
+    --google-yellow-light: 44 100% 50%; /* Same as main */
+
+    /* Radial Gradients - top left to bottom right */
+    --gradient-blue: radial-gradient(circle at top left, hsl(213 97% 57%), hsl(213 97% 47%));
+    --gradient-red: radial-gradient(circle at top left, hsl(6 76% 51%), hsl(6 76% 41%));
+    --gradient-green: radial-gradient(circle at top left, hsl(145 98% 34%), hsl(145 98% 24%));
+    --gradient-yellow: radial-gradient(circle at top left, hsl(44 100% 50%), hsl(44 100% 40%));
+    
+    /* Dashboard card backgrounds - Google Material Design 3 */
+    --card-balance: var(--google-blue-light);
+    --card-balance-foreground: var(--google-blue);
+    --card-expenses: var(--google-red-light);
+    --card-expenses-foreground: var(--google-red);
+    --card-income: var(--google-green-light);
+    --card-income-foreground: var(--google-green);
+    --card-spending: var(--google-yellow-light);
+    --card-spending-foreground: var(--google-yellow);
 
     /* Google Form elements - Enhanced borders */
     --border: 0 0% 82%;
@@ -157,15 +173,31 @@ All colors MUST be HSL.
     --warning-foreground: 0 0% 100%;
     --warning-subtle: 38 92% 15%;
 
+    /* Custom Brand Colors (Dark Mode) */
+    --google-blue: 213 97% 57%;         /* #2584fc */
+    --google-blue-light: 213 97% 57%;   /* Same as main */
+    --google-red: 6 76% 51%;            /* #e03422 */
+    --google-red-light: 6 76% 51%;      /* Same as main */
+    --google-green: 145 98% 34%;        /* #02ad48 */
+    --google-green-light: 145 98% 34%;  /* Same as main */
+    --google-yellow: 44 100% 50%;       /* #ffba00 */
+    --google-yellow-light: 44 100% 50%; /* Same as main */
+
+    /* Radial Gradients - top left to bottom right (Dark Mode) */
+    --gradient-blue: radial-gradient(circle at top left, hsl(213 97% 57%), hsl(213 97% 47%));
+    --gradient-red: radial-gradient(circle at top left, hsl(6 76% 51%), hsl(6 76% 41%));
+    --gradient-green: radial-gradient(circle at top left, hsl(145 98% 34%), hsl(145 98% 24%));
+    --gradient-yellow: radial-gradient(circle at top left, hsl(44 100% 50%), hsl(44 100% 40%));
+    
     /* Dashboard card backgrounds - dark mode versions */
-    --card-balance: 226 67% 15%;        /* Dark version of #eaf0fe */
-    --card-balance-foreground: 226 67% 85%;
-    --card-expenses: 28 73% 15%;        /* Dark version of #fcf0e4 */
-    --card-expenses-foreground: 28 73% 85%;
-    --card-income: 107 41% 15%;         /* Dark version of #ecf5e8 */
-    --card-income-foreground: 107 41% 85%;
-    --card-spending: 46 100% 15%;       /* Dark version of #fff5d6 */
-    --card-spending-foreground: 46 100% 85%;
+    --card-balance: var(--google-blue-light);
+    --card-balance-foreground: var(--google-blue);
+    --card-expenses: var(--google-red-light);
+    --card-expenses-foreground: var(--google-red);
+    --card-income: var(--google-green-light);
+    --card-income-foreground: var(--google-green);
+    --card-spending: var(--google-yellow-light);
+    --card-spending-foreground: var(--google-yellow);
 
     /* Google Dark Form elements - bluish tint */
     --border: 218 25% 18%;

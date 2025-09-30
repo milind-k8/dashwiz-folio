@@ -23,12 +23,12 @@ export function UserGreeting() {
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-sm font-medium text-foreground">
+      <span className="text-sm font-medium text-foreground font-roboto">
         Hi! {getUserName(user.email || '')}
       </span>
       <Avatar className="h-8 w-8">
         <AvatarImage src={user.user_metadata?.avatar_url} alt={user.email || ''} />
-        <AvatarFallback className="bg-gradient-primary text-white text-sm font-medium">
+        <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium font-google">
           {user.email ? getUserInitials(user.email) : <User className="h-4 w-4" />}
         </AvatarFallback>
       </Avatar>

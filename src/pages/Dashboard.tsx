@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from 'react';
-import { EnhancedMetricCard } from '@/components/EnhancedMetricCard';
-import { TopTransactions } from '@/components/TopTransactions';
+import BalanceOverviewCard from '@/components/BalanceOverviewCard';
+import { TransactionChips } from '@/components/TransactionChips';
 import { InlineFilters } from '@/components/InlineFilters';
 import { PageContent } from '@/components/PageContent';
 import { DashboardSkeleton } from '@/components/DashboardSkeleton';
@@ -8,7 +8,7 @@ import { CategoryGrouping } from '@/components/CategoryGrouping';
 import { useFinancialData } from '@/hooks/useFinancialData';
 import { useFilterStore } from '@/store/filterStore';
 import { useGlobalStore } from '@/store/globalStore';
-import { Wallet, CreditCard as CreditCardIcon, TrendingUp, Calculator } from 'lucide-react';
+import { Wallet, TrendingUp, Calculator } from 'lucide-react';
 
 export function Dashboard() {
   const { getFilteredData, isLoading } = useFinancialData();
@@ -60,42 +60,21 @@ export function Dashboard() {
         </div>
       </div>
       
-      {/* Essential Metrics */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pb-2">
-        <EnhancedMetricCard
-          title="Total Balance"
-          value={`₹${data.balance.toLocaleString()}`}
-          icon={Wallet}
-          metricType="balance"
-        />
-        <EnhancedMetricCard
-          title="Monthly Expenses"
-          value={`₹${data.expenses.toLocaleString()}`}
-          icon={CreditCardIcon}
-          metricType="expenses"
-        />
-        <EnhancedMetricCard
-          title="Total Income"
-          value={`₹${data.income.toLocaleString()}`}
-          icon={TrendingUp}
-          metricType="income"
-        />
-        <EnhancedMetricCard
-          title="Avg Daily Spending"
-          value={`₹${averageSpending.toLocaleString()}`}
-          icon={Calculator}
-          metricType="spending"
+      <div className="pb-2">
+        <BalanceOverviewCard 
+          totalBalance={data.balance}
+          bankBreakdown={data.bankBreakdown}
         />
       </div>
 
-      {/* Top Transactions */}
-      <TopTransactions 
+      {/* Transaction Chips */}
+      <TransactionChips 
         transactions={data.transactions}
         banks={banks}
       />
 
-      {/* Category Grouping */}
-      <CategoryGrouping />
+       {/* Category Grouping */}
+       <CategoryGrouping />
 
     </PageContent>
   );
