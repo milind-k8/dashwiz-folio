@@ -30,20 +30,24 @@ export function TransactionChips({ transactions, banks }: TransactionChipsProps)
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
         <Drawer>
           <DrawerTrigger asChild>
-            <Card className="flex-shrink-0 cursor-pointer hover:scale-105 transition-transform active:scale-95 bg-muted/30 hover:bg-muted/50">
+            <Card className="flex-shrink-0 cursor-pointer hover:scale-105 transition-all active:scale-95 bg-gradient-to-r from-primary/10 to-primary/5 hover:from-primary/15 hover:to-primary/10 border-primary/20">
               <CardContent className="p-3">
                 <div className="flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm font-medium text-foreground">Top Expenses</span>
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <TrendingUp className="w-4 h-4 text-primary" />
+                  </div>
+                  <span className="text-sm font-medium text-foreground font-google">Top Expenses</span>
                 </div>
               </CardContent>
             </Card>
           </DrawerTrigger>
           
           <DrawerContent className="max-h-[80vh]">
-            <DrawerHeader>
-              <DrawerTitle className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5" />
+            <DrawerHeader className="border-b">
+              <DrawerTitle className="flex items-center gap-2 text-foreground font-google">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-primary" />
+                </div>
                 Top Expenses
               </DrawerTitle>
             </DrawerHeader>
@@ -51,7 +55,7 @@ export function TransactionChips({ transactions, banks }: TransactionChipsProps)
               <TopTransactions 
                 transactions={transactions}
                 banks={banks}
-                className="border-0 shadow-none"
+                isDrawerContent={true}
               />
             </div>
           </DrawerContent>
