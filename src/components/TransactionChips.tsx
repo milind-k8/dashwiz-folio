@@ -30,7 +30,7 @@ export function TransactionChips({ transactions, banks }: TransactionChipsProps)
       <div className="flex gap-2 overflow-x-auto pb-2 px-1 py-1 scrollbar-hide">
         <Drawer>
           <DrawerTrigger asChild>
-            <Card className="flex-shrink-0 cursor-pointer hover:shadow-sm transition-all active:scale-95 bg-gradient-to-r from-primary/10 to-primary/5 hover:from-primary/15 hover:to-primary/10 border-primary/20">
+            <Card className="flex-shrink-0 cursor-pointer shadow-none border border-gray-300">
               <CardContent className="p-2 px-3">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
