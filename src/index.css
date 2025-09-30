@@ -61,6 +61,12 @@ All colors MUST be HSL.
     --google-green-light: 145 98% 34%;  /* Same as main */
     --google-yellow: 44 100% 50%;       /* #ffba00 */
     --google-yellow-light: 44 100% 50%; /* Same as main */
+
+    /* Radial Gradients - top left to bottom right */
+    --gradient-blue: radial-gradient(circle at top left, hsl(213 97% 57%), hsl(213 97% 47%));
+    --gradient-red: radial-gradient(circle at top left, hsl(6 76% 51%), hsl(6 76% 41%));
+    --gradient-green: radial-gradient(circle at top left, hsl(145 98% 34%), hsl(145 98% 24%));
+    --gradient-yellow: radial-gradient(circle at top left, hsl(44 100% 50%), hsl(44 100% 40%));
     
     /* Dashboard card backgrounds - Google Material Design 3 */
     --card-balance: var(--google-blue-light);
@@ -176,6 +182,12 @@ All colors MUST be HSL.
     --google-green-light: 145 98% 34%;  /* Same as main */
     --google-yellow: 44 100% 50%;       /* #ffba00 */
     --google-yellow-light: 44 100% 50%; /* Same as main */
+
+    /* Radial Gradients - top left to bottom right (Dark Mode) */
+    --gradient-blue: radial-gradient(circle at top left, hsl(213 97% 57%), hsl(213 97% 47%));
+    --gradient-red: radial-gradient(circle at top left, hsl(6 76% 51%), hsl(6 76% 41%));
+    --gradient-green: radial-gradient(circle at top left, hsl(145 98% 34%), hsl(145 98% 24%));
+    --gradient-yellow: radial-gradient(circle at top left, hsl(44 100% 50%), hsl(44 100% 40%));
     
     /* Dashboard card backgrounds - dark mode versions */
     --card-balance: var(--google-blue-light);

@@ -56,7 +56,7 @@ export function EnhancedMetricCard({
     switch (metricType) {
       case 'balance':
         return {
-          cardClass: 'bg-google-blue border-0',
+          cardClass: 'bg-gradient-blue border-0',
           iconBg: 'bg-white/20',
           iconColor: 'text-white',
           textColor: 'text-white',
@@ -66,7 +66,7 @@ export function EnhancedMetricCard({
         };
       case 'expenses':
         return {
-          cardClass: 'bg-google-red border-0',
+          cardClass: 'bg-gradient-red border-0',
           iconBg: 'bg-white/20',
           iconColor: 'text-white',
           textColor: 'text-white',
@@ -76,7 +76,7 @@ export function EnhancedMetricCard({
         };
       case 'income':
         return {
-          cardClass: 'bg-google-green border-0',
+          cardClass: 'bg-gradient-green border-0',
           iconBg: 'bg-white/20',
           iconColor: 'text-white',
           textColor: 'text-white',
@@ -86,7 +86,7 @@ export function EnhancedMetricCard({
         };
       case 'spending':
         return {
-          cardClass: 'bg-google-yellow border-0',
+          cardClass: 'bg-gradient-yellow border-0',
           iconBg: 'bg-white/20',
           iconColor: 'text-white',
           textColor: 'text-white',

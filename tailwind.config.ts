@@ -138,6 +138,10 @@ export default {
         'gradient-balance': 'var(--gradient-balance)',
         'gradient-income': 'var(--gradient-income)',
         'gradient-expense': 'var(--gradient-expense)',
+        'gradient-blue': 'var(--gradient-blue)',
+        'gradient-red': 'var(--gradient-red)',
+        'gradient-green': 'var(--gradient-green)',
+        'gradient-yellow': 'var(--gradient-yellow)',
       },
       boxShadow: {
         'sm': 'var(--shadow-sm)',
