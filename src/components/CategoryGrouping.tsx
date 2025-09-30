@@ -257,7 +257,7 @@ export const CategoryGrouping = () => {
 
           {/* Collapsible Category Details */}
           <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-            <CollapsibleTrigger className="flex items-center justify-center gap-1.5 w-full py-2 text-sm text-primary hover:text-primary/80 transition-colors font-google font-medium">
+            <CollapsibleTrigger className="flex items-center justify-center gap-1.5 w-full py-2 text-sm text-gray-600 hover:text-gray-700 transition-colors font-google font-medium">
               <span>Category details</span>
               {isDetailsOpen ? (
                 <ChevronUp className="h-4 w-4" />

@@ -56,7 +56,7 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
         <CardHeader className="pb-3">
           <CardTitle className="text-base font-medium flex items-center gap-2 font-google text-foreground">
             <TrendingUp className="w-5 h-5 text-muted-foreground" />
-            Top Transactions this Month
+            Top Expenses
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -76,7 +76,7 @@ export function TopTransactions({ transactions, banks, className }: TopTransacti
       <CardHeader className="pb-3">
         <CardTitle className="text-base font-medium flex items-center gap-2 font-google text-foreground">
           <TrendingUp className="w-5 h-5 text-muted-foreground" />
-          Top Transactions this Month
+          Top Expenses
         </CardTitle>
       </CardHeader>
       <CardContent className='pb-3'>
