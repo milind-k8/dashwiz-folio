@@ -78,20 +78,20 @@ export function BalanceOverviewCard({ totalBalance, bankBreakdown = [], classNam
 
         <div className="grid grid-cols-3 gap-3 mb-4">
           <div className="text-center">
-            <div className="text-[10px] text-muted-foreground font-roboto mb-1">Income</div>
-            <div className="text-sm font-medium text-success font-google">
+            <div className="text-xs text-muted-foreground font-roboto mb-1">Income</div>
+            <div className="text-base font-medium text-success font-google">
               {isMasked ? '••••' : `₹${formatIndianCompact(totalIncome)}`}
             </div>
           </div>
           <div className="text-center">
-            <div className="text-[10px] text-muted-foreground font-roboto mb-1">Expenses</div>
-            <div className="text-sm font-medium text-destructive font-google">
+            <div className="text-xs text-muted-foreground font-roboto mb-1">Expenses</div>
+            <div className="text-base font-medium text-destructive font-google">
               {isMasked ? '••••' : `₹${formatIndianCompact(totalExpenses)}`}
             </div>
           </div>
           <div className="text-center">
-            <div className="text-[10px] text-muted-foreground font-roboto mb-1">Savings</div>
-            <div className={cn("text-sm font-medium font-google", savings >= 0 ? "text-success" : "text-destructive")}>
+            <div className="text-xs text-muted-foreground font-roboto mb-1">Savings</div>
+            <div className={cn("text-base font-medium font-google", savings >= 0 ? "text-success" : "text-destructive")}>
               {isMasked ? '••••' : `₹${formatIndianCompact(savings)}`}
             </div>
           </div>
