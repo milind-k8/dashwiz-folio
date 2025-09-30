@@ -27,16 +27,16 @@ interface TransactionChipsProps {
 export function TransactionChips({ transactions, banks }: TransactionChipsProps) {
   return (
     <div className="mb-4">
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="flex gap-2 overflow-x-auto pb-2 px-1 py-1 scrollbar-hide">
         <Drawer>
           <DrawerTrigger asChild>
-            <Card className="flex-shrink-0 cursor-pointer hover:scale-105 transition-all active:scale-95 bg-gradient-to-r from-primary/10 to-primary/5 hover:from-primary/15 hover:to-primary/10 border-primary/20">
-              <CardContent className="p-3">
+            <Card className="flex-shrink-0 cursor-pointer hover:shadow-md transition-all active:scale-95 bg-gradient-to-r from-primary/10 to-primary/5 hover:from-primary/15 hover:to-primary/10 border-primary/20">
+              <CardContent className="p-2 px-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <TrendingUp className="w-4 h-4 text-primary" />
+                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                    <TrendingUp className="w-3.5 h-3.5 text-primary" />
                   </div>
-                  <span className="text-sm font-medium text-foreground font-google">Top Expenses</span>
+                  <span className="text-xs font-medium text-foreground font-google">Top Expenses</span>
                 </div>
               </CardContent>
             </Card>
