@@ -216,37 +216,37 @@ export const CategoryGrouping = () => {
   return (
     <>
       <Card>
-        <CardHeader>
-          <CardTitle className="text-base font-medium flex items-center gap-2">
-            <Wallet className="w-4 h-4 text-primary" />
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base font-medium flex items-center gap-2 font-google text-foreground">
+            <Wallet className="w-5 h-5 text-muted-foreground" />
             Spending Categories
           </CardTitle>
         </CardHeader>
         <CardContent className="pb-6">
           {/* Summary Section */}
           <div className="mb-6">
-            <h2 className="text-4xl font-normal mb-2 text-foreground">
+            <h2 className="text-3xl font-normal mb-1 text-foreground font-google">
               ₹{totalSpending.toLocaleString()}
             </h2>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-muted-foreground text-sm font-roboto">
               Total spending across {groupedByCategory.length} categories
             </p>
           </div>
 
           {/* Visual Bar */}
           <div className="mb-6">
-            <div className="flex items-center justify-between text-sm mb-2">
+            <div className="flex items-center justify-between text-sm mb-2 font-roboto">
               <span className="text-muted-foreground">Category breakdown</span>
               <span className="font-medium text-foreground">₹{totalSpending.toLocaleString()}</span>
             </div>
-            <div className="h-3 rounded-full bg-muted/30 overflow-hidden flex">
+            <div className="h-2.5 rounded-full bg-muted/20 overflow-hidden flex">
               {groupedByCategory.map((group, index) => {
                 const percentage = (group.totalAmount / totalSpending) * 100;
                 const color = getCategoryColor(group.category, index);
                 return (
                   <div
                     key={group.category}
-                    className={`${color.bg} transition-all`}
+                    className={`${color.bg} transition-all hover:opacity-80`}
                     style={{ width: `${percentage}%` }}
                     title={`${group.category}: ₹${group.totalAmount.toLocaleString()}`}
                   />
@@ -257,7 +257,7 @@ export const CategoryGrouping = () => {
 
           {/* Collapsible Category Details */}
           <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-            <CollapsibleTrigger className="flex items-center justify-center gap-2 w-full py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <CollapsibleTrigger className="flex items-center justify-center gap-1.5 w-full py-2 text-sm text-primary hover:text-primary/80 transition-colors font-google font-medium">
               <span>Category details</span>
               {isDetailsOpen ? (
                 <ChevronUp className="h-4 w-4" />
@@ -266,26 +266,27 @@ export const CategoryGrouping = () => {
               )}
             </CollapsibleTrigger>
             
-            <CollapsibleContent className="mt-4">
-              <div className="space-y-3">
+            <CollapsibleContent className="mt-3">
+              <div className="space-y-1">
                 {groupedByCategory.map((group, index) => {
                   const color = getCategoryColor(group.category, index);
                   
                   return (
                     <div 
                       key={group.category}
-                      className="flex items-center justify-between py-2 cursor-pointer hover:bg-muted/20 rounded-lg px-2 -mx-2 transition-colors"
+                      className="flex items-center justify-between py-2.5 cursor-pointer hover:bg-muted/30 rounded-lg px-3 -mx-3 transition-all active:scale-[0.98]"
                       onClick={() => setSelectedCategory(group)}
                     >
                       <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <div className={`w-3 h-3 rounded-full ${color.dot} flex-shrink-0`} />
-                        <span className="text-sm text-foreground truncate">{group.category}</span>
+                        <div className={`w-2.5 h-2.5 rounded-full ${color.dot} flex-shrink-0`} />
+                        <span className="text-sm text-foreground font-roboto truncate">{group.category}</span>
                       </div>
                       
                       <div className="flex items-center gap-2 flex-shrink-0">
-                        <span className="text-sm font-medium text-foreground">
+                        <span className="text-sm font-medium text-foreground font-roboto">
                           ₹{group.totalAmount.toLocaleString()}
                         </span>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
                       </div>
                     </div>
                   );
@@ -317,10 +318,10 @@ export const CategoryGrouping = () => {
             <div className="px-4 flex flex-col flex-1 overflow-hidden">
               {/* Header */}
               <div className="pb-4">
-                <Drawer.Title className="text-lg font-semibold text-foreground font-google">
+                <Drawer.Title className="text-xl font-medium text-foreground font-google">
                   {selectedCategory?.category}
                 </Drawer.Title>
-                <Drawer.Description className="text-sm text-muted-foreground">
+                <Drawer.Description className="text-sm text-muted-foreground font-roboto">
                   {selectedCategory?.transactionCount} transactions • ₹{selectedCategory?.totalAmount.toLocaleString()}
                 </Drawer.Description>
               </div>
@@ -332,29 +333,29 @@ export const CategoryGrouping = () => {
                   placeholder="Search merchants"
                   value={modalSearchTerm}
                   onChange={(e) => setModalSearchTerm(e.target.value)}
-                  className="pl-10 h-9 bg-muted/30 border border-border/50 rounded-full text-base font-google"
+                  className="pl-10 h-10 bg-muted/20 border border-border/50 rounded-lg text-sm font-roboto"
                 />
               </div>
               
               {/* Grouped Merchants - Scrollable */}
-              <div className="space-y-3 overflow-y-auto flex-1" style={{ scrollbarWidth: 'thin' }}>
+              <div className="space-y-1 overflow-y-auto flex-1" style={{ scrollbarWidth: 'thin' }}>
                 {groupedMerchants.map((merchant) => {
                   return (
-                    <div key={merchant.merchant} className="flex items-center justify-between py-2">
+                    <div key={merchant.merchant} className="flex items-center justify-between py-3 px-2 hover:bg-muted/30 rounded-lg transition-colors">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm text-foreground truncate">
+                          <p className="text-sm text-foreground font-roboto truncate">
                             {merchant.merchant}
                           </p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-xs text-muted-foreground font-roboto">
                             {merchant.transactionCount}x transaction{merchant.transactionCount !== 1 ? 's' : ''}
                           </p>
                         </div>
                       </div>
                       
                       <div className="text-right ml-3 flex-shrink-0">
-                        <div className="text-sm font-medium text-foreground">
+                        <div className="text-sm font-medium text-foreground font-roboto">
                           ₹{merchant.totalAmount.toLocaleString()}
                         </div>
                       </div>
