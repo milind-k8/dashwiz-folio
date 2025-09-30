@@ -50,6 +50,10 @@ export function BalanceOverviewCard({ totalBalance, bankBreakdown = [], classNam
     .sort((a, b) => (b.balance || 0) - (a.balance || 0))
     .slice(0, 4);
 
+  const totalIncome = bankBreakdown.reduce((sum, b) => sum + (b.income || 0), 0);
+  const totalExpenses = bankBreakdown.reduce((sum, b) => sum + (b.expenses || 0), 0);
+  const savings = totalIncome - totalExpenses;
+
   const renderBankAvatar = (bankName: string, idx: number) => {
     if (/hdfc/i.test(bankName)) {
       return (
@@ -71,6 +75,27 @@ export function BalanceOverviewCard({ totalBalance, bankBreakdown = [], classNam
         <Header totalBalance={totalBalance} />
 
         <div className="h-px bg-border my-4" />
+
+        <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="text-center">
+            <div className="text-[10px] text-muted-foreground font-roboto mb-1">Income</div>
+            <div className="text-sm font-medium text-success font-google">
+              {isMasked ? '••••' : `₹${formatIndianCompact(totalIncome)}`}
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="text-[10px] text-muted-foreground font-roboto mb-1">Expenses</div>
+            <div className="text-sm font-medium text-destructive font-google">
+              {isMasked ? '••••' : `₹${formatIndianCompact(totalExpenses)}`}
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="text-[10px] text-muted-foreground font-roboto mb-1">Savings</div>
+            <div className={cn("text-sm font-medium font-google", savings >= 0 ? "text-success" : "text-destructive")}>
+              {isMasked ? '••••' : `₹${formatIndianCompact(savings)}`}
+            </div>
+          </div>
+        </div>
 
         {topBanks.length > 0 && (
           <div className="flex flex-wrap gap-2">
