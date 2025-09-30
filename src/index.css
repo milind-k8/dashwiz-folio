@@ -52,15 +52,25 @@ All colors MUST be HSL.
     --warning-foreground: 0 0% 100%;
     --warning-subtle: 38 92% 96%;
 
-    /* Dashboard card backgrounds - exact user specified colors */
-    --card-balance: 226 67% 97%;        /* #eaf0fe */
-    --card-balance-foreground: 226 67% 25%;
-    --card-expenses: 28 73% 95%;        /* #fcf0e4 */
-    --card-expenses-foreground: 28 73% 25%;
-    --card-income: 107 41% 95%;         /* #ecf5e8 */
-    --card-income-foreground: 107 41% 25%;
-    --card-spending: 46 100% 92%;       /* #fff5d6 */
-    --card-spending-foreground: 46 100% 25%;
+    /* Google Material Design 3 - Brand Colors */
+    --google-blue: 217 80% 51%;         /* #1a73e8 */
+    --google-blue-light: 218 89% 95%;   /* #e8f0fe */
+    --google-red: 4 82% 56%;            /* #ea4335 */
+    --google-red-light: 5 79% 95%;      /* #fce8e6 */
+    --google-green: 136 52% 43%;        /* #34a853 */
+    --google-green-light: 137 38% 93%;  /* #e6f4ea */
+    --google-yellow: 45 98% 50%;        /* #fbbc04 */
+    --google-yellow-light: 46 88% 94%;  /* #fef7e0 */
+    
+    /* Dashboard card backgrounds - Google Material Design 3 */
+    --card-balance: var(--google-blue-light);
+    --card-balance-foreground: var(--google-blue);
+    --card-expenses: var(--google-red-light);
+    --card-expenses-foreground: var(--google-red);
+    --card-income: var(--google-green-light);
+    --card-income-foreground: var(--google-green);
+    --card-spending: var(--google-yellow-light);
+    --card-spending-foreground: var(--google-yellow);
 
     /* Google Form elements - Enhanced borders */
     --border: 0 0% 82%;
@@ -157,15 +167,25 @@ All colors MUST be HSL.
     --warning-foreground: 0 0% 100%;
     --warning-subtle: 38 92% 15%;
 
+    /* Google Material Design 3 - Brand Colors (Dark Mode) */
+    --google-blue: 217 80% 60%;         /* Lighter blue for dark mode */
+    --google-blue-light: 217 50% 20%;   /* Dark background */
+    --google-red: 4 82% 65%;            /* Lighter red for dark mode */
+    --google-red-light: 4 50% 20%;      /* Dark background */
+    --google-green: 136 52% 55%;        /* Lighter green for dark mode */
+    --google-green-light: 136 30% 20%;  /* Dark background */
+    --google-yellow: 45 98% 60%;        /* Lighter yellow for dark mode */
+    --google-yellow-light: 45 60% 20%;  /* Dark background */
+    
     /* Dashboard card backgrounds - dark mode versions */
-    --card-balance: 226 67% 15%;        /* Dark version of #eaf0fe */
-    --card-balance-foreground: 226 67% 85%;
-    --card-expenses: 28 73% 15%;        /* Dark version of #fcf0e4 */
-    --card-expenses-foreground: 28 73% 85%;
-    --card-income: 107 41% 15%;         /* Dark version of #ecf5e8 */
-    --card-income-foreground: 107 41% 85%;
-    --card-spending: 46 100% 15%;       /* Dark version of #fff5d6 */
-    --card-spending-foreground: 46 100% 85%;
+    --card-balance: var(--google-blue-light);
+    --card-balance-foreground: var(--google-blue);
+    --card-expenses: var(--google-red-light);
+    --card-expenses-foreground: var(--google-red);
+    --card-income: var(--google-green-light);
+    --card-income-foreground: var(--google-green);
+    --card-spending: var(--google-yellow-light);
+    --card-spending-foreground: var(--google-yellow);
 
     /* Google Dark Form elements - bluish tint */
     --border: 218 25% 18%;
