@@ -54,17 +54,25 @@ export const CategoryGrouping = () => {
       .slice(0, 2);
   };
 
-  // Get category color based on category
+  // Get category color based on category - expanded palette for unique colors
   const getCategoryColor = (category: string, index: number) => {
-    const categoryLower = category?.toLowerCase() || '';
-    
-    // Color palette similar to Google Storage
+    // Expanded color palette with more variety
     const colors = [
-      { bg: 'bg-[hsl(var(--success))]', dot: 'bg-[hsl(var(--success))]' },
-      { bg: 'bg-[hsl(var(--warning))]', dot: 'bg-[hsl(var(--warning))]' },
-      { bg: 'bg-[hsl(var(--destructive))]', dot: 'bg-[hsl(var(--destructive))]' },
-      { bg: 'bg-[hsl(var(--primary))]', dot: 'bg-[hsl(var(--primary))]' },
-      { bg: 'bg-[hsl(var(--accent))]', dot: 'bg-[hsl(var(--accent))]' },
+      { bg: 'bg-[hsl(217,91%,60%)]', dot: 'bg-[hsl(217,91%,60%)]' }, // Blue
+      { bg: 'bg-[hsl(142,71%,45%)]', dot: 'bg-[hsl(142,71%,45%)]' }, // Green
+      { bg: 'bg-[hsl(45,93%,47%)]', dot: 'bg-[hsl(45,93%,47%)]' }, // Yellow
+      { bg: 'bg-[hsl(0,72%,51%)]', dot: 'bg-[hsl(0,72%,51%)]' }, // Red
+      { bg: 'bg-[hsl(262,52%,47%)]', dot: 'bg-[hsl(262,52%,47%)]' }, // Purple
+      { bg: 'bg-[hsl(173,80%,40%)]', dot: 'bg-[hsl(173,80%,40%)]' }, // Teal
+      { bg: 'bg-[hsl(24,95%,53%)]', dot: 'bg-[hsl(24,95%,53%)]' }, // Orange
+      { bg: 'bg-[hsl(339,82%,52%)]', dot: 'bg-[hsl(339,82%,52%)]' }, // Pink
+      { bg: 'bg-[hsl(199,89%,48%)]', dot: 'bg-[hsl(199,89%,48%)]' }, // Cyan
+      { bg: 'bg-[hsl(291,64%,42%)]', dot: 'bg-[hsl(291,64%,42%)]' }, // Magenta
+      { bg: 'bg-[hsl(158,64%,52%)]', dot: 'bg-[hsl(158,64%,52%)]' }, // Emerald
+      { bg: 'bg-[hsl(43,96%,56%)]', dot: 'bg-[hsl(43,96%,56%)]' }, // Amber
+      { bg: 'bg-[hsl(215,79%,56%)]', dot: 'bg-[hsl(215,79%,56%)]' }, // Indigo
+      { bg: 'bg-[hsl(12,88%,59%)]', dot: 'bg-[hsl(12,88%,59%)]' }, // Coral
+      { bg: 'bg-[hsl(280,65%,60%)]', dot: 'bg-[hsl(280,65%,60%)]' }, // Violet
     ];
     
     return colors[index % colors.length];
@@ -208,9 +216,15 @@ export const CategoryGrouping = () => {
   return (
     <>
       <Card>
-        <CardContent className="pt-6 pb-6">
+        <CardHeader>
+          <CardTitle className="text-base font-medium flex items-center gap-2">
+            <Wallet className="w-4 h-4 text-primary" />
+            Spending Categories
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pb-6">
           {/* Summary Section */}
-          <div className="text-center mb-6">
+          <div className="mb-6">
             <h2 className="text-4xl font-normal mb-2 text-foreground">
               ₹{totalSpending.toLocaleString()}
             </h2>
@@ -226,7 +240,7 @@ export const CategoryGrouping = () => {
               <span className="font-medium text-foreground">₹{totalSpending.toLocaleString()}</span>
             </div>
             <div className="h-3 rounded-full bg-muted/30 overflow-hidden flex">
-              {groupedByCategory.slice(0, 5).map((group, index) => {
+              {groupedByCategory.map((group, index) => {
                 const percentage = (group.totalAmount / totalSpending) * 100;
                 const color = getCategoryColor(group.category, index);
                 return (
