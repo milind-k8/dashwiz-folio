@@ -72,7 +72,7 @@ export const useGlobalData = () => {
         mail_id: item.mail_id,
         created_at: item.created_at,
         updated_at: item.updated_at,
-        category: item.category
+        category: item.category.replaceAll('_', ' ')
       }));
 
       setTransactions(processedTransactions);
