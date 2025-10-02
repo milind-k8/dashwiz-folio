@@ -150,16 +150,34 @@ async function processTransactionsBackground(userId, bankName, month, googleAcce
     const transactions = await parseTransactions(emails);
     console.log(`Parsed ${transactions.length} transactions`);
     emailsProcessed = emails.length;
-    // Step 6: Store transactions in database
-    const transactionsToInsert = transactions.map((tx)=>({
+    // Step 6: Store transactions in database with category lookup
+    const transactionsToInsert = await Promise.all(transactions.map(async (tx) => {
+      let category = 'Other';
+      
+      // Look up category from merchants table if merchant exists
+      if (tx.merchant && tx.merchant !== 'others' && tx.merchant !== 'bank') {
+        const { data: merchantData } = await supabaseClient
+          .from('merchants')
+          .select('category')
+          .eq('merchant_name', tx.merchant)
+          .maybeSingle();
+        
+        if (merchantData && merchantData.category) {
+          category = merchantData.category;
+        }
+      }
+      
+      return {
         mail_id: tx.id,
         bank_id: bank.id,
         mail_time: tx.mailTime,
         transaction_type: tx.transactionType,
         snippet: tx.snippet,
         amount: tx.amount || 0,
-        merchant: tx.merchant
-      }));
+        merchant: tx.merchant,
+        category: category
+      };
+    }));
     if (transactionsToInsert.length > 0) {
       const { error: insertError } = await supabaseClient.from('transactions').upsert(transactionsToInsert, {
         onConflict: 'mail_id',
@@ -497,7 +515,11 @@ Example format:
 async function storeMerchants(merchantCategories) {
   try {
     const supabaseClient = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '');
-    const merchants = Object.entries(merchantCategories).map(([name, category])=>({
+    
+    // Only save merchants that are not categorized as "other"
+    const merchants = Object.entries(merchantCategories)
+      .filter(([name, category]) => (category as string).toLowerCase() !== 'other')
+      .map(([name, category])=>({
         merchant_name: name,
         category: category
       }));

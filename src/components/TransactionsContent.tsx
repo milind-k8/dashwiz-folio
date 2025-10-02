@@ -18,25 +18,50 @@ import {
   Wallet,
   X,
   Calendar,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Edit2
 } from 'lucide-react';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 import { useGlobalStore } from '@/store/globalStore';
 import { TableLoader } from '@/components/ui/loader';
+import { CategorySelector } from './CategorySelector';
+import { CategoryManagementDialog } from './CategoryManagementDialog';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+
+interface Transaction {
+  id: string;
+  amount: number;
+  transaction_type: string;
+  mail_time: string;
+  merchant: string;
+  bank_id: string;
+  category?: string;
+}
 
 
 export const TransactionsContent = () => {
-  const { banks, transactions, loading } = useGlobalStore();
+  const { user } = useAuth();
+  const { banks, transactions, loading, refreshData } = useGlobalStore();
   const { selectedBank, selectedDuration, setSelectedBank, setSelectedDuration } = useFilterStore();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBankId, setSelectedBankId] = useState<string>(selectedBank || '');
   const [filterOpen, setFilterOpen] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   // Set defaults when banks are loaded and components mount
   useEffect(() => {
@@ -205,6 +230,37 @@ export const TransactionsContent = () => {
     return `${monthNames[targetMonth]} ${targetYear}`;
   };
 
+  const handleEditTransaction = (transaction: Transaction) => {
+    setEditingTransaction(transaction);
+    setSelectedCategory(transaction.category || 'Other');
+  };
+
+  const handleSaveCategory = async () => {
+    if (!editingTransaction || !user) return;
+
+    const { error } = await supabase
+      .from('transactions')
+      .update({ category: selectedCategory })
+      .eq('id', editingTransaction.id);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update category",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Success",
+      description: "Category updated successfully",
+    });
+
+    setEditingTransaction(null);
+    refreshData();
+  };
+
 
   if (loading) {
     return (
@@ -226,6 +282,12 @@ export const TransactionsContent = () => {
       {/* Header - Google Pay style */}
       <div className="bg-card border-b border-border/50 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto p-4 space-y-3">
+          {/* Title and Category Management */}
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Transactions</h2>
+            {user && <CategoryManagementDialog userId={user.id} />}
+          </div>
+          
           {/* Search Bar with Filter Icon */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -346,7 +408,7 @@ export const TransactionsContent = () => {
                 const isCredit = transaction.transaction_type === 'credit';
                 
                 return (
-                  <div key={transaction.id} className="px-4 py-4 hover:bg-muted/30 transition-colors bg-card">
+                  <div key={transaction.id} className="px-4 py-4 hover:bg-muted/30 transition-colors bg-card group">
                     <div className="flex items-center gap-3">
                       {/* Merchant Initial Avatar */}
                       <Avatar className="h-10 w-10">
@@ -376,21 +438,31 @@ export const TransactionsContent = () => {
                             </div>
                           </div>
                           
-                          {/* Amount */}
-                          <div className="text-right ml-3">
-                            <div className={`text-sm font-semibold font-google ${
-                              isCredit 
-                                ? 'text-green-600' 
-                                : 'text-red-600'
-                            }`}>
-                              {isCredit ? '+' : '-'}₹{transaction.amount.toLocaleString()}
-                            </div>
-                            <div className="flex items-center justify-end mt-1">
-                              {isCredit ? (
-                                <ArrowUpRight className="h-3 w-3 text-green-600" />
-                              ) : (
-                                <ArrowDownLeft className="h-3 w-3 text-red-600" />
-                              )}
+                          {/* Edit and Amount */}
+                          <div className="flex items-center gap-2 ml-3">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleEditTransaction(transaction as Transaction)}
+                              className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </Button>
+                            <div className="text-right">
+                              <div className={`text-sm font-semibold font-google ${
+                                isCredit 
+                                  ? 'text-green-600' 
+                                  : 'text-red-600'
+                              }`}>
+                                {isCredit ? '+' : '-'}₹{transaction.amount.toLocaleString()}
+                              </div>
+                              <div className="flex items-center justify-end mt-1">
+                                {isCredit ? (
+                                  <ArrowUpRight className="h-3 w-3 text-green-600" />
+                                ) : (
+                                  <ArrowDownLeft className="h-3 w-3 text-red-600" />
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -412,6 +484,46 @@ export const TransactionsContent = () => {
           </div>
         )}
       </div>
+
+      {/* Edit Category Dialog */}
+      <Dialog open={!!editingTransaction} onOpenChange={(open) => !open && setEditingTransaction(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Transaction Category</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Merchant</p>
+              <p className="font-medium capitalize">{editingTransaction?.merchant || 'Unknown'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Amount</p>
+              <p className="font-medium">
+                {editingTransaction?.transaction_type === 'credit' ? '+' : '-'}₹
+                {Math.abs(Number(editingTransaction?.amount || 0)).toLocaleString('en-IN')}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">Category</p>
+              {user && (
+                <CategorySelector
+                  value={selectedCategory}
+                  onValueChange={setSelectedCategory}
+                  userId={user.id}
+                />
+              )}
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setEditingTransaction(null)}>
+                Cancel
+              </Button>
+              <Button onClick={handleSaveCategory}>
+                Save
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
     </div>
   );

@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      categories: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_default: boolean | null
+          name: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_default?: boolean | null
+          name: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_default?: boolean | null
+          name?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       email_sync_logs: {
         Row: {
           created_at: string
@@ -75,6 +102,7 @@ export type Database = {
         Row: {
           amount: number
           bank_id: string
+          category: string | null
           created_at: string
           id: string
           mail_id: string
@@ -87,6 +115,7 @@ export type Database = {
         Insert: {
           amount: number
           bank_id: string
+          category?: string | null
           created_at?: string
           id?: string
           mail_id: string
@@ -99,6 +128,7 @@ export type Database = {
         Update: {
           amount?: number
           bank_id?: string
+          category?: string | null
           created_at?: string
           id?: string
           mail_id?: string
